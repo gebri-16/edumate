@@ -1,5 +1,6 @@
-const API_BASE = 'http://localhost:3000/api/auth';
-const API_NOTIF = 'http://localhost:3000/api/notifikasi';
+const BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://edumate-production-c2df.up.railway.app/api';
+const API_BASE = BASE + '/auth';
+const API_NOTIF = BASE + '/notifikasi';
 
 // ==================== TOKEN ====================
 
