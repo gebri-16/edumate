@@ -831,6 +831,7 @@
 
     <script src="../js/auth-client.js"></script>
     <script>
+      const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://edumate-production-c2df.up.railway.app/api';
       let skillTags = [];
       let topikTags = [];
       let jadwalDipilih = [];
@@ -1000,7 +1001,7 @@
         btn.disabled = true;
 
         try {
-          const r1 = await fetch("http://localhost:3000/api/auth/profil", {
+          const r1 = await fetch(API + "/auth/profil", {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -1014,8 +1015,7 @@
             }),
           });
 
-          const r2 = await fetch(
-            "http://localhost:3000/api/auth/profil-belajar",
+          const r2 = await fetch(API + "/auth/profil-belajar",
             {
               method: "PUT",
               headers: {
@@ -1032,7 +1032,7 @@
             },
           );
 
-          const r3 = await fetch("http://localhost:3000/api/jadwal", {
+          const r3 = await fetch(API + "/jadwal", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

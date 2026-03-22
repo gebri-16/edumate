@@ -1157,6 +1157,7 @@
     ></script>
     <script src="../js/auth-client.js"></script>
     <script>
+      const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://edumate-production-c2df.up.railway.app/api';
       let allMatches = [];
       let currentList = [];
       const PAGE_SIZE = 6;
@@ -1244,7 +1245,7 @@
         btn.disabled = true;
 
         try {
-          const res = await fetch("http://localhost:3000/api/sesi", {
+          const res = await fetch(API + "/sesi", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -1280,7 +1281,7 @@
       async function loadMatching() {
         const token = localStorage.getItem("sb_token");
         try {
-          const res = await fetch("http://localhost:3000/api/matching", {
+          const res = await fetch(API + "/matching", {
             headers: { Authorization: "Bearer " + token },
           });
           const data = await res.json();

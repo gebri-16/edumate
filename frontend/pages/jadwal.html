@@ -1,287 +1,826 @@
 <!doctype html>
 <html lang="id">
-<head>
-  <script>
-    // Terapkan dark mode sebelum render untuk hindari flash
-    if (localStorage.getItem('sb_theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-    }
-  </script>
-  <meta charset="UTF-8"/>
-  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EduMate</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    :root{
-      --black:#0a0a0a;--primary:#f97316;--primary-hover:#ea6c0a;
-      --primary-light:#fff4ed;--white:#ffffff;--gray-50:#fafafa;
-      --gray-100:#f4f4f4;--gray-200:#e8e8e8;--gray-300:#d0d0d0;
-      --gray-400:#a0a0a0;--gray-600:#555;--sidebar-width:240px;
-      --green:#16a34a;--green-light:#f0fdf4;
-    }
-    body{font-family:"DM Sans",sans-serif;background:var(--gray-50);min-height:100vh;display:flex;color:var(--black)}
-
-    /* ===== SIDEBAR ===== */
-    .sidebar{width:var(--sidebar-width);background:var(--white);border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;padding:24px 0}
-    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 20px 24px;border-bottom:1px solid var(--gray-100);margin-bottom:16px}
-    .brand-icon{width:34px;height:34px;background:var(--primary);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-    .brand-name{font-family:"DM Serif Display",serif;font-size:17px;color:var(--black);letter-spacing:-0.3px}
-    .nav-section{padding:0 12px;flex:1}
-    .nav-label{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.8px;padding:0 8px;margin-bottom:6px;margin-top:16px}
-    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:all 0.15s;text-decoration:none;color:var(--gray-600);font-size:13.5px;font-weight:400;margin-bottom:2px}
-    .nav-item:hover{background:var(--primary-light);color:var(--primary)}
-    .nav-item.active{background:var(--primary);color:var(--white)}
-    .nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-    .nav-badge{margin-left:auto;background:var(--primary);color:white;font-size:10px;font-weight:600;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;display:none}
-    .nav-item.active .nav-badge{background:white;color:var(--primary)}
-    .sidebar-user{padding:16px 20px;border-top:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.15s}
-    .sidebar-user:hover{background:var(--gray-50)}
-    .user-avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-light);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;overflow:hidden}
-    .user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-    .user-info{flex:1;min-width:0}
-    .user-name{font-size:13px;font-weight:600;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .user-email{font-size:11px;color:var(--gray-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-    /* ===== MAIN ===== */
-    .main{margin-left:var(--sidebar-width);flex:1;padding:32px}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-    .page-header{margin-bottom:28px;opacity:0;animation:fadeUp 0.4s ease 0.05s forwards}
-    .page-header h1{font-family:"DM Serif Display",serif;font-size:26px;color:var(--black);letter-spacing:-0.5px;margin-bottom:4px}
-    .page-header p{color:var(--gray-400);font-size:14px}
-
-    /* ===== LAYOUT ===== */
-    .jadwal-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;opacity:0;animation:fadeUp 0.4s ease 0.1s forwards}
-    .card{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:24px;margin-bottom:20px}
-    .card:last-child{margin-bottom:0}
-    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--gray-100)}
-    .card-title{font-family:"DM Serif Display",serif;font-size:16px;color:var(--black);letter-spacing:-0.3px}
-
-    /* ===== KALENDER ===== */
-    .week-nav{display:flex;align-items:center;gap:12px}
-    .week-nav-btn{width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:8px;background:var(--white);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;color:var(--black)}
-    .week-nav-btn:hover{border-color:var(--primary);color:var(--primary)}
-    .week-label{font-size:13px;font-weight:600;color:var(--black)}
-    .calendar-grid{display:grid;grid-template-columns:60px repeat(7,1fr);gap:0;border:1px solid var(--gray-200);border-radius:12px;overflow:hidden}
-    .cal-header{background:var(--gray-50);padding:10px 6px;text-align:center;border-bottom:1px solid var(--gray-200);border-right:1px solid var(--gray-200)}
-    .cal-header:last-child{border-right:none}
-    .cal-day-name{font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px}
-    .cal-day-num{font-size:15px;font-weight:600;color:var(--black);margin-top:2px}
-    .cal-day-num.today{background:var(--primary);color:white;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto 0;font-size:13px}
-    .time-label{padding:0 8px;text-align:right;border-right:1px solid var(--gray-200);position:relative}
-    .time-text{font-size:10px;color:var(--gray-400);position:absolute;top:-7px;right:8px}
-    .cal-cell{border-right:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100);height:52px;position:relative;cursor:pointer;transition:background 0.1s}
-    .cal-cell:last-child{border-right:none}
-    .cal-cell:hover{background:var(--primary-light)}
-    .cal-cell.available{background:#f0fdf4}
-    .cal-cell.available:hover{background:#dcfce7}
-    .cal-event{position:absolute;top:4px;left:3px;right:3px;background:var(--primary);color:white;border-radius:6px;padding:3px 6px;font-size:10px;font-weight:500;cursor:pointer;z-index:2;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-    .cal-event.available-block{background:var(--green)}
-    .time-col{background:var(--gray-50)}
-    .legend{display:flex;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid var(--gray-100)}
-    .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray-600)}
-    .legend-dot{width:10px;height:10px;border-radius:3px}
-
-    /* ===== FORM ===== */
-    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-    .form-group:last-of-type{margin-bottom:0}
-    .form-label{font-size:12px;font-weight:600;color:var(--black)}
-    .form-select,.form-input{padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:9px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--black);background:var(--gray-50);outline:none;transition:border-color 0.15s}
-    .form-select:focus,.form-input:focus{border-color:var(--primary);background:var(--white)}
-    .time-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .btn-tambah{width:100%;padding:10px;background:var(--primary);color:white;border:none;border-radius:9px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s;margin-top:16px}
-    .btn-tambah:hover{background:var(--primary-hover)}
-    .btn-tambah:disabled{background:var(--gray-300);cursor:not-allowed}
-
-    /* ===== JADWAL LIST ===== */
-    .jadwal-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--gray-100);border-radius:10px;background:var(--gray-50);margin-bottom:8px;transition:all 0.15s}
-    .jadwal-item:last-child{margin-bottom:0}
-    .jadwal-item:hover{border-color:var(--gray-200);background:var(--white)}
-    .jadwal-dot{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0}
-    .jadwal-info{flex:1}
-    .jadwal-hari{font-size:13px;font-weight:600;color:var(--black)}
-    .jadwal-waktu{font-size:11.5px;color:var(--gray-400);margin-top:1px}
-    .jadwal-delete{width:28px;height:28px;border:1px solid var(--gray-200);border-radius:7px;background:var(--white);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--gray-400);transition:all 0.15s;flex-shrink:0}
-    .jadwal-delete:hover{background:#fee2e2;color:#dc2626;border-color:#fecaca}
-
-    /* ===== EMPTY STATE ===== */
-    .empty-hint{text-align:center;color:var(--gray-400);font-size:13px;padding:20px 0}
-  </style>
-  <link rel="stylesheet" href="../css/darkmode.css"/>
-</head>
-<body>
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="22" fill="#f97316"/>
-        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
-        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
-        <rect x="40" y="45" width="28" height="11" fill="white"/>
-        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
-      </svg>
-      <span class="brand-name">EduMate</span>
-    </div>
-    <nav class="nav-section">
-      <div class="nav-label">Menu</div>
-      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
-      <a href="cari-teman.html" class="nav-item"><span class="nav-icon">🔍</span> Cari Teman Belajar</a>
-      <a href="jadwal.html" class="nav-item active"><span class="nav-icon">📅</span> Jadwal Saya</a>
-      <a href="sesi.html" class="nav-item"><span class="nav-icon">📖</span> Sesi Belajar</a>
-      <div class="nav-label">Lainnya</div>
-      <a href="notifikasi.html" class="nav-item"><span class="nav-icon">🔔</span> Notifikasi<span class="nav-badge">0</span></a>
-      <a href="rating.html" class="nav-item"><span class="nav-icon">⭐</span> Rating & Review</a>
-      <a href="profil.html" class="nav-item"><span class="nav-icon">👤</span> Profil Saya</a>
-    </nav>
-    <div class="sidebar-user">
-      <div class="user-avatar">👤</div>
-      <div class="user-info">
-        <div class="user-name">Nama User</div>
-        <div class="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="06636b676f6a46616b676f6a2865696b">[email&#160;protected]</a></div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-    <div class="page-header">
-      <h1>Jadwal Saya</h1>
-      <p>Atur jadwal kosongmu agar sistem bisa mencocokkan dengan teman belajar yang tepat.</p>
-    </div>
-
-    <div class="jadwal-layout">
-      <!-- KIRI: Kalender -->
-      <div>
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">📅 Kalender Mingguan</span>
-            <div class="week-nav">
-              <button class="week-nav-btn" onclick="prevWeek()">‹</button>
-              <span class="week-label" id="weekLabel">–</span>
-              <button class="week-nav-btn" onclick="nextWeek()">›</button>
-            </div>
-          </div>
-          <div class="calendar-grid" id="calendarGrid"></div>
-          <div class="legend">
-            <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Jadwal kosong</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--primary)"></div> Sesi terjadwal</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- KANAN -->
-      <div>
-        <!-- Tambah Jadwal -->
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">➕ Tambah Jadwal Kosong</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Hari</label>
-            <select class="form-select" id="inputHari">
-              <option value="">Pilih hari</option>
-              <option>Senin</option><option>Selasa</option><option>Rabu</option>
-              <option>Kamis</option><option>Jumat</option><option>Sabtu</option><option>Minggu</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Waktu</label>
-            <div class="time-row">
-              <input type="time" class="form-input" id="inputMulai" value="08:00"/>
-              <input type="time" class="form-input" id="inputSelesai" value="12:00"/>
-            </div>
-          </div>
-          <button class="btn-tambah" id="btnTambah" onclick="tambahJadwal()">+ Tambah Jadwal</button>
-        </div>
-
-        <!-- Daftar Jadwal -->
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">📋 Jadwal Kosong</span>
-          </div>
-          <div id="jadwalList">
-            <div class="empty-hint">Memuat jadwal...</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../js/auth-client.js"></script>
-  <script>
-    const API = 'http://localhost:3000/api';
-    const HARI_MAP = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-    const HARI_SHORT = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
-    const JAM_SLOTS = ['06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00'];
-
-    let currentWeekStart = getMonday(new Date());
-    let jadwalData = [];
-    let sesiData = [];
-
-    function getMonday(date) {
-      const d = new Date(date);
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      d.setDate(diff);
-      d.setHours(0,0,0,0);
-      return d;
-    }
-
-    function formatWaktu(jam) { return jam ? jam.substring(0,5) : ''; }
-    function toMinutes(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
-
-    function prevWeek() { currentWeekStart.setDate(currentWeekStart.getDate()-7); renderCalendar(); }
-    function nextWeek() { currentWeekStart.setDate(currentWeekStart.getDate()+7); renderCalendar(); }
-
-    function renderCalendar() {
-      const grid = document.getElementById('calendarGrid');
-      const today = new Date(); today.setHours(0,0,0,0);
-      const days = [];
-      for (let i=0;i<7;i++) { const d=new Date(currentWeekStart); d.setDate(d.getDate()+i); days.push(d); }
-      const endOfWeek = days[6];
-      document.getElementById('weekLabel').textContent =
-        `${days[0].getDate()} – ${endOfWeek.getDate()} ${endOfWeek.toLocaleDateString('id-ID',{month:'short',year:'numeric'})}`;
-
-      let html = '<div class="cal-header time-col"></div>';
-      days.forEach(d => {
-        const isToday = d.getTime()===today.getTime();
-        html += `<div class="cal-header"><div class="cal-day-name">${HARI_SHORT[d.getDay()]}</div>
-          <div class="cal-day-num ${isToday?'today':''}">${d.getDate()}</div></div>`;
-      });
-
-      JAM_SLOTS.forEach(jam => {
-        html += `<div class="time-label time-col"><span class="time-text">${jam}</span></div>`;
-        days.forEach(d => {
-          const namaHari = HARI_MAP[d.getDay()];
-          const slotMenit = toMinutes(jam);
-          const isAvail = jadwalData.some(j => {
-            if (j.hari !== namaHari) return false;
-            return slotMenit >= toMinutes(j.jam_mulai) && slotMenit < toMinutes(j.jam_selesai);
-          });
-          const tglStr = d.toISOString().split('T')[0];
-          const sesi = sesiData.find(s => s.tanggal && s.tanggal.startsWith(tglStr) &&
-            toMinutes(s.jam_mulai) <= slotMenit && toMinutes(s.jam_selesai) > slotMenit);
-
-          if (sesi) {
-            html += `<div class="cal-cell available"><div class="cal-event">${sesi.mata_kuliah||'Sesi'}</div></div>`;
-          } else if (isAvail) {
-            html += `<div class="cal-cell available"><div class="cal-event available-block">Tersedia</div></div>`;
-          } else {
-            html += '<div class="cal-cell"></div>';
-          }
-        });
-      });
-      grid.innerHTML = html;
-    }
-
-    function renderJadwalList(jadwalArr) {
-      const container = document.getElementById('jadwalList');
-      if (!jadwalArr || jadwalArr.length === 0) {
-        container.innerHTML = '<div class="empty-hint">Belum ada jadwal kosong. Tambah sekarang!</div>';
-        return;
+  <head>
+    <script>
+      // Terapkan dark mode sebelum render untuk hindari flash
+      if (localStorage.getItem("sb_theme") === "dark") {
+        document.documentElement.classList.add("dark");
       }
-      container.innerHTML = jadwalArr.map(j => `
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduMate</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --black: #0a0a0a;
+        --primary: #f97316;
+        --primary-hover: #ea6c0a;
+        --primary-light: #fff4ed;
+        --white: #ffffff;
+        --gray-50: #fafafa;
+        --gray-100: #f4f4f4;
+        --gray-200: #e8e8e8;
+        --gray-300: #d0d0d0;
+        --gray-400: #a0a0a0;
+        --gray-600: #555;
+        --sidebar-width: 240px;
+        --green: #16a34a;
+        --green-light: #f0fdf4;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--gray-50);
+        min-height: 100vh;
+        display: flex;
+        color: var(--black);
+      }
+
+      /* ===== SIDEBAR ===== */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: var(--white);
+        border-right: 1px solid var(--gray-200);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 100;
+        padding: 24px 0;
+      }
+      .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 20px 24px;
+        border-bottom: 1px solid var(--gray-100);
+        margin-bottom: 16px;
+      }
+      .brand-icon {
+        width: 34px;
+        height: 34px;
+        background: var(--primary);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .brand-name {
+        font-family: "DM Serif Display", serif;
+        font-size: 17px;
+        color: var(--black);
+        letter-spacing: -0.3px;
+      }
+      .nav-section {
+        padding: 0 12px;
+        flex: 1;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 0 8px;
+        margin-bottom: 6px;
+        margin-top: 16px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-decoration: none;
+        color: var(--gray-600);
+        font-size: 13.5px;
+        font-weight: 400;
+        margin-bottom: 2px;
+      }
+      .nav-item:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+      .nav-item.active {
+        background: var(--primary);
+        color: var(--white);
+      }
+      .nav-icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: var(--primary);
+        color: white;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 20px;
+        min-width: 18px;
+        text-align: center;
+        display: none;
+      }
+      .nav-item.active .nav-badge {
+        background: white;
+        color: var(--primary);
+      }
+      .sidebar-user {
+        padding: 16px 20px;
+        border-top: 1px solid var(--gray-100);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .sidebar-user:hover {
+        background: var(--gray-50);
+      }
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        border: 2px solid var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .user-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .user-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--black);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .user-email {
+        font-size: 11px;
+        color: var(--gray-400);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* ===== MAIN ===== */
+      .main {
+        margin-left: var(--sidebar-width);
+        flex: 1;
+        padding: 32px;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .page-header {
+        margin-bottom: 28px;
+        opacity: 0;
+        animation: fadeUp 0.4s ease 0.05s forwards;
+      }
+      .page-header h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: 26px;
+        color: var(--black);
+        letter-spacing: -0.5px;
+        margin-bottom: 4px;
+      }
+      .page-header p {
+        color: var(--gray-400);
+        font-size: 14px;
+      }
+
+      /* ===== LAYOUT ===== */
+      .jadwal-layout {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 24px;
+        opacity: 0;
+        animation: fadeUp 0.4s ease 0.1s forwards;
+      }
+      .card {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .card:last-child {
+        margin-bottom: 0;
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .card-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 16px;
+        color: var(--black);
+        letter-spacing: -0.3px;
+      }
+
+      /* ===== KALENDER ===== */
+      .week-nav {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .week-nav-btn {
+        width: 30px;
+        height: 30px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 8px;
+        background: var(--white);
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+        color: var(--black);
+      }
+      .week-nav-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .week-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--black);
+      }
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: 60px repeat(7, 1fr);
+        gap: 0;
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .cal-header {
+        background: var(--gray-50);
+        padding: 10px 6px;
+        text-align: center;
+        border-bottom: 1px solid var(--gray-200);
+        border-right: 1px solid var(--gray-200);
+      }
+      .cal-header:last-child {
+        border-right: none;
+      }
+      .cal-day-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .cal-day-num {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--black);
+        margin-top: 2px;
+      }
+      .cal-day-num.today {
+        background: var(--primary);
+        color: white;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 2px auto 0;
+        font-size: 13px;
+      }
+      .time-label {
+        padding: 0 8px;
+        text-align: right;
+        border-right: 1px solid var(--gray-200);
+        position: relative;
+      }
+      .time-text {
+        font-size: 10px;
+        color: var(--gray-400);
+        position: absolute;
+        top: -7px;
+        right: 8px;
+      }
+      .cal-cell {
+        border-right: 1px solid var(--gray-100);
+        border-bottom: 1px solid var(--gray-100);
+        height: 52px;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .cal-cell:last-child {
+        border-right: none;
+      }
+      .cal-cell:hover {
+        background: var(--primary-light);
+      }
+      .cal-cell.available {
+        background: #f0fdf4;
+      }
+      .cal-cell.available:hover {
+        background: #dcfce7;
+      }
+      .cal-event {
+        position: absolute;
+        top: 4px;
+        left: 3px;
+        right: 3px;
+        background: var(--primary);
+        color: white;
+        border-radius: 6px;
+        padding: 3px 6px;
+        font-size: 10px;
+        font-weight: 500;
+        cursor: pointer;
+        z-index: 2;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .cal-event.available-block {
+        background: var(--green);
+      }
+      .time-col {
+        background: var(--gray-50);
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--gray-100);
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--gray-600);
+      }
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+      }
+
+      /* ===== FORM ===== */
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+      .form-group:last-of-type {
+        margin-bottom: 0;
+      }
+      .form-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--black);
+      }
+      .form-select,
+      .form-input {
+        padding: 9px 12px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        color: var(--black);
+        background: var(--gray-50);
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .form-select:focus,
+      .form-input:focus {
+        border-color: var(--primary);
+        background: var(--white);
+      }
+      .time-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .btn-tambah {
+        width: 100%;
+        padding: 10px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+        margin-top: 16px;
+      }
+      .btn-tambah:hover {
+        background: var(--primary-hover);
+      }
+      .btn-tambah:disabled {
+        background: var(--gray-300);
+        cursor: not-allowed;
+      }
+
+      /* ===== JADWAL LIST ===== */
+      .jadwal-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border: 1px solid var(--gray-100);
+        border-radius: 10px;
+        background: var(--gray-50);
+        margin-bottom: 8px;
+        transition: all 0.15s;
+      }
+      .jadwal-item:last-child {
+        margin-bottom: 0;
+      }
+      .jadwal-item:hover {
+        border-color: var(--gray-200);
+        background: var(--white);
+      }
+      .jadwal-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green);
+        flex-shrink: 0;
+      }
+      .jadwal-info {
+        flex: 1;
+      }
+      .jadwal-hari {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--black);
+      }
+      .jadwal-waktu {
+        font-size: 11.5px;
+        color: var(--gray-400);
+        margin-top: 1px;
+      }
+      .jadwal-delete {
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--gray-200);
+        border-radius: 7px;
+        background: var(--white);
+        cursor: pointer;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray-400);
+        transition: all 0.15s;
+        flex-shrink: 0;
+      }
+      .jadwal-delete:hover {
+        background: #fee2e2;
+        color: #dc2626;
+        border-color: #fecaca;
+      }
+
+      /* ===== EMPTY STATE ===== */
+      .empty-hint {
+        text-align: center;
+        color: var(--gray-400);
+        font-size: 13px;
+        padding: 20px 0;
+      }
+    </style>
+    <link rel="stylesheet" href="../css/darkmode.css" />
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg
+          width="34"
+          height="34"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="100" height="100" rx="22" fill="#f97316" />
+          <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a" />
+          <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white" />
+          <rect x="40" y="45" width="28" height="11" fill="white" />
+          <path
+            d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z"
+            fill="#f97316"
+          />
+        </svg>
+        <span class="brand-name">EduMate</span>
+      </div>
+      <nav class="nav-section">
+        <div class="nav-label">Menu</div>
+        <a href="dashboard.html" class="nav-item"
+          ><span class="nav-icon">🏠</span> Dashboard</a
+        >
+        <a href="cari-teman.html" class="nav-item"
+          ><span class="nav-icon">🔍</span> Cari Teman Belajar</a
+        >
+        <a href="jadwal.html" class="nav-item active"
+          ><span class="nav-icon">📅</span> Jadwal Saya</a
+        >
+        <a href="sesi.html" class="nav-item"
+          ><span class="nav-icon">📖</span> Sesi Belajar</a
+        >
+        <div class="nav-label">Lainnya</div>
+        <a href="notifikasi.html" class="nav-item"
+          ><span class="nav-icon">🔔</span> Notifikasi<span class="nav-badge"
+            >0</span
+          ></a
+        >
+        <a href="rating.html" class="nav-item"
+          ><span class="nav-icon">⭐</span> Rating & Review</a
+        >
+        <a href="profil.html" class="nav-item"
+          ><span class="nav-icon">👤</span> Profil Saya</a
+        >
+      </nav>
+      <div class="sidebar-user">
+        <div class="user-avatar">👤</div>
+        <div class="user-info">
+          <div class="user-name">Nama User</div>
+          <div class="user-email">
+            <a
+              href="/cdn-cgi/l/email-protection"
+              class="__cf_email__"
+              data-cfemail="06636b676f6a46616b676f6a2865696b"
+              >[email&#160;protected]</a
+            >
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="page-header">
+        <h1>Jadwal Saya</h1>
+        <p>
+          Atur jadwal kosongmu agar sistem bisa mencocokkan dengan teman belajar
+          yang tepat.
+        </p>
+      </div>
+
+      <div class="jadwal-layout">
+        <!-- KIRI: Kalender -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">📅 Kalender Mingguan</span>
+              <div class="week-nav">
+                <button class="week-nav-btn" onclick="prevWeek()">‹</button>
+                <span class="week-label" id="weekLabel">–</span>
+                <button class="week-nav-btn" onclick="nextWeek()">›</button>
+              </div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background: var(--green)"></div>
+                Jadwal kosong
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-dot"
+                  style="background: var(--primary)"
+                ></div>
+                Sesi terjadwal
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KANAN -->
+        <div>
+          <!-- Tambah Jadwal -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">➕ Tambah Jadwal Kosong</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hari</label>
+              <select class="form-select" id="inputHari">
+                <option value="">Pilih hari</option>
+                <option>Senin</option>
+                <option>Selasa</option>
+                <option>Rabu</option>
+                <option>Kamis</option>
+                <option>Jumat</option>
+                <option>Sabtu</option>
+                <option>Minggu</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waktu</label>
+              <div class="time-row">
+                <input
+                  type="time"
+                  class="form-input"
+                  id="inputMulai"
+                  value="08:00"
+                />
+                <input
+                  type="time"
+                  class="form-input"
+                  id="inputSelesai"
+                  value="12:00"
+                />
+              </div>
+            </div>
+            <button class="btn-tambah" id="btnTambah" onclick="tambahJadwal()">
+              + Tambah Jadwal
+            </button>
+          </div>
+
+          <!-- Daftar Jadwal -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">📋 Jadwal Kosong</span>
+            </div>
+            <div id="jadwalList">
+              <div class="empty-hint">Memuat jadwal...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script
+      data-cfasync="false"
+      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
+    ></script>
+    <script src="../js/auth-client.js"></script>
+    <script>
+      const API =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api"
+          : "https://edumate-production-c2df.up.railway.app/api";
+      const HARI_MAP = [
+        "Minggu",
+        "Senin",
+        "Selasa",
+        "Rabu",
+        "Kamis",
+        "Jumat",
+        "Sabtu",
+      ];
+      const HARI_SHORT = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+      const JAM_SLOTS = [
+        "06:00",
+        "08:00",
+        "10:00",
+        "12:00",
+        "14:00",
+        "16:00",
+        "18:00",
+        "20:00",
+      ];
+
+      let currentWeekStart = getMonday(new Date());
+      let jadwalData = [];
+      let sesiData = [];
+
+      function getMonday(date) {
+        const d = new Date(date);
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        d.setDate(diff);
+        d.setHours(0, 0, 0, 0);
+        return d;
+      }
+
+      function formatWaktu(jam) {
+        return jam ? jam.substring(0, 5) : "";
+      }
+      function toMinutes(t) {
+        const [h, m] = t.split(":").map(Number);
+        return h * 60 + m;
+      }
+
+      function prevWeek() {
+        currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+        renderCalendar();
+      }
+      function nextWeek() {
+        currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+        renderCalendar();
+      }
+
+      function renderCalendar() {
+        const grid = document.getElementById("calendarGrid");
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const days = [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(currentWeekStart);
+          d.setDate(d.getDate() + i);
+          days.push(d);
+        }
+        const endOfWeek = days[6];
+        document.getElementById("weekLabel").textContent =
+          `${days[0].getDate()} – ${endOfWeek.getDate()} ${endOfWeek.toLocaleDateString("id-ID", { month: "short", year: "numeric" })}`;
+
+        let html = '<div class="cal-header time-col"></div>';
+        days.forEach((d) => {
+          const isToday = d.getTime() === today.getTime();
+          html += `<div class="cal-header"><div class="cal-day-name">${HARI_SHORT[d.getDay()]}</div>
+          <div class="cal-day-num ${isToday ? "today" : ""}">${d.getDate()}</div></div>`;
+        });
+
+        JAM_SLOTS.forEach((jam) => {
+          html += `<div class="time-label time-col"><span class="time-text">${jam}</span></div>`;
+          days.forEach((d) => {
+            const namaHari = HARI_MAP[d.getDay()];
+            const slotMenit = toMinutes(jam);
+            const isAvail = jadwalData.some((j) => {
+              if (j.hari !== namaHari) return false;
+              return (
+                slotMenit >= toMinutes(j.jam_mulai) &&
+                slotMenit < toMinutes(j.jam_selesai)
+              );
+            });
+            const tglStr = d.toISOString().split("T")[0];
+            const sesi = sesiData.find(
+              (s) =>
+                s.tanggal &&
+                s.tanggal.startsWith(tglStr) &&
+                toMinutes(s.jam_mulai) <= slotMenit &&
+                toMinutes(s.jam_selesai) > slotMenit,
+            );
+
+            if (sesi) {
+              html += `<div class="cal-cell available"><div class="cal-event">${sesi.mata_kuliah || "Sesi"}</div></div>`;
+            } else if (isAvail) {
+              html += `<div class="cal-cell available"><div class="cal-event available-block">Tersedia</div></div>`;
+            } else {
+              html += '<div class="cal-cell"></div>';
+            }
+          });
+        });
+        grid.innerHTML = html;
+      }
+
+      function renderJadwalList(jadwalArr) {
+        const container = document.getElementById("jadwalList");
+        if (!jadwalArr || jadwalArr.length === 0) {
+          container.innerHTML =
+            '<div class="empty-hint">Belum ada jadwal kosong. Tambah sekarang!</div>';
+          return;
+        }
+        container.innerHTML = jadwalArr
+          .map(
+            (j) => `
         <div class="jadwal-item">
           <div class="jadwal-dot"></div>
           <div class="jadwal-info">
@@ -289,95 +828,123 @@
             <div class="jadwal-waktu">${formatWaktu(j.jam_mulai)} – ${formatWaktu(j.jam_selesai)}</div>
           </div>
           <button class="jadwal-delete" onclick="hapusJadwal(${j.id})" title="Hapus">🗑</button>
-        </div>`).join('');
-    }
-
-    async function loadJadwal() {
-      const token = getToken();
-      try {
-        const res = await fetch(`${API}/jadwal`, { headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json();
-        if (data.success) { jadwalData = data.jadwal; renderJadwalList(jadwalData); renderCalendar(); }
-      } catch (err) { console.error('Gagal load jadwal:', err); }
-    }
-
-    async function loadSesi() {
-      const token = getToken();
-      try {
-        const res = await fetch(`${API}/sesi`, { headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json();
-        if (data.success) { sesiData = data.sesi.filter(s => s.status === 'diterima'); renderCalendar(); }
-      } catch (err) { console.error('Gagal load sesi:', err); }
-    }
-
-    async function tambahJadwal() {
-      const hari = document.getElementById('inputHari').value;
-      const mulai = document.getElementById('inputMulai').value;
-      const selesai = document.getElementById('inputSelesai').value;
-
-      if (!hari) { showToast('Pilih hari terlebih dahulu!', 'warning'); return; }
-      if (!mulai || !selesai) { showToast('Waktu mulai dan selesai wajib diisi!', 'warning'); return; }
-      if (mulai >= selesai) { showToast('Jam selesai harus lebih dari jam mulai!', 'warning'); return; }
-
-      const btn = document.getElementById('btnTambah');
-      btn.textContent = 'Menyimpan...';
-      btn.disabled = true;
-
-      const token = getToken();
-      let sesi = '';
-      if (mulai < '11:00') sesi = 'Pagi';
-      else if (mulai < '14:00') sesi = 'Siang';
-      else if (mulai < '18:00') sesi = 'Sore';
-      else sesi = 'Malam';
-
-      try {
-        const res = await fetch(`${API}/jadwal`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ jadwal: [`${hari} ${sesi}`] }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('inputHari').value = '';
-          document.getElementById('inputMulai').value = '08:00';
-          document.getElementById('inputSelesai').value = '12:00';
-          showToast('Jadwal berhasil ditambahkan!', 'success');
-          await loadJadwal();
-        } else {
-          showToast('Gagal menambah jadwal: ' + data.message, 'error');
-        }
-      } catch (err) {
-        showToast('Terjadi kesalahan, coba lagi.', 'error');
-      } finally {
-        btn.textContent = '+ Tambah Jadwal';
-        btn.disabled = false;
+        </div>`,
+          )
+          .join("");
       }
-    }
 
-    async function hapusJadwal(id) {
-      const token = getToken();
-      try {
-        const res = await fetch(`${API}/jadwal/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (data.success) {
-          showToast('Jadwal berhasil dihapus.', 'info');
-          await loadJadwal();
-        } else {
-          showToast('Gagal hapus: ' + data.message, 'error');
+      async function loadJadwal() {
+        const token = getToken();
+        try {
+          const res = await fetch(`${API}/jadwal`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (data.success) {
+            jadwalData = data.jadwal;
+            renderJadwalList(jadwalData);
+            renderCalendar();
+          }
+        } catch (err) {
+          console.error("Gagal load jadwal:", err);
         }
-      } catch (err) {
-        showToast('Terjadi kesalahan, coba lagi.', 'error');
       }
-    }
-    initPage().then(user => {
-      if (!user) return;
-      loadJadwal();
-      loadSesi();
-    });
-  </script>
-</body>
+
+      async function loadSesi() {
+        const token = getToken();
+        try {
+          const res = await fetch(`${API}/sesi`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (data.success) {
+            sesiData = data.sesi.filter((s) => s.status === "diterima");
+            renderCalendar();
+          }
+        } catch (err) {
+          console.error("Gagal load sesi:", err);
+        }
+      }
+
+      async function tambahJadwal() {
+        const hari = document.getElementById("inputHari").value;
+        const mulai = document.getElementById("inputMulai").value;
+        const selesai = document.getElementById("inputSelesai").value;
+
+        if (!hari) {
+          showToast("Pilih hari terlebih dahulu!", "warning");
+          return;
+        }
+        if (!mulai || !selesai) {
+          showToast("Waktu mulai dan selesai wajib diisi!", "warning");
+          return;
+        }
+        if (mulai >= selesai) {
+          showToast("Jam selesai harus lebih dari jam mulai!", "warning");
+          return;
+        }
+
+        const btn = document.getElementById("btnTambah");
+        btn.textContent = "Menyimpan...";
+        btn.disabled = true;
+
+        const token = getToken();
+        let sesi = "";
+        if (mulai < "11:00") sesi = "Pagi";
+        else if (mulai < "14:00") sesi = "Siang";
+        else if (mulai < "18:00") sesi = "Sore";
+        else sesi = "Malam";
+
+        try {
+          const res = await fetch(`${API}/jadwal`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ jadwal: [`${hari} ${sesi}`] }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById("inputHari").value = "";
+            document.getElementById("inputMulai").value = "08:00";
+            document.getElementById("inputSelesai").value = "12:00";
+            showToast("Jadwal berhasil ditambahkan!", "success");
+            await loadJadwal();
+          } else {
+            showToast("Gagal menambah jadwal: " + data.message, "error");
+          }
+        } catch (err) {
+          showToast("Terjadi kesalahan, coba lagi.", "error");
+        } finally {
+          btn.textContent = "+ Tambah Jadwal";
+          btn.disabled = false;
+        }
+      }
+
+      async function hapusJadwal(id) {
+        const token = getToken();
+        try {
+          const res = await fetch(`${API}/jadwal/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (data.success) {
+            showToast("Jadwal berhasil dihapus.", "info");
+            await loadJadwal();
+          } else {
+            showToast("Gagal hapus: " + data.message, "error");
+          }
+        } catch (err) {
+          showToast("Terjadi kesalahan, coba lagi.", "error");
+        }
+      }
+      initPage().then((user) => {
+        if (!user) return;
+        loadJadwal();
+        loadSesi();
+      });
+    </script>
+  </body>
 </html>
-    

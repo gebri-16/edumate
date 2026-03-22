@@ -1,347 +1,950 @@
 <!doctype html>
 <html lang="id">
-<head>
-  <script>
-    // Terapkan dark mode sebelum render untuk hindari flash
-    if (localStorage.getItem('sb_theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-    }
-  </script>
-  <meta charset="UTF-8"/>
-  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EduMate</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    :root{
-      --black:#0a0a0a;--primary:#f97316;--primary-hover:#ea6c0a;
-      --primary-light:#fff4ed;--white:#ffffff;--gray-50:#fafafa;
-      --gray-100:#f4f4f4;--gray-200:#e8e8e8;--gray-400:#a0a0a0;
-      --gray-600:#555;--green:#16a34a;--green-light:#f0fdf4;
-      --blue:#2563eb;--blue-light:#eff6ff;--yellow:#d97706;--yellow-light:#fffbeb;
-      --sidebar-width:240px;--star:#f97316;
-    }
-    body{font-family:"DM Sans",sans-serif;background:var(--gray-50);min-height:100vh;display:flex;color:var(--black)}
+  <head>
+    <script>
+      // Terapkan dark mode sebelum render untuk hindari flash
+      if (localStorage.getItem("sb_theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduMate</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --black: #0a0a0a;
+        --primary: #f97316;
+        --primary-hover: #ea6c0a;
+        --primary-light: #fff4ed;
+        --white: #ffffff;
+        --gray-50: #fafafa;
+        --gray-100: #f4f4f4;
+        --gray-200: #e8e8e8;
+        --gray-400: #a0a0a0;
+        --gray-600: #555;
+        --green: #16a34a;
+        --green-light: #f0fdf4;
+        --blue: #2563eb;
+        --blue-light: #eff6ff;
+        --yellow: #d97706;
+        --yellow-light: #fffbeb;
+        --sidebar-width: 240px;
+        --star: #f97316;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--gray-50);
+        min-height: 100vh;
+        display: flex;
+        color: var(--black);
+      }
 
-    /* ===== SIDEBAR ===== */
-    .sidebar{width:var(--sidebar-width);background:var(--white);border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;padding:24px 0}
-    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 20px 24px;border-bottom:1px solid var(--gray-100);margin-bottom:16px}
-    .brand-icon{width:34px;height:34px;background:var(--primary);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-    .brand-name{font-family:"DM Serif Display",serif;font-size:17px;color:var(--black);letter-spacing:-0.3px}
-    .nav-section{padding:0 12px;flex:1}
-    .nav-label{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.8px;padding:0 8px;margin-bottom:6px;margin-top:16px}
-    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:all 0.15s;text-decoration:none;color:var(--gray-600);font-size:13.5px;margin-bottom:2px}
-    .nav-item:hover{background:var(--primary-light);color:var(--primary)}
-    .nav-item.active{background:var(--primary);color:var(--white)}
-    .nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-    .nav-badge{margin-left:auto;background:var(--primary);color:white;font-size:10px;font-weight:600;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;display:none}
-    .nav-item.active .nav-badge{background:white;color:var(--primary)}
-    .sidebar-user{padding:16px 20px;border-top:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.15s}
-    .sidebar-user:hover{background:var(--gray-50)}
-    .user-avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-light);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;overflow:hidden}
-    .user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-    .user-info{flex:1;min-width:0}
-    .user-name{font-size:13px;font-weight:600;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .user-email{font-size:11px;color:var(--gray-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      /* ===== SIDEBAR ===== */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: var(--white);
+        border-right: 1px solid var(--gray-200);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 100;
+        padding: 24px 0;
+      }
+      .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 20px 24px;
+        border-bottom: 1px solid var(--gray-100);
+        margin-bottom: 16px;
+      }
+      .brand-icon {
+        width: 34px;
+        height: 34px;
+        background: var(--primary);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .brand-name {
+        font-family: "DM Serif Display", serif;
+        font-size: 17px;
+        color: var(--black);
+        letter-spacing: -0.3px;
+      }
+      .nav-section {
+        padding: 0 12px;
+        flex: 1;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 0 8px;
+        margin-bottom: 6px;
+        margin-top: 16px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-decoration: none;
+        color: var(--gray-600);
+        font-size: 13.5px;
+        margin-bottom: 2px;
+      }
+      .nav-item:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+      .nav-item.active {
+        background: var(--primary);
+        color: var(--white);
+      }
+      .nav-icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: var(--primary);
+        color: white;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 20px;
+        min-width: 18px;
+        text-align: center;
+        display: none;
+      }
+      .nav-item.active .nav-badge {
+        background: white;
+        color: var(--primary);
+      }
+      .sidebar-user {
+        padding: 16px 20px;
+        border-top: 1px solid var(--gray-100);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .sidebar-user:hover {
+        background: var(--gray-50);
+      }
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        border: 2px solid var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .user-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .user-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--black);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .user-email {
+        font-size: 11px;
+        color: var(--gray-400);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-    /* ===== MAIN ===== */
-    .main{margin-left:var(--sidebar-width);flex:1;padding:32px}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-    .page-header{margin-bottom:28px;opacity:0;animation:fadeUp 0.4s ease 0.05s forwards}
-    .page-header h1{font-family:"DM Serif Display",serif;font-size:26px;letter-spacing:-0.5px;margin-bottom:4px}
-    .page-header p{color:var(--gray-400);font-size:14px}
+      /* ===== MAIN ===== */
+      .main {
+        margin-left: var(--sidebar-width);
+        flex: 1;
+        padding: 32px;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .page-header {
+        margin-bottom: 28px;
+        opacity: 0;
+        animation: fadeUp 0.4s ease 0.05s forwards;
+      }
+      .page-header h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: 26px;
+        letter-spacing: -0.5px;
+        margin-bottom: 4px;
+      }
+      .page-header p {
+        color: var(--gray-400);
+        font-size: 14px;
+      }
 
-    .rating-layout{display:grid;grid-template-columns:300px 1fr;gap:24px;opacity:0;animation:fadeUp 0.4s ease 0.1s forwards}
+      .rating-layout {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 24px;
+        opacity: 0;
+        animation: fadeUp 0.4s ease 0.1s forwards;
+      }
 
-    .card{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:24px;margin-bottom:20px}
-    .card:last-child{margin-bottom:0}
-    .card-title{font-family:"DM Serif Display",serif;font-size:16px;letter-spacing:-0.3px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--gray-100)}
+      .card {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .card:last-child {
+        margin-bottom: 0;
+      }
+      .card-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 16px;
+        letter-spacing: -0.3px;
+        margin-bottom: 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--gray-100);
+      }
 
-    /* Ringkasan rating */
-    .rating-summary{text-align:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--gray-100)}
-    .rating-big{font-family:"DM Serif Display",serif;font-size:52px;color:var(--black);letter-spacing:-2px;line-height:1;margin-bottom:8px}
-    .rating-stars-big{font-size:22px;color:var(--star);letter-spacing:2px;margin-bottom:6px}
-    .rating-total{font-size:12px;color:var(--gray-400)}
-    .rating-bars{display:flex;flex-direction:column;gap:8px}
-    .rating-bar-row{display:flex;align-items:center;gap:10px}
-    .bar-label{font-size:12px;color:var(--gray-600);width:16px;text-align:right;flex-shrink:0}
-    .bar-star{font-size:11px;color:var(--star);flex-shrink:0}
-    .bar-track{flex:1;height:7px;background:var(--gray-100);border-radius:10px;overflow:hidden}
-    .bar-fill{height:100%;border-radius:10px;background:var(--star);transition:width 0.6s ease}
-    .bar-count{font-size:11px;color:var(--gray-400);width:16px;flex-shrink:0}
+      /* Ringkasan rating */
+      .rating-summary {
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .rating-big {
+        font-family: "DM Serif Display", serif;
+        font-size: 52px;
+        color: var(--black);
+        letter-spacing: -2px;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+      .rating-stars-big {
+        font-size: 22px;
+        color: var(--star);
+        letter-spacing: 2px;
+        margin-bottom: 6px;
+      }
+      .rating-total {
+        font-size: 12px;
+        color: var(--gray-400);
+      }
+      .rating-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .rating-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .bar-label {
+        font-size: 12px;
+        color: var(--gray-600);
+        width: 16px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .bar-star {
+        font-size: 11px;
+        color: var(--star);
+        flex-shrink: 0;
+      }
+      .bar-track {
+        flex: 1;
+        height: 7px;
+        background: var(--gray-100);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: 10px;
+        background: var(--star);
+        transition: width 0.6s ease;
+      }
+      .bar-count {
+        font-size: 11px;
+        color: var(--gray-400);
+        width: 16px;
+        flex-shrink: 0;
+      }
 
-    /* Perlu direview */
-    .perlu-review-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--gray-100)}
-    .perlu-review-item:last-child{border-bottom:none;padding-bottom:0}
-    .perlu-review-item:first-child{padding-top:0}
-    .pr-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden}
-    .pr-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-    .pr-info{flex:1}
-    .pr-name{font-size:13px;font-weight:600;color:var(--black);margin-bottom:2px}
-    .pr-sesi{font-size:11.5px;color:var(--gray-400)}
-    .btn-review-now{padding:6px 14px;background:var(--primary);color:white;border:none;border-radius:7px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;white-space:nowrap}
-    .btn-review-now:hover{background:var(--primary-hover)}
+      /* Perlu direview */
+      .perlu-review-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .perlu-review-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .perlu-review-item:first-child {
+        padding-top: 0;
+      }
+      .pr-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      .pr-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .pr-info {
+        flex: 1;
+      }
+      .pr-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 2px;
+      }
+      .pr-sesi {
+        font-size: 11.5px;
+        color: var(--gray-400);
+      }
+      .btn-review-now {
+        padding: 6px 14px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 7px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+        white-space: nowrap;
+      }
+      .btn-review-now:hover {
+        background: var(--primary-hover);
+      }
 
-    /* Tabs */
-    .tabs{display:flex;gap:4px;background:var(--gray-100);border-radius:10px;padding:4px;width:fit-content;margin-bottom:20px}
-    .tab{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;color:var(--gray-600);border:none;background:transparent;font-family:"DM Sans",sans-serif}
-    .tab.active{background:var(--white);color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+      /* Tabs */
+      .tabs {
+        display: flex;
+        gap: 4px;
+        background: var(--gray-100);
+        border-radius: 10px;
+        padding: 4px;
+        width: fit-content;
+        margin-bottom: 20px;
+      }
+      .tab {
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+        color: var(--gray-600);
+        border: none;
+        background: transparent;
+        font-family: "DM Sans", sans-serif;
+      }
+      .tab.active {
+        background: var(--white);
+        color: var(--black);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
 
-    /* Review list */
-    .review-item{padding:18px 0;border-bottom:1px solid var(--gray-100)}
-    .review-item:first-child{padding-top:0}
-    .review-item:last-child{border-bottom:none;padding-bottom:0}
-    .review-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
-    .review-user{display:flex;align-items:center;gap:10px}
-    .review-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden}
-    .review-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-    .review-name{font-size:13.5px;font-weight:600;color:var(--black);margin-bottom:2px}
-    .review-sesi{font-size:11.5px;color:var(--gray-400)}
-    .review-right{text-align:right}
-    .review-stars{font-size:14px;color:var(--star);letter-spacing:1px;margin-bottom:2px}
-    .review-date{font-size:11px;color:var(--gray-400)}
-    .review-text{font-size:13px;color:var(--gray-600);line-height:1.6;background:var(--gray-50);border-radius:9px;padding:10px 14px;border-left:3px solid var(--primary-light)}
-    .empty-state{text-align:center;padding:40px 20px;color:var(--gray-400);font-size:13px}
+      /* Review list */
+      .review-item {
+        padding: 18px 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .review-item:first-child {
+        padding-top: 0;
+      }
+      .review-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .review-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .review-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .review-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      .review-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .review-name {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 2px;
+      }
+      .review-sesi {
+        font-size: 11.5px;
+        color: var(--gray-400);
+      }
+      .review-right {
+        text-align: right;
+      }
+      .review-stars {
+        font-size: 14px;
+        color: var(--star);
+        letter-spacing: 1px;
+        margin-bottom: 2px;
+      }
+      .review-date {
+        font-size: 11px;
+        color: var(--gray-400);
+      }
+      .review-text {
+        font-size: 13px;
+        color: var(--gray-600);
+        line-height: 1.6;
+        background: var(--gray-50);
+        border-radius: 9px;
+        padding: 10px 14px;
+        border-left: 3px solid var(--primary-light);
+      }
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--gray-400);
+        font-size: 13px;
+      }
 
-    /* Modal */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
-    .modal-overlay.open{opacity:1;pointer-events:all}
-    .modal{background:var(--white);border-radius:16px;padding:28px;width:420px;max-width:90vw;transform:translateY(20px);transition:transform 0.2s}
-    .modal-overlay.open .modal{transform:translateY(0)}
-    .modal-title{font-family:"DM Serif Display",serif;font-size:20px;letter-spacing:-0.3px;margin-bottom:4px}
-    .modal-sub{font-size:13px;color:var(--gray-400);margin-bottom:24px}
-    .star-select{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
-    .star-btn{font-size:32px;cursor:pointer;transition:transform 0.1s;filter:grayscale(1);opacity:0.4;background:none;border:none;line-height:1}
-    .star-btn.active,.star-btn:hover{filter:grayscale(0);opacity:1;transform:scale(1.2)}
-    .modal-label{font-size:12px;font-weight:600;color:var(--black);margin-bottom:6px;display:block}
-    .modal-textarea{width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:9px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--black);background:var(--gray-50);outline:none;resize:vertical;min-height:90px;transition:border-color 0.15s;margin-bottom:20px}
-    .modal-textarea:focus{border-color:var(--primary);background:var(--white)}
-    .modal-actions{display:flex;gap:10px;justify-content:flex-end}
-    .btn-modal-cancel{padding:10px 20px;background:var(--gray-100);color:var(--black);border:1px solid var(--gray-200);border-radius:9px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s}
-    .btn-modal-cancel:hover{background:var(--gray-200)}
-    .btn-modal-submit{padding:10px 24px;background:var(--primary);color:white;border:none;border-radius:9px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s}
-    .btn-modal-submit:hover{background:var(--primary-hover)}
-    .btn-modal-submit:disabled{background:var(--gray-300);cursor:not-allowed}
-  </style>
-  <link rel="stylesheet" href="../css/darkmode.css"/>
-</head>
-<body>
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="22" fill="#f97316"/>
-        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
-        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
-        <rect x="40" y="45" width="28" height="11" fill="white"/>
-        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
-      </svg>
-      <span class="brand-name">EduMate</span>
-    </div>
-    <nav class="nav-section">
-      <div class="nav-label">Menu</div>
-      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
-      <a href="cari-teman.html" class="nav-item"><span class="nav-icon">🔍</span> Cari Teman Belajar</a>
-      <a href="jadwal.html" class="nav-item"><span class="nav-icon">📅</span> Jadwal Saya</a>
-      <a href="sesi.html" class="nav-item"><span class="nav-icon">📖</span> Sesi Belajar</a>
-      <div class="nav-label">Lainnya</div>
-      <a href="notifikasi.html" class="nav-item"><span class="nav-icon">🔔</span> Notifikasi<span class="nav-badge">0</span></a>
-      <a href="rating.html" class="nav-item active"><span class="nav-icon">⭐</span> Rating & Review</a>
-      <a href="profil.html" class="nav-item"><span class="nav-icon">👤</span> Profil Saya</a>
-    </nav>
-    <div class="sidebar-user">
-      <div class="user-avatar">👤</div>
-      <div class="user-info">
-        <div class="user-name">Nama User</div>
-        <div class="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6d08000c04012d0a000c0401430e0200">[email&#160;protected]</a></div>
+      /* Modal */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 28px;
+        width: 420px;
+        max-width: 90vw;
+        transform: translateY(20px);
+        transition: transform 0.2s;
+      }
+      .modal-overlay.open .modal {
+        transform: translateY(0);
+      }
+      .modal-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 20px;
+        letter-spacing: -0.3px;
+        margin-bottom: 4px;
+      }
+      .modal-sub {
+        font-size: 13px;
+        color: var(--gray-400);
+        margin-bottom: 24px;
+      }
+      .star-select {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .star-btn {
+        font-size: 32px;
+        cursor: pointer;
+        transition: transform 0.1s;
+        filter: grayscale(1);
+        opacity: 0.4;
+        background: none;
+        border: none;
+        line-height: 1;
+      }
+      .star-btn.active,
+      .star-btn:hover {
+        filter: grayscale(0);
+        opacity: 1;
+        transform: scale(1.2);
+      }
+      .modal-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 6px;
+        display: block;
+      }
+      .modal-textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        color: var(--black);
+        background: var(--gray-50);
+        outline: none;
+        resize: vertical;
+        min-height: 90px;
+        transition: border-color 0.15s;
+        margin-bottom: 20px;
+      }
+      .modal-textarea:focus {
+        border-color: var(--primary);
+        background: var(--white);
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .btn-modal-cancel {
+        padding: 10px 20px;
+        background: var(--gray-100);
+        color: var(--black);
+        border: 1px solid var(--gray-200);
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-modal-cancel:hover {
+        background: var(--gray-200);
+      }
+      .btn-modal-submit {
+        padding: 10px 24px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .btn-modal-submit:hover {
+        background: var(--primary-hover);
+      }
+      .btn-modal-submit:disabled {
+        background: var(--gray-300);
+        cursor: not-allowed;
+      }
+    </style>
+    <link rel="stylesheet" href="../css/darkmode.css" />
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg
+          width="34"
+          height="34"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="100" height="100" rx="22" fill="#f97316" />
+          <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a" />
+          <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white" />
+          <rect x="40" y="45" width="28" height="11" fill="white" />
+          <path
+            d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z"
+            fill="#f97316"
+          />
+        </svg>
+        <span class="brand-name">EduMate</span>
       </div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-    <div class="page-header">
-      <h1>Rating & Review</h1>
-      <p>Lihat dan berikan penilaian untuk sesi belajar yang telah kamu selesaikan.</p>
-    </div>
-
-    <div class="rating-layout">
-      <!-- KIRI -->
-      <div>
-        <div class="card">
-          <div class="card-title">⭐ Ratingku</div>
-          <div class="rating-summary">
-            <div class="rating-big" id="ratingBig">-</div>
-            <div class="rating-stars-big" id="ratingStarsBig">☆☆☆☆☆</div>
-            <div class="rating-total" id="ratingTotal">dari 0 review</div>
+      <nav class="nav-section">
+        <div class="nav-label">Menu</div>
+        <a href="dashboard.html" class="nav-item"
+          ><span class="nav-icon">🏠</span> Dashboard</a
+        >
+        <a href="cari-teman.html" class="nav-item"
+          ><span class="nav-icon">🔍</span> Cari Teman Belajar</a
+        >
+        <a href="jadwal.html" class="nav-item"
+          ><span class="nav-icon">📅</span> Jadwal Saya</a
+        >
+        <a href="sesi.html" class="nav-item"
+          ><span class="nav-icon">📖</span> Sesi Belajar</a
+        >
+        <div class="nav-label">Lainnya</div>
+        <a href="notifikasi.html" class="nav-item"
+          ><span class="nav-icon">🔔</span> Notifikasi<span class="nav-badge"
+            >0</span
+          ></a
+        >
+        <a href="rating.html" class="nav-item active"
+          ><span class="nav-icon">⭐</span> Rating & Review</a
+        >
+        <a href="profil.html" class="nav-item"
+          ><span class="nav-icon">👤</span> Profil Saya</a
+        >
+      </nav>
+      <div class="sidebar-user">
+        <div class="user-avatar">👤</div>
+        <div class="user-info">
+          <div class="user-name">Nama User</div>
+          <div class="user-email">
+            <a
+              href="/cdn-cgi/l/email-protection"
+              class="__cf_email__"
+              data-cfemail="6d08000c04012d0a000c0401430e0200"
+              >[email&#160;protected]</a
+            >
           </div>
-          <div class="rating-bars" id="ratingBars"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📝 Perlu Direview</div>
-          <div id="perluReviewList"><div class="empty-state">Memuat...</div></div>
         </div>
       </div>
+    </aside>
 
-      <!-- KANAN -->
-      <div>
-        <div class="tabs">
-          <button class="tab active" onclick="switchTab(this,'diterima')">Review Diterima</button>
-          <button class="tab" onclick="switchTab(this,'diberikan')">Review Diberikan</button>
+    <!-- MAIN -->
+    <main class="main">
+      <div class="page-header">
+        <h1>Rating & Review</h1>
+        <p>
+          Lihat dan berikan penilaian untuk sesi belajar yang telah kamu
+          selesaikan.
+        </p>
+      </div>
+
+      <div class="rating-layout">
+        <!-- KIRI -->
+        <div>
+          <div class="card">
+            <div class="card-title">⭐ Ratingku</div>
+            <div class="rating-summary">
+              <div class="rating-big" id="ratingBig">-</div>
+              <div class="rating-stars-big" id="ratingStarsBig">☆☆☆☆☆</div>
+              <div class="rating-total" id="ratingTotal">dari 0 review</div>
+            </div>
+            <div class="rating-bars" id="ratingBars"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📝 Perlu Direview</div>
+            <div id="perluReviewList">
+              <div class="empty-state">Memuat...</div>
+            </div>
+          </div>
         </div>
-        <div class="card" id="reviewContainer">
-          <div class="empty-state">Memuat review...</div>
+
+        <!-- KANAN -->
+        <div>
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab(this, 'diterima')">
+              Review Diterima
+            </button>
+            <button class="tab" onclick="switchTab(this, 'diberikan')">
+              Review Diberikan
+            </button>
+          </div>
+          <div class="card" id="reviewContainer">
+            <div class="empty-state">Memuat review...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <div class="modal-title">Beri Rating</div>
+        <div class="modal-sub" id="modalSub">Sesi bersama —</div>
+        <div class="star-select" id="starSelect">
+          <button class="star-btn" data-val="1" onclick="setRating(1)">
+            ★
+          </button>
+          <button class="star-btn" data-val="2" onclick="setRating(2)">
+            ★
+          </button>
+          <button class="star-btn" data-val="3" onclick="setRating(3)">
+            ★
+          </button>
+          <button class="star-btn" data-val="4" onclick="setRating(4)">
+            ★
+          </button>
+          <button class="star-btn" data-val="5" onclick="setRating(5)">
+            ★
+          </button>
+        </div>
+        <label class="modal-label">Tuliskan reviewmu (opsional)</label>
+        <textarea
+          class="modal-textarea"
+          id="modalReview"
+          placeholder="Bagikan pengalamanmu belajar bersama teman ini..."
+        ></textarea>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="tutupModal()">Batal</button>
+          <button
+            class="btn-modal-submit"
+            id="btnSubmitRating"
+            onclick="submitRating()"
+          >
+            Kirim Rating
+          </button>
         </div>
       </div>
     </div>
-  </main>
 
-  <!-- MODAL -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-      <div class="modal-title">Beri Rating</div>
-      <div class="modal-sub" id="modalSub">Sesi bersama —</div>
-      <div class="star-select" id="starSelect">
-        <button class="star-btn" data-val="1" onclick="setRating(1)">★</button>
-        <button class="star-btn" data-val="2" onclick="setRating(2)">★</button>
-        <button class="star-btn" data-val="3" onclick="setRating(3)">★</button>
-        <button class="star-btn" data-val="4" onclick="setRating(4)">★</button>
-        <button class="star-btn" data-val="5" onclick="setRating(5)">★</button>
-      </div>
-      <label class="modal-label">Tuliskan reviewmu (opsional)</label>
-      <textarea class="modal-textarea" id="modalReview" placeholder="Bagikan pengalamanmu belajar bersama teman ini..."></textarea>
-      <div class="modal-actions">
-        <button class="btn-modal-cancel" onclick="tutupModal()">Batal</button>
-        <button class="btn-modal-submit" id="btnSubmitRating" onclick="submitRating()">Kirim Rating</button>
-      </div>
-    </div>
-  </div>
+    <script
+      data-cfasync="false"
+      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
+    ></script>
+    <script src="../js/auth-client.js"></script>
+    <script>
+      const API =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api"
+          : "https://edumate-production-c2df.up.railway.app/api";
+      let selectedRating = 0;
+      let currentSesiId = null;
+      let currentPenerimaId = null;
+      let currentUser = null;
+      let allRatingDiterima = [];
+      let allRatingDiberikan = [];
+      let currentTab = "diterima";
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../js/auth-client.js"></script>
-  <script>
-    const API = 'http://localhost:3000/api';
-    let selectedRating = 0;
-    let currentSesiId = null;
-    let currentPenerimaId = null;
-    let currentUser = null;
-    let allRatingDiterima = [];
-    let allRatingDiberikan = [];
-    let currentTab = 'diterima';
+      function formatTgl(tgl) {
+        if (!tgl) return "-";
+        return new Date(tgl).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+      }
+      function renderStars(nilai) {
+        return "★".repeat(nilai) + "☆".repeat(5 - nilai);
+      }
 
-    function formatTgl(tgl) {
-      if (!tgl) return '-';
-      return new Date(tgl).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-    }
-    function renderStars(nilai) { return '★'.repeat(nilai)+'☆'.repeat(5-nilai); }
+      async function loadRatingDiterima(userId) {
+        const token = getToken();
+        try {
+          const res = await fetch(`${API}/rating/${parseInt(userId)}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (!data.success) return;
+          allRatingDiterima = data.rating;
+          const total = data.total;
+          const rataRata = parseFloat(data.rata_rata) || 0;
 
-    async function loadRatingDiterima(userId) {
-      const token = getToken();
-      try {
-        const res = await fetch(`${API}/rating/${parseInt(userId)}`, { headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json();
-        if (!data.success) return;
-        allRatingDiterima = data.rating;
-        const total = data.total;
-        const rataRata = parseFloat(data.rata_rata) || 0;
+          document.getElementById("ratingBig").textContent = rataRata
+            ? rataRata.toFixed(1)
+            : "-";
+          document.getElementById("ratingStarsBig").textContent = rataRata
+            ? renderStars(Math.round(rataRata))
+            : "☆☆☆☆☆";
+          document.getElementById("ratingTotal").textContent =
+            `dari ${total} review`;
 
-        document.getElementById('ratingBig').textContent = rataRata ? rataRata.toFixed(1) : '-';
-        document.getElementById('ratingStarsBig').textContent = rataRata ? renderStars(Math.round(rataRata)) : '☆☆☆☆☆';
-        document.getElementById('ratingTotal').textContent = `dari ${total} review`;
-
-        const dist = {5:0,4:0,3:0,2:0,1:0};
-        allRatingDiterima.forEach(r => dist[r.nilai] = (dist[r.nilai]||0)+1);
-        document.getElementById('ratingBars').innerHTML = [5,4,3,2,1].map(n => {
-          const pct = total > 0 ? Math.round((dist[n]/total)*100) : 0;
-          return `<div class="rating-bar-row">
+          const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+          allRatingDiterima.forEach(
+            (r) => (dist[r.nilai] = (dist[r.nilai] || 0) + 1),
+          );
+          document.getElementById("ratingBars").innerHTML = [5, 4, 3, 2, 1]
+            .map((n) => {
+              const pct = total > 0 ? Math.round((dist[n] / total) * 100) : 0;
+              return `<div class="rating-bar-row">
             <span class="bar-label">${n}</span><span class="bar-star">★</span>
             <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
             <span class="bar-count">${dist[n]}</span>
           </div>`;
-        }).join('');
+            })
+            .join("");
 
-        if (currentTab === 'diterima') renderReviewList('diterima');
-      } catch (err) { console.error(err); }
-    }
-
-    async function loadRatingDiberikan() {
-      const token = getToken();
-      try {
-        const res = await fetch(`${API}/rating/diberikan`, { headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json();
-        if (data.success) {
-          allRatingDiberikan = data.rating;
-          if (currentTab === 'diberikan') renderReviewList('diberikan');
+          if (currentTab === "diterima") renderReviewList("diterima");
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) { console.error(err); }
-    }
-
-    async function loadPerluReview() {
-      const token = getToken();
-      const container = document.getElementById('perluReviewList');
-      // Pastikan currentUser sudah ada sebelum lanjut
-      if (!currentUser || !currentUser.id) {
-        container.innerHTML = '<div class="empty-state">Gagal memuat data user.</div>';
-        return;
       }
-      const myId = parseInt(currentUser.id);
-      try {
-        const res = await fetch(`${API}/sesi`, { headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json();
-        if (!data.success) return;
 
-        const selesai = data.sesi.filter(s => s.status === 'selesai');
-        const perlu = [];
-        for (const s of selesai) {
-          const resCheck = await fetch(`${API}/rating/sesi/${parseInt(s.id)}`, { headers: { Authorization: `Bearer ${token}` } });
-          const checkData = await resCheck.json();
-          if (!checkData.sudahRating) {
-            const isKirim = parseInt(s.pengirim_id) === myId;
-            perlu.push({
-              sesi_id: s.id,
-              penerima_id: isKirim ? s.penerima_id : s.pengirim_id,
-              nama: isKirim ? s.penerima_nama : s.pengirim_nama,
-              foto: isKirim ? s.penerima_foto : s.pengirim_foto,
-              mata_kuliah: s.mata_kuliah,
-              tanggal: s.tanggal,
-            });
+      async function loadRatingDiberikan() {
+        const token = getToken();
+        try {
+          const res = await fetch(`${API}/rating/diberikan`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (data.success) {
+            allRatingDiberikan = data.rating;
+            if (currentTab === "diberikan") renderReviewList("diberikan");
           }
+        } catch (err) {
+          console.error(err);
         }
+      }
 
-        if (perlu.length === 0) {
-          container.innerHTML = '<div class="empty-state">Semua sesi sudah direview! 🎉</div>';
+      async function loadPerluReview() {
+        const token = getToken();
+        const container = document.getElementById("perluReviewList");
+        // Pastikan currentUser sudah ada sebelum lanjut
+        if (!currentUser || !currentUser.id) {
+          container.innerHTML =
+            '<div class="empty-state">Gagal memuat data user.</div>';
           return;
         }
-        container.innerHTML = perlu.map(p => {
-          const avatar = p.foto
-            ? `<img src="${p.foto}" referrerpolicy="no-referrer">`
-            : '👤';
-          return `<div class="perlu-review-item">
+        const myId = parseInt(currentUser.id);
+        try {
+          const res = await fetch(`${API}/sesi`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (!data.success) return;
+
+          const selesai = data.sesi.filter((s) => s.status === "selesai");
+          const perlu = [];
+          for (const s of selesai) {
+            const resCheck = await fetch(
+              `${API}/rating/sesi/${parseInt(s.id)}`,
+              { headers: { Authorization: `Bearer ${token}` } },
+            );
+            const checkData = await resCheck.json();
+            if (!checkData.sudahRating) {
+              const isKirim = parseInt(s.pengirim_id) === myId;
+              perlu.push({
+                sesi_id: s.id,
+                penerima_id: isKirim ? s.penerima_id : s.pengirim_id,
+                nama: isKirim ? s.penerima_nama : s.pengirim_nama,
+                foto: isKirim ? s.penerima_foto : s.pengirim_foto,
+                mata_kuliah: s.mata_kuliah,
+                tanggal: s.tanggal,
+              });
+            }
+          }
+
+          if (perlu.length === 0) {
+            container.innerHTML =
+              '<div class="empty-state">Semua sesi sudah direview! 🎉</div>';
+            return;
+          }
+          container.innerHTML = perlu
+            .map((p) => {
+              const avatar = p.foto
+                ? `<img src="${p.foto}" referrerpolicy="no-referrer">`
+                : "👤";
+              return `<div class="perlu-review-item">
             <div class="pr-avatar">${avatar}</div>
             <div class="pr-info">
               <div class="pr-name">${p.nama}</div>
               <div class="pr-sesi">${p.mata_kuliah} · ${formatTgl(p.tanggal)}</div>
             </div>
-            <button class="btn-review-now" onclick="bukaModal(${p.sesi_id},${p.penerima_id},'${(p.nama||'').replace(/'/g,"\\'")}')">Beri Rating</button>
+            <button class="btn-review-now" onclick="bukaModal(${p.sesi_id},${p.penerima_id},'${(p.nama || "").replace(/'/g, "\\'")}')">Beri Rating</button>
           </div>`;
-        }).join('');
-      } catch (err) { console.error(err); }
-    }
-
-    function renderReviewList(type) {
-      currentTab = type;
-      const container = document.getElementById('reviewContainer');
-      const list = type === 'diterima' ? allRatingDiterima : allRatingDiberikan;
-      if (list.length === 0) {
-        container.innerHTML = '<div class="empty-state">Belum ada review.</div>';
-        return;
+            })
+            .join("");
+        } catch (err) {
+          console.error(err);
+        }
       }
-      container.innerHTML = list.map(r => {
-        const avatar = r.pemberi_foto
-          ? `<img src="${r.pemberi_foto}" referrerpolicy="no-referrer">`
-          : '👤';
-        return `<div class="review-item">
+
+      function renderReviewList(type) {
+        currentTab = type;
+        const container = document.getElementById("reviewContainer");
+        const list =
+          type === "diterima" ? allRatingDiterima : allRatingDiberikan;
+        if (list.length === 0) {
+          container.innerHTML =
+            '<div class="empty-state">Belum ada review.</div>';
+          return;
+        }
+        container.innerHTML = list
+          .map((r) => {
+            const avatar = r.pemberi_foto
+              ? `<img src="${r.pemberi_foto}" referrerpolicy="no-referrer">`
+              : "👤";
+            return `<div class="review-item">
           <div class="review-top">
             <div class="review-user">
               <div class="review-avatar">${avatar}</div>
@@ -352,76 +955,98 @@
               <div class="review-date">${formatTgl(r.created_at)}</div>
             </div>
           </div>
-          ${r.review ? `<div class="review-text">${r.review}</div>` : ''}
+          ${r.review ? `<div class="review-text">${r.review}</div>` : ""}
         </div>`;
-      }).join('');
-    }
-
-    function switchTab(el, type) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-      renderReviewList(type);
-      if (type === 'diberikan' && allRatingDiberikan.length === 0) loadRatingDiberikan();
-    }
-
-    function bukaModal(sesiId, penerimaId, nama) {
-      currentSesiId = sesiId;
-      currentPenerimaId = penerimaId;
-      document.getElementById('modalSub').textContent = 'Sesi bersama ' + nama;
-      document.getElementById('modalOverlay').classList.add('open');
-      selectedRating = 0;
-      document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('modalReview').value = '';
-    }
-
-    function tutupModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-
-    function setRating(val) {
-      selectedRating = val;
-      document.querySelectorAll('.star-btn').forEach(b => {
-        b.classList.toggle('active', parseInt(b.dataset.val) <= val);
-      });
-    }
-
-    async function submitRating() {
-      if (selectedRating === 0) { showToast('Pilih rating bintang dulu ya!', 'warning'); return; }
-      const review = document.getElementById('modalReview').value.trim();
-      const token = getToken();
-      const btn = document.getElementById('btnSubmitRating');
-      btn.textContent = 'Mengirim...';
-      btn.disabled = true;
-      try {
-        const res = await fetch(`${API}/rating`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ sesi_id: currentSesiId, penerima_id: currentPenerimaId, nilai: selectedRating, review: review || null }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          tutupModal();
-          showToast('Rating berhasil dikirim! ⭐', 'success');
-          await loadRatingDiterima(currentUser.id);
-          await loadPerluReview();
-        } else {
-          showToast(data.message || 'Gagal kirim rating.', 'error');
-        }
-      } catch (err) {
-        showToast('Terjadi kesalahan, coba lagi.', 'error');
-      } finally {
-        btn.textContent = 'Kirim Rating';
-        btn.disabled = false;
+          })
+          .join("");
       }
-    }
 
-    document.getElementById('modalOverlay').addEventListener('click', function(e) {
-      if (e.target === this) tutupModal();
-    });
+      function switchTab(el, type) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        el.classList.add("active");
+        renderReviewList(type);
+        if (type === "diberikan" && allRatingDiberikan.length === 0)
+          loadRatingDiberikan();
+      }
 
-    initPage().then(user => {
-      currentUser = user;
-      loadRatingDiterima(user.id);
-      loadPerluReview();
-    });
-  </script>
-</body>
+      function bukaModal(sesiId, penerimaId, nama) {
+        currentSesiId = sesiId;
+        currentPenerimaId = penerimaId;
+        document.getElementById("modalSub").textContent =
+          "Sesi bersama " + nama;
+        document.getElementById("modalOverlay").classList.add("open");
+        selectedRating = 0;
+        document
+          .querySelectorAll(".star-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("modalReview").value = "";
+      }
+
+      function tutupModal() {
+        document.getElementById("modalOverlay").classList.remove("open");
+      }
+
+      function setRating(val) {
+        selectedRating = val;
+        document.querySelectorAll(".star-btn").forEach((b) => {
+          b.classList.toggle("active", parseInt(b.dataset.val) <= val);
+        });
+      }
+
+      async function submitRating() {
+        if (selectedRating === 0) {
+          showToast("Pilih rating bintang dulu ya!", "warning");
+          return;
+        }
+        const review = document.getElementById("modalReview").value.trim();
+        const token = getToken();
+        const btn = document.getElementById("btnSubmitRating");
+        btn.textContent = "Mengirim...";
+        btn.disabled = true;
+        try {
+          const res = await fetch(`${API}/rating`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              sesi_id: currentSesiId,
+              penerima_id: currentPenerimaId,
+              nilai: selectedRating,
+              review: review || null,
+            }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            tutupModal();
+            showToast("Rating berhasil dikirim! ⭐", "success");
+            await loadRatingDiterima(currentUser.id);
+            await loadPerluReview();
+          } else {
+            showToast(data.message || "Gagal kirim rating.", "error");
+          }
+        } catch (err) {
+          showToast("Terjadi kesalahan, coba lagi.", "error");
+        } finally {
+          btn.textContent = "Kirim Rating";
+          btn.disabled = false;
+        }
+      }
+
+      document
+        .getElementById("modalOverlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) tutupModal();
+        });
+
+      initPage().then((user) => {
+        currentUser = user;
+        loadRatingDiterima(user.id);
+        loadPerluReview();
+      });
+    </script>
+  </body>
 </html>
