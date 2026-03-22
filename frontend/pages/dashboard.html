@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduMate</title>
+  <script>
+    if (localStorage.getItem('sb_theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/darkmode.css"/>
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #0a0a0a;
+      --primary: #f97316;
+      --primary-hover: #ea6c0a;
+      --primary-light: #fff4ed;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-100: #f4f4f4;
+      --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0;
+      --gray-400: #a0a0a0;
+      --gray-600: #555;
+      --sidebar-width: 240px;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--gray-50);
+      min-height: 100vh;
+      display: flex;
+      color: var(--black);
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--white);
+      border-right: 1px solid var(--gray-200);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      z-index: 100;
+      padding: 24px 0;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      margin-bottom: 16px;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--primary);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
+    }
+
+    .brand-name {
+      font-family: "DM Serif Display", serif;
+      font-size: 17px;
+      color: var(--black);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-section {
+      padding: 0 12px;
+      flex: 1;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 0 8px;
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      color: var(--gray-600);
+      font-size: 13.5px;
+      font-weight: 400;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .nav-item.active {
+      background: var(--primary);
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .nav-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--primary);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 20px;
+      min-width: 18px;
+      text-align: center;
+      display: none;
+    }
+
+    .nav-item.active .nav-badge {
+      background: white;
+      color: var(--primary);
+    }
+
+    .sidebar-user {
+      padding: 16px 20px;
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .sidebar-user:hover {
+      background: var(--gray-50);
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-email {
+      font-size: 11px;
+      color: var(--gray-400);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ===== MAIN ===== */
+    .main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 36px 40px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.4s ease 0.05s forwards;
+    }
+
+    .page-header-left h1 {
+      font-family: "DM Serif Display", serif;
+      font-size: 34px;
+      color: var(--black);
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+      line-height: 1.15;
+    }
+
+    .page-header-left h1 em {
+      font-style: italic;
+      color: var(--primary);
+    }
+
+    .page-header-left p {
+      color: var(--gray-400);
+      font-size: 14px;
+    }
+
+    .date-badge {
+      font-size: 12px;
+      color: var(--gray-600);
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      padding: 6px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* ===== STATS ROW ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.4s ease 0.1s forwards;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 22px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(249, 115, 22, 0.3);
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-icon-wrap {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .stat-value {
+      font-family: "DM Serif Display", serif;
+      font-size: 30px;
+      color: var(--black);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--gray-400);
+      font-weight: 500;
+    }
+
+    /* ===== CONTENT GRID ===== */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 24px;
+      opacity: 0;
+      animation: fadeUp 0.4s ease 0.15s forwards;
+    }
+
+    /* ===== SECTION CARD ===== */
+    .section-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .section-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .section-title {
+      font-family: "DM Serif Display", serif;
+      font-size: 17px;
+      color: var(--black);
+      letter-spacing: -0.3px;
+    }
+
+    .section-action {
+      font-size: 12.5px;
+      color: var(--gray-400);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.15s;
+      font-weight: 500;
+    }
+
+    .section-action:hover {
+      color: var(--primary);
+    }
+
+    /* ===== BUDDY LIST ===== */
+    .buddy-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .buddy-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--gray-100);
+      border-radius: 12px;
+      background: var(--gray-50);
+      transition: all 0.2s;
+    }
+
+    .buddy-card:hover {
+      border-color: rgba(249, 115, 22, 0.3);
+      background: var(--white);
+      box-shadow: 0 4px 16px rgba(249, 115, 22, 0.08);
+      transform: translateX(3px);
+    }
+
+    .buddy-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 2px solid var(--gray-200);
+    }
+
+    .buddy-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .buddy-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .buddy-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 3px;
+    }
+
+    .buddy-meta {
+      font-size: 12px;
+      color: var(--gray-400);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .buddy-score {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+    }
+
+    .score-badge {
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .score-label {
+      font-size: 10px;
+      color: var(--gray-400);
+    }
+
+    .btn-invite {
+      padding: 7px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: "DM Sans", sans-serif;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-invite:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
+    }
+
+    /* ===== RIGHT COL ===== */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .profile-mini {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--gray-100);
+      margin-bottom: 16px;
+    }
+
+    .profile-avatar-lg {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      border: 3px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
+    }
+
+    .profile-avatar-lg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .profile-name {
+      font-family: "DM Serif Display", serif;
+      font-size: 16px;
+      color: var(--black);
+      margin-bottom: 3px;
+      letter-spacing: -0.2px;
+    }
+
+    .profile-email {
+      font-size: 11.5px;
+      color: var(--gray-400);
+      margin-bottom: 12px;
+    }
+
+    .profile-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .tag {
+      background: var(--primary-light);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      color: var(--primary);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .btn-edit-profile {
+      width: 100%;
+      padding: 10px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--black);
+      cursor: pointer;
+      font-family: "DM Sans", sans-serif;
+      transition: all 0.15s;
+      margin-top: 14px;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+
+    .btn-edit-profile:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+    }
+
+    .session-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .session-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .session-item:first-child {
+      padding-top: 0;
+    }
+
+    .session-date {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 3px 8px rgba(249, 115, 22, 0.25);
+    }
+
+    .session-day {
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      line-height: 1;
+    }
+
+    .session-month {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .session-info {
+      flex: 1;
+    }
+
+    .session-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 3px;
+    }
+
+    .session-meta {
+      font-size: 11.5px;
+      color: var(--gray-400);
+      line-height: 1.5;
+    }
+
+    .notif-item {
+      display: flex;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .notif-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .notif-item:first-child {
+      padding-top: 0;
+    }
+
+    .notif-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .notif-dot.read {
+      background: var(--gray-300);
+    }
+
+    .notif-text {
+      font-size: 12.5px;
+      color: var(--gray-600);
+      line-height: 1.5;
+    }
+
+    .notif-time {
+      font-size: 11px;
+      color: var(--gray-400);
+      margin-top: 3px;
+    }
+
+    .empty-hint {
+      text-align: center;
+      color: var(--gray-400);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+
+    /* ===== DARK MODE ===== */
+    html.dark .date-badge {
+      background: #1a1a1a;
+      border-color: #2a2a2a;
+      color: #888;
+    }
+
+    html.dark .page-header-left h1 {
+      color: #f0f0f0;
+    }
+
+    html.dark .stat-card {
+      background: #1a1a1a;
+      border-color: #2a2a2a;
+    }
+
+    html.dark .stat-card:hover {
+      border-color: rgba(249, 115, 22, 0.3);
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.06);
+    }
+
+    html.dark .stat-icon-wrap {
+      background: #2a1500;
+    }
+
+    html.dark .stat-value {
+      color: #f0f0f0;
+    }
+
+    html.dark .section-card {
+      background: #1a1a1a;
+      border-color: #2a2a2a;
+    }
+
+    html.dark .section-header {
+      border-bottom-color: #2a2a2a;
+    }
+
+    html.dark .section-title {
+      color: #f0f0f0;
+    }
+
+    html.dark .buddy-card {
+      background: #222;
+      border-color: #2a2a2a;
+    }
+
+    html.dark .buddy-card:hover {
+      background: #1a1a1a;
+      border-color: rgba(249, 115, 22, 0.3);
+    }
+
+    html.dark .buddy-avatar {
+      border-color: #3a3a3a;
+    }
+
+    html.dark .buddy-name {
+      color: #f0f0f0;
+    }
+
+    html.dark .profile-mini {
+      border-bottom-color: #2a2a2a;
+    }
+
+    html.dark .profile-name {
+      color: #f0f0f0;
+    }
+
+    html.dark .btn-edit-profile {
+      background: #2a2a2a;
+      border-color: #3a3a3a;
+      color: #f0f0f0;
+    }
+
+    html.dark .btn-edit-profile:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    html.dark .session-item {
+      border-bottom-color: #2a2a2a;
+    }
+
+    html.dark .session-title {
+      color: #f0f0f0;
+    }
+
+    html.dark .notif-item {
+      border-bottom-color: #2a2a2a;
+    }
+
+    html.dark .notif-text {
+      color: #aaa;
+    }
+
+    html.dark .notif-dot.read {
+      background: #444;
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#f97316"/>
+        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
+        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
+        <rect x="40" y="45" width="28" height="11" fill="white"/>
+        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
+      </svg>
+      <span class="brand-name">EduMate</span>
+    </div>
+    <nav class="nav-section">
+      <div class="nav-label">Menu</div>
+      <a href="dashboard.html" class="nav-item active"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="cari-teman.html" class="nav-item"><span class="nav-icon">🔍</span> Cari Teman Belajar</a>
+      <a href="jadwal.html" class="nav-item"><span class="nav-icon">📅</span> Jadwal Saya</a>
+      <a href="sesi.html" class="nav-item"><span class="nav-icon">📖</span> Sesi Belajar</a>
+      <div class="nav-label">Lainnya</div>
+      <a href="notifikasi.html" class="nav-item"><span class="nav-icon">🔔</span> Notifikasi<span class="nav-badge" id="notifBadge">0</span></a>
+      <a href="rating.html" class="nav-item"><span class="nav-icon">⭐</span> Rating & Review</a>
+      <a href="profil.html" class="nav-item"><span class="nav-icon">👤</span> Profil Saya</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="user-avatar">👤</div>
+      <div class="user-info">
+        <div class="user-name">Nama User</div>
+        <div class="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="13767e727a7f53747e727a7f3d707c7e">[email&#160;protected]</a></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1>Selamat datang, <em id="greetName">kembali</em> 👋</h1>
+        <p>Ini ringkasan aktivitas belajar kamu hari ini.</p>
+      </div>
+      <span class="date-badge" id="dateBadge"></span>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon-wrap">🎯</div>
+        <div class="stat-value" id="statRekomen">-</div>
+        <div class="stat-label">Rekomendasi Teman</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon-wrap">📖</div>
+        <div class="stat-value" id="statMendatang">-</div>
+        <div class="stat-label">Sesi Mendatang</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon-wrap">✅</div>
+        <div class="stat-value" id="statSelesai">-</div>
+        <div class="stat-label">Sesi Selesai</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon-wrap">⭐</div>
+        <div class="stat-value" id="statRating">-</div>
+        <div class="stat-label">Rating Rata-rata</div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <div>
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Rekomendasi Teman Belajar</span>
+            <a href="cari-teman.html" class="section-action">Lihat semua →</a>
+          </div>
+          <div class="buddy-list" id="buddyList">
+            <div class="empty-hint">Memuat rekomendasi...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-col">
+        <div class="section-card">
+          <div class="profile-mini">
+            <div class="profile-avatar-lg" id="profileAvatarLg">👤</div>
+            <div class="profile-name" id="profileName">Nama User</div>
+            <div class="profile-email" id="profileEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="91f4fcf0f8fdd1f6fcf0f8fdbff2fefc">[email&#160;protected]</a></div>
+            <div class="profile-tags" id="profileTags"></div>
+          </div>
+          <a href="profil.html" class="btn-edit-profile">Edit Profil Belajar</a>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Sesi Mendatang</span>
+            <a href="sesi.html" class="section-action">Semua →</a>
+          </div>
+          <div id="sesiList"><div class="empty-hint">Memuat sesi...</div></div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Notifikasi</span>
+            <a href="notifikasi.html" class="section-action">Semua →</a>
+          </div>
+          <div id="notifList"><div class="empty-hint">Memuat notifikasi...</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../js/auth-client.js"></script>
+  <script>
+    const API = "http://localhost:3000/api";
+
+    // ===== DATE BADGE REAL-TIME =====
+    function setDateBadge() {
+      const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const bulanNama = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+      const now = new Date();
+      const dateStr = hari[now.getDay()] + ", " + now.getDate() + " " + bulanNama[now.getMonth()] + " " + now.getFullYear();
+      const el = document.getElementById("dateBadge");
+      if (el) el.textContent = dateStr;
+    }
+    setDateBadge();
+
+    function formatJam(jam) { return jam ? jam.substring(0, 5) : "-"; }
+
+    function timeAgo(dateStr) {
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const m = Math.floor(diff / 60000);
+      if (m < 1) return "Baru saja";
+      if (m < 60) return m + " menit lalu";
+      const h = Math.floor(m / 60);
+      if (h < 24) return h + " jam lalu";
+      const d = Math.floor(h / 24);
+      if (d === 1) return "Kemarin";
+      return d + " hari lalu";
+    }
+
+    async function loadStats(token) {
+      try {
+        const res = await fetch(API + "/sesi", { headers: { "Authorization": "Bearer " + token } });
+        const data = await res.json();
+        if (data.success) {
+          const sesi = data.sesi;
+          document.getElementById("statMendatang").textContent =
+            sesi.filter(s => s.status === "pending" || s.status === "diterima").length;
+          document.getElementById("statSelesai").textContent =
+            sesi.filter(s => s.status === "selesai").length;
+
+          const mendatang = sesi.filter(s => s.status === "diterima" || s.status === "pending").slice(0, 3);
+          const sesiEl = document.getElementById("sesiList");
+          if (mendatang.length === 0) {
+            sesiEl.innerHTML = "<div class=\"empty-hint\">Belum ada sesi mendatang</div>";
+          } else {
+            const bulan = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+            sesiEl.innerHTML = mendatang.map(s => {
+              const parts = s.tanggal.split("T")[0].split("-");
+              const day = parseInt(parts[2]);
+              const mon = bulan[parseInt(parts[1]) - 1];
+              return "<div class=\"session-item\">"
+                + "<div class=\"session-date\"><span class=\"session-day\">" + day + "</span><span class=\"session-month\">" + mon + "</span></div>"
+                + "<div class=\"session-info\">"
+                + "<div class=\"session-title\">" + s.mata_kuliah + "</div>"
+                + "<div class=\"session-meta\">Bersama " + (s.pengirim_nama || s.penerima_nama) + "<br>" + formatJam(s.jam_mulai) + " \u00B7 " + (s.lokasi || "-") + "</div>"
+                + "</div></div>";
+            }).join("");
+          }
+        }
+      } catch(e) {}
+
+      try {
+        const meRes = await fetch(API + "/auth/me", { headers: { "Authorization": "Bearer " + token } });
+        const meData = await meRes.json();
+        if (meData.user) {
+          const ratingRes = await fetch(API + "/rating/" + parseInt(meData.user.id), { headers: { "Authorization": "Bearer " + token } });
+          const ratingData = await ratingRes.json();
+          if (ratingData.success && ratingData.rata_rata) {
+            document.getElementById("statRating").textContent = parseFloat(ratingData.rata_rata).toFixed(1);
+          } else {
+            document.getElementById("statRating").textContent = "-";
+          }
+        }
+      } catch(e) { document.getElementById("statRating").textContent = "-"; }
+    }
+
+    async function loadMatching(token) {
+      try {
+        const res = await fetch(API + "/matching", { headers: { "Authorization": "Bearer " + token } });
+        const data = await res.json();
+        const buddyList = document.getElementById("buddyList");
+        if (!data.success || !data.matches || data.matches.length === 0) {
+          document.getElementById("statRekomen").textContent = "0";
+          buddyList.innerHTML = "<div class=\"empty-hint\">Belum ada rekomendasi. Lengkapi profil belajarmu!</div>";
+          return;
+        }
+        document.getElementById("statRekomen").textContent = data.matches.length;
+        buddyList.innerHTML = data.matches.slice(0, 4).map(m => {
+          const avatarHtml = m.foto
+            ? "<img src=\"" + encodeURI(m.foto) + "\" referrerpolicy=\"no-referrer\">"
+            : "\ud83d\udc64";
+          const meta = [m.skill, m.lokasi_belajar].filter(Boolean).join(" \u00B7 ");
+          return "<div class=\"buddy-card\">"
+            + "<div class=\"buddy-avatar\">" + avatarHtml + "</div>"
+            + "<div class=\"buddy-info\">"
+            + "<div class=\"buddy-name\">" + (m.nama || "-") + "</div>"
+            + "<div class=\"buddy-meta\">" + meta + "</div>"
+            + "</div>"
+            + "<div class=\"buddy-score\"><span class=\"score-badge\">" + (m.persentase || 0) + "%</span><span class=\"score-label\">cocok</span></div>"
+            + "<button class=\"btn-invite\" onclick=\"window.location.href='cari-teman.html'\">Ajak</button>"
+            + "</div>";
+        }).join("");
+      } catch(e) {
+        document.getElementById("buddyList").innerHTML = "<div class=\"empty-hint\">Gagal memuat rekomendasi</div>";
+      }
+    }
+
+    async function loadNotifikasi(token) {
+      try {
+        const res = await fetch(API + "/notifikasi", { headers: { "Authorization": "Bearer " + token } });
+        const data = await res.json();
+        const notifEl = document.getElementById("notifList");
+        if (!data.success || !data.notifikasi || data.notifikasi.length === 0) {
+          notifEl.innerHTML = "<div class=\"empty-hint\">Tidak ada notifikasi</div>";
+          return;
+        }
+        notifEl.innerHTML = data.notifikasi.slice(0, 4).map(n => {
+          return "<div class=\"notif-item\">"
+            + "<div class=\"notif-dot" + (n.is_read ? " read" : "") + "\"></div>"
+            + "<div><div class=\"notif-text\">" + n.pesan + "</div>"
+            + "<div class=\"notif-time\">" + timeAgo(n.created_at) + "</div></div>"
+            + "</div>";
+        }).join("");
+      } catch(e) {}
+    }
+
+    setTimeout(function() {
+      initPage().then(user => {
+        if (!user) return;
+        const token = getToken();
+
+        const avatarLg = document.getElementById("profileAvatarLg");
+        const nameEl = document.getElementById("profileName");
+        const emailEl = document.getElementById("profileEmail");
+        const greetEl = document.getElementById("greetName");
+
+        if (nameEl) nameEl.textContent = user.nama || "Nama User";
+        if (emailEl) emailEl.textContent = user.email || "";
+        if (greetEl) greetEl.textContent = user.nama?.split(" ")[0] || "kembali";
+        if (avatarLg && user.foto) {
+          avatarLg.innerHTML = "<img src=\"" + encodeURI(user.foto) + "\" referrerpolicy=\"no-referrer\" alt=\"" + user.nama + "\">";
+        }
+
+        const tagsEl = document.getElementById("profileTags");
+        if (tagsEl) {
+          const tags = [user.gaya_belajar, user.lokasi_belajar].filter(Boolean);
+          tagsEl.innerHTML = tags.map(t => '<span class="tag">' + t + '</span>').join('');
+        }
+
+        loadStats(token);
+        loadMatching(token);
+        loadNotifikasi(token);
+      });
+    }, 100);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="../images.svg/favicon.svg" />
+    <title>EduMate</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --primary: #f97316;
+        --primary-hover: #ea6c0a;
+        --primary-light: #fff4ed;
+        --black: #0a0a0a;
+        --white: #ffffff;
+        --gray-50: #fafafa;
+        --gray-100: #f4f4f4;
+        --gray-200: #e8e8e8;
+        --gray-400: #a0a0a0;
+        --gray-600: #555;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--gray-50);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 24px;
+        color: var(--black);
+      }
+      .container {
+        width: 100%;
+        max-width: 560px;
+      }
+
+      /* ===== PROGRESS ===== */
+      .progress-wrap {
+        margin-bottom: 32px;
+        opacity: 0;
+        animation: fadeUp 0.4s ease 0.05s forwards;
+      }
+      .progress-steps {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-bottom: 10px;
+      }
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        position: relative;
+      }
+      .step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        width: 100%;
+        height: 2px;
+        background: var(--gray-200);
+        z-index: 0;
+        transition: background 0.3s;
+      }
+      .step.done:not(:last-child)::after {
+        background: var(--primary);
+      }
+      .step-dot {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid var(--gray-200);
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-400);
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s;
+      }
+      .step.active .step-dot {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: white;
+      }
+      .step.done .step-dot {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: white;
+      }
+      .step-label {
+        font-size: 11px;
+        color: var(--gray-400);
+        font-weight: 500;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .step.active .step-label {
+        color: var(--primary);
+        font-weight: 600;
+      }
+      .step.done .step-label {
+        color: var(--primary);
+      }
+
+      /* ===== CARD ===== */
+      .card {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: 16px;
+        padding: 32px;
+        opacity: 0;
+        animation: fadeUp 0.4s ease 0.1s forwards;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .step-panel {
+        display: none;
+      }
+      .step-panel.active {
+        display: block;
+      }
+
+      /* ===== HEADER ===== */
+      .panel-header {
+        margin-bottom: 24px;
+      }
+      .panel-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+      }
+      .panel-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 22px;
+        letter-spacing: -0.5px;
+        color: var(--black);
+        margin-bottom: 6px;
+      }
+      .panel-sub {
+        font-size: 13.5px;
+        color: var(--gray-400);
+        line-height: 1.6;
+      }
+
+      /* ===== FORM ===== */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group.full {
+        grid-column: 1/-1;
+      }
+      .form-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--black);
+      }
+      .form-hint {
+        font-size: 11px;
+        color: var(--gray-400);
+        margin-top: 2px;
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        padding: 10px 14px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 10px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13.5px;
+        color: var(--black);
+        background: var(--gray-50);
+        outline: none;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        border-color: var(--primary);
+        background: var(--white);
+      }
+      .form-input::placeholder {
+        color: var(--gray-400);
+      }
+      .form-textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      /* Tags input */
+      .tags-wrap {
+        border: 1.5px solid var(--gray-200);
+        border-radius: 10px;
+        background: var(--gray-50);
+        padding: 8px 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 46px;
+        align-items: center;
+        transition: border-color 0.15s;
+        cursor: text;
+      }
+      .tags-wrap:focus-within {
+        border-color: var(--primary);
+        background: var(--white);
+      }
+      .tag-item {
+        background: var(--primary-light);
+        border: 1px solid rgba(249, 115, 22, 0.2);
+        color: var(--primary);
+        font-size: 12px;
+        padding: 3px 8px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 500;
+      }
+      .tag-remove {
+        cursor: pointer;
+        opacity: 0.6;
+        font-size: 14px;
+        line-height: 1;
+      }
+      .tag-remove:hover {
+        opacity: 1;
+      }
+      .tags-input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        color: var(--black);
+        min-width: 100px;
+        flex: 1;
+      }
+
+      /* Jadwal grid */
+      .jadwal-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .jadwal-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: var(--gray-50);
+      }
+      .jadwal-item:hover {
+        border-color: var(--primary);
+        background: var(--primary-light);
+      }
+      .jadwal-item.selected {
+        border-color: var(--primary);
+        background: var(--primary-light);
+      }
+      .jadwal-item input[type="checkbox"] {
+        accent-color: var(--primary);
+        width: 15px;
+        height: 15px;
+      }
+      .jadwal-label {
+        font-size: 13px;
+        color: var(--black);
+      }
+
+      /* Step 1 */
+      .avatar-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .avatar-big {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 3px solid var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        overflow: hidden;
+        background: var(--primary-light);
+      }
+      .avatar-big img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .avatar-info {
+        text-align: center;
+      }
+      .avatar-nama {
+        font-family: "DM Serif Display", serif;
+        font-size: 18px;
+        margin-bottom: 3px;
+      }
+      .avatar-email {
+        font-size: 12px;
+        color: var(--gray-400);
+      }
+      .welcome-text {
+        background: var(--primary-light);
+        border: 1px solid rgba(249, 115, 22, 0.2);
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 13.5px;
+        color: var(--gray-600);
+        line-height: 1.6;
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .welcome-text strong {
+        color: var(--primary);
+      }
+
+      /* Actions */
+      .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--gray-100);
+      }
+      .btn-back {
+        padding: 11px 20px;
+        background: var(--white);
+        color: var(--black);
+        border: 1.5px solid var(--gray-200);
+        border-radius: 10px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13.5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-back:hover {
+        background: var(--gray-100);
+      }
+      .btn-next {
+        flex: 1;
+        padding: 11px 24px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .btn-next:hover {
+        background: var(--primary-hover);
+      }
+      .btn-next:disabled {
+        background: var(--gray-200);
+        color: var(--gray-400);
+        cursor: not-allowed;
+      }
+
+      /* Error state */
+      .form-input.error,
+      .form-select.error {
+        border-color: #dc2626;
+        background: #fef2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Progress Steps -->
+      <div class="progress-wrap">
+        <div class="progress-steps">
+          <div class="step active" id="progressStep1">
+            <div class="step-dot">1</div>
+            <div class="step-label">Selamat Datang</div>
+          </div>
+          <div class="step" id="progressStep2">
+            <div class="step-dot">2</div>
+            <div class="step-label">Info Akademik</div>
+          </div>
+          <div class="step" id="progressStep3">
+            <div class="step-dot">3</div>
+            <div class="step-label">Profil Belajar</div>
+          </div>
+          <div class="step" id="progressStep4">
+            <div class="step-dot">4</div>
+            <div class="step-label">Jadwal</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <!-- Step 1 -->
+        <div class="step-panel active" id="panel1">
+          <div class="panel-header">
+            <div class="panel-icon">🎉</div>
+            <div class="panel-title">Selamat datang di EduMate!</div>
+            <div class="panel-sub">
+              Hei! Akun kamu sudah berhasil dibuat. Sebelum mulai, lengkapi
+              profilmu dulu ya agar sistem bisa menemukan teman belajar yang
+              paling cocok.
+            </div>
+          </div>
+          <div class="avatar-preview">
+            <div class="avatar-big" id="onboardAvatar">👤</div>
+            <div class="avatar-info">
+              <div class="avatar-nama" id="onboardNama">Nama User</div>
+              <div class="avatar-email" id="onboardEmail">email@gmail.com</div>
+            </div>
+          </div>
+          <div class="welcome-text">
+            Proses ini hanya memakan waktu <strong>2 menit</strong>. Kamu akan
+            mengisi info akademik, skill, topik belajar, dan jadwal kosongmu.
+          </div>
+          <div class="actions">
+            <button class="btn-next" style="flex: 1" onclick="goToStep(2)">
+              Mulai Lengkapi Profil →
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Info Akademik -->
+        <div class="step-panel" id="panel2">
+          <div class="panel-header">
+            <div class="panel-icon">🎓</div>
+            <div class="panel-title">Info Akademik</div>
+            <div class="panel-sub">
+              Ceritakan sedikit tentang latar belakang akademikmu.
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label"
+                >Jurusan <span style="color: #dc2626">*</span></label
+              >
+              <input
+                type="text"
+                class="form-input"
+                id="jurusan"
+                placeholder="Contoh: Teknik Informatika"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Universitas <span style="color: #dc2626">*</span></label
+              >
+              <input
+                type="text"
+                class="form-input"
+                id="universitas"
+                placeholder="Contoh: USU"
+              />
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Bio Singkat</label>
+              <textarea
+                class="form-textarea"
+                id="bio"
+                placeholder="Ceritakan sedikit tentang dirimu dan tujuan belajarmu..."
+              ></textarea>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn-back" onclick="goToStep(1)">← Kembali</button>
+            <button class="btn-next" onclick="nextStep2()">Lanjut →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Profil Belajar -->
+        <div class="step-panel" id="panel3">
+          <div class="panel-header">
+            <div class="panel-icon">📚</div>
+            <div class="panel-title">Profil Belajar</div>
+            <div class="panel-sub">
+              Info ini digunakan untuk mencocokkanmu dengan teman belajar yang
+              tepat.
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label"
+                >Skill / Mata Kuliah yang Dikuasai</label
+              >
+              <!-- INPUT BEBAS dengan tags — ketik lalu Enter -->
+              <div class="tags-wrap" id="skillWrap">
+                <input
+                  type="text"
+                  class="tags-input"
+                  id="skillInput"
+                  placeholder="Ketik mata kuliah lalu tekan Enter..."
+                  onkeydown="addTag(event, 'skillWrap', 'skillTags')"
+                  onblur="addTagFromInput('skillWrap', 'skillTags')"
+                />
+              </div>
+              <span class="form-hint"
+                >Contoh: Algoritma, Basis Data, Kalkulus — tekan Enter untuk
+                menambah</span
+              >
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Topik yang Ingin Dipelajari</label>
+              <!-- INPUT BEBAS dengan tags -->
+              <div class="tags-wrap" id="topikWrap">
+                <input
+                  type="text"
+                  class="tags-input"
+                  id="topikInput"
+                  placeholder="Ketik topik lalu tekan Enter..."
+                  onkeydown="addTag(event, 'topikWrap', 'topikTags')"
+                  onblur="addTagFromInput('topikWrap', 'topikTags')"
+                />
+              </div>
+              <span class="form-hint"
+                >Contoh: Machine Learning, Web Dev — tekan Enter untuk
+                menambah</span
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Tingkat Kemampuan <span style="color: #dc2626">*</span></label
+              >
+              <select class="form-select" id="tingkat">
+                <option value="">Pilih tingkat</option>
+                <option value="Pemula">Pemula</option>
+                <option value="Menengah">Menengah</option>
+                <option value="Mahir">Mahir</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Gaya Belajar <span style="color: #dc2626">*</span></label
+              >
+              <select class="form-select" id="gaya">
+                <option value="">Pilih gaya belajar</option>
+                <option value="Diskusi">Diskusi</option>
+                <option value="Latihan Soal">Latihan Soal</option>
+                <option value="Membaca">Membaca</option>
+                <option value="Presentasi">Presentasi</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label"
+                >Lokasi Belajar <span style="color: #dc2626">*</span></label
+              >
+              <select class="form-select" id="lokasi">
+                <option value="">Pilih lokasi</option>
+                <option value="Perpustakaan">Perpustakaan</option>
+                <option value="Kafe">Kafe</option>
+                <option value="Online">Online</option>
+                <option value="Kampus">Kampus</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn-back" onclick="goToStep(2)">← Kembali</button>
+            <button class="btn-next" onclick="nextStep3()">Lanjut →</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Jadwal -->
+        <div class="step-panel" id="panel4">
+          <div class="panel-header">
+            <div class="panel-icon">📅</div>
+            <div class="panel-title">Jadwal Kosong</div>
+            <div class="panel-sub">
+              Pilih waktu kosongmu agar sistem bisa mencocokkan jadwal dengan
+              teman belajar.
+            </div>
+          </div>
+          <div class="jadwal-grid">
+            <!-- Senin -->
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Senin Pagi"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">☀️ Senin Pagi</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Senin Siang"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌞 Senin Siang</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Senin Sore"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌤️ Senin Sore</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Senin Malam"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌙 Senin Malam</span></label
+            >
+            <!-- Selasa -->
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Selasa Pagi"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">☀️ Selasa Pagi</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Selasa Siang"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌞 Selasa Siang</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Selasa Sore"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌤️ Selasa Sore</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Selasa Malam"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌙 Selasa Malam</span></label
+            >
+            <!-- Rabu -->
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Rabu Pagi"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">☀️ Rabu Pagi</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Rabu Siang"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌞 Rabu Siang</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Rabu Sore"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌤️ Rabu Sore</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Rabu Malam"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌙 Rabu Malam</span></label
+            >
+            <!-- Kamis -->
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Kamis Pagi"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">☀️ Kamis Pagi</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Kamis Siang"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌞 Kamis Siang</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Kamis Sore"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌤️ Kamis Sore</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Kamis Malam"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌙 Kamis Malam</span></label
+            >
+            <!-- Jumat -->
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Jumat Pagi"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">☀️ Jumat Pagi</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Jumat Siang"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌞 Jumat Siang</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Jumat Sore"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌤️ Jumat Sore</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Jumat Malam"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌙 Jumat Malam</span></label
+            >
+            <!-- Sabtu -->
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Sabtu Pagi"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">☀️ Sabtu Pagi</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Sabtu Siang"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌞 Sabtu Siang</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Sabtu Sore"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌤️ Sabtu Sore</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Sabtu Malam"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌙 Sabtu Malam</span></label
+            >
+            <!-- Minggu -->
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Minggu Pagi"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">☀️ Minggu Pagi</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Minggu Siang"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌞 Minggu Siang</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Minggu Sore"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌤️ Minggu Sore</span></label
+            >
+            <label class="jadwal-item"
+              ><input
+                type="checkbox"
+                value="Minggu Malam"
+                onchange="toggleJadwal(this)"
+              /><span class="jadwal-label">🌙 Minggu Malam</span></label
+            >
+          </div>
+          <div class="actions">
+            <button class="btn-back" onclick="goToStep(3)">← Kembali</button>
+            <button class="btn-next" onclick="submitOnboarding()">
+              Selesai & Masuk Dashboard 🎉
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/auth-client.js"></script>
+    <script>
+      let skillTags = [];
+      let topikTags = [];
+      let jadwalDipilih = [];
+      let currentUser = null;
+
+      window.addEventListener("DOMContentLoaded", async () => {
+        // Tidak perlu requireLogin — onboarding diakses sesaat setelah OAuth
+        const token = localStorage.getItem("sb_token");
+        if (!token) {
+          window.location.href = "/pages/login.html";
+          return;
+        }
+        const user = await fetchCurrentUser();
+        currentUser = user;
+        if (user) {
+          document.getElementById("onboardNama").textContent =
+            user.nama || "Nama User";
+          document.getElementById("onboardEmail").textContent =
+            user.email || "";
+          if (user.foto) {
+            document.getElementById("onboardAvatar").innerHTML =
+              `<img src="${user.foto}" alt="${user.nama}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+          }
+        }
+      });
+
+      // Navigasi step
+      function goToStep(step) {
+        document
+          .querySelectorAll(".step-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById(`panel${step}`).classList.add("active");
+        document.querySelectorAll(".step").forEach((s, i) => {
+          s.classList.remove("active", "done");
+          if (i + 1 < step) s.classList.add("done");
+          if (i + 1 === step) s.classList.add("active");
+        });
+        document
+          .querySelectorAll(".step.done .step-dot")
+          .forEach((d) => (d.textContent = "✓"));
+        document
+          .querySelectorAll(".step:not(.done) .step-dot")
+          .forEach((d, i) => {
+            const steps = document.querySelectorAll(".step:not(.done)");
+            // rebuild numbers for non-done steps
+          });
+        // Re-set numbers
+        document.querySelectorAll(".step").forEach((s, i) => {
+          const dot = s.querySelector(".step-dot");
+          if (!s.classList.contains("done")) dot.textContent = i + 1;
+          else dot.textContent = "✓";
+        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function nextStep2() {
+        const jurusan = document.getElementById("jurusan").value.trim();
+        const universitas = document.getElementById("universitas").value.trim();
+        const jEl = document.getElementById("jurusan");
+        const uEl = document.getElementById("universitas");
+        jEl.classList.toggle("error", !jurusan);
+        uEl.classList.toggle("error", !universitas);
+        if (!jurusan || !universitas) {
+          showToast("Jurusan dan universitas wajib diisi!", "warning");
+          return;
+        }
+        goToStep(3);
+      }
+
+      function nextStep3() {
+        const tingkat = document.getElementById("tingkat").value;
+        const gaya = document.getElementById("gaya").value;
+        const lokasi = document.getElementById("lokasi").value;
+        document.getElementById("tingkat").classList.toggle("error", !tingkat);
+        document.getElementById("gaya").classList.toggle("error", !gaya);
+        document.getElementById("lokasi").classList.toggle("error", !lokasi);
+        if (!tingkat || !gaya || !lokasi) {
+          showToast("Semua field wajib diisi!", "warning");
+          return;
+        }
+        goToStep(4);
+      }
+
+      // Tag input — BEBAS ketik apa saja
+      // Tambah tag saat Enter ATAU saat blur (pindah field)
+      function addTagFromInput(wrapId, tagsArr) {
+        const wrap = document.getElementById(wrapId);
+        const input = wrap.querySelector(".tags-input");
+        const val = input.value.trim();
+        if (!val) return;
+        const existing = tagsArr === "skillTags" ? skillTags : topikTags;
+        if (existing.includes(val)) {
+          input.value = "";
+          return;
+        }
+        if (tagsArr === "skillTags") skillTags.push(val);
+        else topikTags.push(val);
+        renderTag(wrap, input, val, tagsArr);
+        input.value = "";
+      }
+
+      function addTag(event, wrapId, tagsArr) {
+        if (event.key === "Enter" || event.key === ",") {
+          event.preventDefault();
+          addTagFromInput(wrapId, tagsArr);
+        }
+      }
+
+      function renderTag(wrap, input, val, tagsArr) {
+        const tag = document.createElement("span");
+        tag.className = "tag-item";
+        // Simpan nilai di dataset — TIDAK pakai inline string agar aman dari karakter khusus
+        tag.dataset.val = val;
+        tag.dataset.arr = tagsArr;
+        const text = document.createTextNode(val + " ");
+        const btn = document.createElement("span");
+        btn.className = "tag-remove";
+        btn.textContent = "×";
+        btn.onclick = function () {
+          removeTagEl(this.parentElement);
+        };
+        tag.appendChild(text);
+        tag.appendChild(btn);
+        wrap.insertBefore(tag, input);
+      }
+
+      function removeTagEl(tagEl) {
+        const val = tagEl.dataset.val;
+        const tagsArr = tagEl.dataset.arr;
+        if (tagsArr === "skillTags")
+          skillTags = skillTags.filter((t) => t !== val);
+        else topikTags = topikTags.filter((t) => t !== val);
+        tagEl.remove();
+      }
+
+      // Fungsi helper baca tag dari DOM — fallback kalau array tidak sinkron
+      function getTagsFromDOM(wrapId) {
+        const wrap = document.getElementById(wrapId);
+        return [...wrap.querySelectorAll(".tag-item")]
+          .map((t) => t.dataset.val)
+          .filter(Boolean);
+      }
+
+      function toggleJadwal(cb) {
+        cb.closest(".jadwal-item").classList.toggle("selected", cb.checked);
+        if (cb.checked) jadwalDipilih.push(cb.value);
+        else jadwalDipilih = jadwalDipilih.filter((j) => j !== cb.value);
+      }
+
+      async function submitOnboarding() {
+        if (jadwalDipilih.length === 0) {
+          showToast("Pilih minimal 1 jadwal kosong!", "warning");
+          return;
+        }
+
+        // Auto-add teks yang belum di-Enter di input skill/topik
+        addTagFromInput("skillWrap", "skillTags");
+        addTagFromInput("topikWrap", "topikTags");
+
+        // Baca dari DOM sebagai sumber utama — lebih reliable dari array
+        const skillFinal = getTagsFromDOM("skillWrap");
+        const topikFinal = getTagsFromDOM("topikWrap");
+
+        const token = getToken();
+        const btn = document.querySelector("#panel4 .btn-next");
+        btn.textContent = "Menyimpan...";
+        btn.disabled = true;
+
+        try {
+          const r1 = await fetch("http://localhost:3000/api/auth/profil", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              nama: currentUser.nama,
+              jurusan: document.getElementById("jurusan").value.trim(),
+              universitas: document.getElementById("universitas").value.trim(),
+              bio: document.getElementById("bio").value.trim(),
+            }),
+          });
+
+          const r2 = await fetch(
+            "http://localhost:3000/api/auth/profil-belajar",
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                skill: skillFinal.join(", "),
+                topik_belajar: topikFinal.join(", "),
+                tingkat_kemampuan: document.getElementById("tingkat").value,
+                gaya_belajar: document.getElementById("gaya").value,
+                lokasi_belajar: document.getElementById("lokasi").value,
+              }),
+            },
+          );
+
+          const r3 = await fetch("http://localhost:3000/api/jadwal", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ jadwal: jadwalDipilih, replace: true }),
+          });
+
+          const d1 = await r1.json();
+          const d2 = await r2.json();
+
+          if (!d1.success || !d2.success) {
+            showToast(
+              "Gagal menyimpan: " + (d1.message || d2.message || "Error"),
+              "error",
+            );
+            btn.textContent = "Selesai & Masuk Dashboard 🎉";
+            btn.disabled = false;
+            return;
+          }
+
+          showToast("Profil berhasil disimpan! 🎉", "success");
+          setTimeout(() => {
+            window.location.href = "/pages/dashboard.html";
+          }, 1000);
+        } catch (err) {
+          showToast("Gagal menyimpan profil. Coba lagi!", "error");
+          btn.textContent = "Selesai & Masuk Dashboard 🎉";
+          btn.disabled = false;
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,616 @@
+/* ============================================
+   EDUMATE — DARK MODE CSS
+   Include di semua halaman setelah style utama
+   ============================================ */
+
+/* ===== TOGGLE BUTTON ===== */
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 500;
+  width: 44px;
+  height: 24px;
+  background: #e8e8e8;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  outline: none;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.theme-toggle::after {
+  content: '☀️';
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  line-height: 1;
+}
+
+html.dark .theme-toggle {
+  background: #f97316;
+}
+
+html.dark .theme-toggle::after {
+  content: '🌙';
+  transform: translateX(20px);
+}
+
+/* ===== DARK MODE VARIABLES ===== */
+/* Override CSS variables di root agar semua elemen yang pakai var() ikut berubah */
+html.dark {
+  --black: #f0f0f0;
+  --white: #111111;
+  --gray-50: #0d0d0d;
+  --gray-100: #1a1a1a;
+  --gray-200: #2a2a2a;
+  --gray-300: #3a3a3a;
+  --gray-400: #888888;
+  --gray-600: #bbbbbb;
+  --primary: #f97316;
+  --primary-hover: #ea6c0a;
+  --primary-light: #2a1500;
+}
+
+/* ===== BODY & BACKGROUND ===== */
+html.dark body {
+  background: var(--gray-50);
+  color: var(--black);
+}
+
+/* ===== SIDEBAR ===== */
+html.dark .sidebar {
+  background: #111111;
+  border-right-color: #2a2a2a;
+}
+
+html.dark .sidebar-brand {
+  border-bottom-color: #2a2a2a;
+}
+
+html.dark .brand-name {
+  color: #f0f0f0;
+}
+
+html.dark .nav-label {
+  color: #666;
+}
+
+html.dark .nav-item {
+  color: #aaa;
+}
+
+html.dark .nav-item:hover {
+  background: #2a1500;
+  color: #f97316;
+}
+
+html.dark .nav-item.active {
+  background: #f97316;
+  color: white;
+}
+
+html.dark .sidebar-user {
+  border-top-color: #2a2a2a;
+}
+
+html.dark .sidebar-user:hover {
+  background: #1a1a1a;
+}
+
+html.dark .user-name {
+  color: #f0f0f0;
+}
+
+html.dark .user-email {
+  color: #888;
+}
+
+/* ===== CARDS & CONTAINERS ===== */
+html.dark .card,
+html.dark .section-card,
+html.dark .stat-card,
+html.dark .filter-bar,
+html.dark .buddy-card,
+html.dark .sesi-card,
+html.dark .notif-list,
+html.dark .review-container,
+html.dark .card {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+  color: #f0f0f0;
+}
+
+html.dark .buddy-card:hover,
+html.dark .sesi-card:hover {
+  border-color: #f97316;
+}
+
+/* ===== PAGE HEADER ===== */
+html.dark .page-header h1,
+html.dark .page-header p {
+  color: #f0f0f0;
+}
+
+html.dark .page-header p {
+  color: #888;
+}
+
+/* ===== INPUTS & SELECTS ===== */
+html.dark .filter-input,
+html.dark .filter-select,
+html.dark .form-input,
+html.dark .form-select,
+html.dark .form-textarea,
+html.dark .modal-input,
+html.dark .modal-select,
+html.dark .sort-select,
+html.dark .tags-input {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+html.dark .filter-input:focus,
+html.dark .filter-select:focus,
+html.dark .form-input:focus,
+html.dark .form-select:focus,
+html.dark .form-textarea:focus,
+html.dark .modal-input:focus,
+html.dark .modal-select:focus {
+  background: #333;
+  border-color: #f97316;
+}
+
+html.dark .filter-input::placeholder,
+html.dark .modal-input::placeholder,
+html.dark .form-input::placeholder,
+html.dark .form-textarea::placeholder {
+  color: #666;
+}
+
+/* ===== TAGS ===== */
+html.dark .tags-wrap,
+html.dark .tags-input-wrap {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.dark .tags-wrap:focus-within,
+html.dark .tags-input-wrap:focus-within {
+  background: #333;
+  border-color: #f97316;
+}
+
+html.dark .tag-item {
+  background: #2a1500;
+  border-color: rgba(249,115,22,0.3);
+  color: #f97316;
+}
+
+/* ===== MODAL ===== */
+html.dark .modal-box,
+html.dark .modal {
+  background: #1a1a1a;
+  color: #f0f0f0;
+}
+
+html.dark .modal-title,
+html.dark .modal-label {
+  color: #f0f0f0;
+}
+
+html.dark .modal-sub {
+  color: #888;
+}
+
+html.dark .modal-textarea {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+html.dark .modal-textarea:focus {
+  background: #333;
+  border-color: #f97316;
+}
+
+html.dark .btn-modal-cancel {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+html.dark .btn-modal-cancel:hover {
+  background: #3a3a3a;
+}
+
+/* ===== BUTTONS ===== */
+html.dark .btn-cancel,
+html.dark .btn-back,
+html.dark .btn-profil,
+html.dark .btn-detail,
+html.dark .btn-reset {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+html.dark .btn-cancel:hover,
+html.dark .btn-back:hover,
+html.dark .btn-profil:hover,
+html.dark .btn-detail:hover,
+html.dark .btn-reset:hover {
+  background: #3a3a3a;
+}
+
+html.dark .btn-load-more {
+  background: #1a1a1a;
+  border-color: #f97316;
+  color: #f97316;
+}
+
+html.dark .btn-load-more:hover {
+  background: #f97316;
+  color: white;
+}
+
+/* ===== BUDDY CARD ===== */
+html.dark .buddy-name,
+html.dark .sesi-nama {
+  color: #f0f0f0;
+}
+
+html.dark .buddy-jurusan,
+html.dark .buddy-info-item,
+html.dark .sesi-meta-item,
+html.dark .partner-name {
+  color: #aaa;
+}
+
+html.dark .buddy-info-row {
+  background: #222;
+}
+
+html.dark .tag {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #aaa;
+}
+
+html.dark .tag.orange {
+  background: #2a1500;
+  border-color: rgba(249,115,22,0.2);
+  color: #f97316;
+}
+
+/* ===== NOTIFIKASI ===== */
+html.dark .notif-item {
+  border-bottom-color: #2a2a2a;
+}
+
+html.dark .notif-item:hover {
+  background: #1f1f1f;
+}
+
+html.dark .notif-item.unread {
+  background: #2a1500;
+}
+
+html.dark .notif-item.unread:hover {
+  background: #331a00;
+}
+
+html.dark .notif-title {
+  color: #f0f0f0;
+}
+
+html.dark .notif-desc {
+  color: #aaa;
+}
+
+html.dark .notif-group-label {
+  background: #151515;
+  border-bottom-color: #2a2a2a;
+  color: #666;
+}
+
+/* ===== TABS ===== */
+html.dark .tabs {
+  background: #1a1a1a;
+}
+
+html.dark .tab {
+  color: #888;
+}
+
+html.dark .tab.active {
+  background: #2a2a2a;
+  color: #f0f0f0;
+}
+
+/* ===== JADWAL ===== */
+html.dark .calendar-grid {
+  border-color: #2a2a2a;
+}
+
+html.dark .cal-header {
+  background: #151515;
+  border-color: #2a2a2a;
+}
+
+html.dark .cal-day-name {
+  color: #666;
+}
+
+html.dark .cal-day-num {
+  color: #f0f0f0;
+}
+
+html.dark .cal-cell {
+  border-color: #222;
+}
+
+html.dark .cal-cell:hover {
+  background: #2a1500;
+}
+
+html.dark .time-label,
+html.dark .time-col {
+  background: #151515;
+}
+
+html.dark .time-text {
+  color: #666;
+}
+
+html.dark .jadwal-item {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+}
+
+html.dark .jadwal-item:hover,
+html.dark .jadwal-item.selected {
+  border-color: #f97316;
+  background: #2a1500;
+}
+
+html.dark .jadwal-hari {
+  color: #f0f0f0;
+}
+
+html.dark .jadwal-waktu {
+  color: #888;
+}
+
+html.dark .jadwal-delete {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #888;
+}
+
+html.dark .jadwal-delete:hover {
+  background: #3a0000;
+  color: #f87171;
+  border-color: #7f1d1d;
+}
+
+/* ===== PROFIL ===== */
+html.dark .profil-nama,
+html.dark .avatar-nama {
+  color: #f0f0f0;
+}
+
+html.dark .profil-email,
+html.dark .avatar-email {
+  color: #888;
+}
+
+html.dark .stat-row-label {
+  color: #aaa;
+}
+
+html.dark .stat-row-value {
+  color: #f0f0f0;
+}
+
+html.dark .stat-row {
+  background: #222;
+}
+
+html.dark .btn-logout {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #aaa;
+}
+
+html.dark .btn-logout:hover {
+  background: #3a0000;
+  color: #f87171;
+  border-color: #7f1d1d;
+}
+
+html.dark .form-label {
+  color: #f0f0f0;
+}
+
+html.dark .form-hint {
+  color: #666;
+}
+
+html.dark .card-title {
+  color: #f0f0f0;
+  border-bottom-color: #2a2a2a;
+}
+
+/* ===== RATING ===== */
+html.dark .rating-big {
+  color: #f0f0f0;
+}
+
+html.dark .rating-total {
+  color: #888;
+}
+
+html.dark .bar-track {
+  background: #2a2a2a;
+}
+
+html.dark .review-item {
+  border-bottom-color: #2a2a2a;
+}
+
+html.dark .review-name {
+  color: #f0f0f0;
+}
+
+html.dark .review-text {
+  background: #222;
+  border-left-color: #2a1500;
+  color: #aaa;
+}
+
+html.dark .review-date,
+html.dark .review-sesi {
+  color: #666;
+}
+
+html.dark .perlu-review-item {
+  border-bottom-color: #2a2a2a;
+}
+
+html.dark .pr-name {
+  color: #f0f0f0;
+}
+
+html.dark .pr-sesi {
+  color: #888;
+}
+
+/* ===== SECTION HEADERS ===== */
+html.dark .section-title,
+html.dark .card-title {
+  color: #f0f0f0;
+}
+
+html.dark .section-action {
+  color: #888;
+}
+
+html.dark .section-action:hover {
+  color: #f97316;
+}
+
+/* ===== DASHBOARD ===== */
+html.dark .stat-card {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+}
+
+html.dark .stat-value,
+html.dark .stat-num {
+  color: #f0f0f0;
+}
+
+html.dark .stat-label {
+  color: #888;
+}
+
+html.dark .buddy-card {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+}
+
+html.dark .buddy-name {
+  color: #f0f0f0;
+}
+
+html.dark .buddy-meta {
+  color: #888;
+}
+
+html.dark .score-badge {
+  background: #f97316;
+}
+
+html.dark .empty-hint,
+html.dark .empty-state p {
+  color: #666;
+}
+
+/* ===== SESI ===== */
+html.dark .sesi-date {
+  background: #222;
+  border-color: #2a2a2a;
+}
+
+html.dark .sesi-date-day {
+  color: #f0f0f0;
+}
+
+html.dark .sesi-date-month {
+  color: #888;
+}
+
+html.dark .btn-batal {
+  background: #1a1a1a;
+  border-color: #7f1d1d;
+  color: #f87171;
+}
+
+html.dark .btn-batal:hover {
+  background: #3a0000;
+}
+
+html.dark .btn-hapus {
+  background: #1a1a1a;
+  border-color: #3a3a3a;
+  color: #888;
+}
+
+html.dark .btn-hapus:hover {
+  background: #3a0000;
+  color: #f87171;
+  border-color: #7f1d1d;
+}
+
+/* ===== NOTIF BADGE ===== */
+html.dark .nav-badge {
+  background: #f97316;
+}
+
+/* ===== SCROLLBAR ===== */
+html.dark ::-webkit-scrollbar {
+  width: 6px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #111;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* ===== TRANSITIONS ===== */
+body, .sidebar, .card, .section-card, .stat-card,
+.nav-item, .buddy-card, .sesi-card, .modal-box,
+.form-input, .form-select, .form-textarea,
+.filter-input, .filter-select, .modal-input, .modal-select {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}

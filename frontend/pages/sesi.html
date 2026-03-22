@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <script>
+    // Terapkan dark mode sebelum render untuk hindari flash
+    if (localStorage.getItem('sb_theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduMate</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --black:#0a0a0a;--primary:#f97316;--primary-hover:#ea6c0a;
+      --primary-light:#fff4ed;--white:#ffffff;--gray-50:#fafafa;
+      --gray-100:#f4f4f4;--gray-200:#e8e8e8;--gray-400:#a0a0a0;
+      --gray-600:#555;--green:#16a34a;--green-light:#f0fdf4;
+      --blue:#2563eb;--blue-light:#eff6ff;--yellow:#d97706;
+      --yellow-light:#fffbeb;--sidebar-width:240px;
+    }
+    body{font-family:"DM Sans",sans-serif;background:var(--gray-50);min-height:100vh;display:flex;color:var(--black)}
+    .sidebar{width:var(--sidebar-width);background:var(--white);border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;padding:24px 0}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 20px 24px;border-bottom:1px solid var(--gray-100);margin-bottom:16px}
+    .brand-icon{width:34px;height:34px;background:var(--primary);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .brand-name{font-family:"DM Serif Display",serif;font-size:17px;color:var(--black);letter-spacing:-0.3px}
+    .nav-section{padding:0 12px;flex:1}
+    .nav-label{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.8px;padding:0 8px;margin-bottom:6px;margin-top:16px}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:all 0.15s;text-decoration:none;color:var(--gray-600);font-size:13.5px;font-weight:400;margin-bottom:2px}
+    .nav-item:hover{background:var(--primary-light);color:var(--primary)}
+    .nav-item.active{background:var(--primary);color:var(--white)}
+    .nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+    .nav-badge{margin-left:auto;background:var(--primary);color:white;font-size:10px;font-weight:600;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;display:none}
+    .nav-item.active .nav-badge{background:white;color:var(--primary)}
+    .sidebar-user{padding:16px 20px;border-top:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.15s}
+    .sidebar-user:hover{background:var(--gray-50)}
+    .user-avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-light);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;overflow:hidden}
+    .user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .user-info{flex:1;min-width:0}
+    .user-name{font-size:13px;font-weight:600;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .user-email{font-size:11px;color:var(--gray-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .main{margin-left:var(--sidebar-width);flex:1;padding:32px}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .page-header{margin-bottom:28px;opacity:0;animation:fadeUp 0.4s ease 0.05s forwards}
+    .page-header h1{font-family:"DM Serif Display",serif;font-size:26px;letter-spacing:-0.5px;margin-bottom:4px}
+    .page-header p{color:var(--gray-400);font-size:14px}
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;opacity:0;animation:fadeUp 0.4s ease 0.1s forwards}
+    .stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:18px 20px}
+    .stat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:12px}
+    .stat-icon.orange{background:var(--primary-light)}
+    .stat-icon.green{background:var(--green-light)}
+    .stat-icon.blue{background:var(--blue-light)}
+    .stat-icon.yellow{background:var(--yellow-light)}
+    .stat-num{font-family:"DM Serif Display",serif;font-size:26px;color:var(--black);letter-spacing:-0.5px;margin-bottom:2px}
+    .stat-label{font-size:12px;color:var(--gray-400)}
+    .tabs{display:flex;gap:4px;background:var(--gray-100);border-radius:10px;padding:4px;width:fit-content;margin-bottom:20px;opacity:0;animation:fadeUp 0.4s ease 0.15s forwards}
+    .tab{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;color:var(--gray-600);border:none;background:transparent;font-family:"DM Sans",sans-serif}
+    .tab.active{background:var(--white);color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+    .sesi-list{display:flex;flex-direction:column;gap:14px;opacity:0;animation:fadeUp 0.4s ease 0.2s forwards}
+    .sesi-card{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:20px 24px;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;transition:all 0.2s}
+    .sesi-card:hover{border-color:var(--primary);box-shadow:0 4px 16px rgba(249,115,22,0.08)}
+    .sesi-date{text-align:center;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:10px 14px;min-width:56px}
+    .sesi-date-day{font-size:22px;font-weight:700;font-family:"DM Serif Display",serif;color:var(--black);line-height:1}
+    .sesi-date-month{font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+    .sesi-info{flex:1}
+    .sesi-top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .sesi-nama{font-family:"DM Serif Display",serif;font-size:16px;letter-spacing:-0.3px}
+    .sesi-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+    .sesi-badge.menunggu{background:var(--yellow-light);color:var(--yellow);border:1px solid #fde68a}
+    .sesi-badge.dikonfirmasi{background:var(--blue-light);color:var(--blue);border:1px solid #bfdbfe}
+    .sesi-badge.selesai{background:var(--green-light);color:var(--green);border:1px solid #bbf7d0}
+    .sesi-badge.dibatalkan{background:var(--gray-100);color:var(--gray-400);border:1px solid var(--gray-200)}
+    .sesi-meta{display:flex;gap:16px;flex-wrap:wrap}
+    .sesi-meta-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray-600)}
+    .sesi-partner{display:flex;align-items:center;gap:7px;margin-top:8px}
+    .partner-avatar{width:24px;height:24px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:12px;overflow:hidden;flex-shrink:0}
+    .partner-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .partner-name{font-size:12px;color:var(--gray-600)}
+    .sesi-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+    .btn-detail{padding:8px 16px;background:var(--gray-100);color:var(--black);border:1px solid var(--gray-200);border-radius:8px;font-family:"DM Sans",sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+    .btn-detail:hover{background:var(--gray-200)}
+    .btn-konfirmasi{padding:8px 16px;background:var(--primary);color:white;border:none;border-radius:8px;font-family:"DM Sans",sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:background 0.15s;white-space:nowrap}
+    .btn-konfirmasi:hover{background:var(--primary-hover)}
+    .btn-batal{padding:8px 16px;background:white;color:#dc2626;border:1px solid #fecaca;border-radius:8px;font-family:"DM Sans",sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+    .btn-batal:hover{background:#fee2e2}
+    .btn-review{padding:8px 16px;background:var(--green-light);color:var(--green);border:1px solid #bbf7d0;border-radius:8px;font-family:"DM Sans",sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+    .btn-review:hover{background:#dcfce7}
+    .btn-hapus{padding:8px 16px;background:var(--white);color:var(--gray-400);border:1px solid var(--gray-200);border-radius:8px;font-family:"DM Sans",sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+    .btn-hapus:hover{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+    .btn-join{padding:8px 16px;background:var(--blue-light);color:var(--blue);border:1px solid #bfdbfe;border-radius:8px;font-family:"DM Sans",sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap;text-decoration:none;display:inline-block}
+    .btn-join:hover{background:#dbeafe}
+    .empty-state{text-align:center;padding:60px 20px;color:var(--gray-400)}
+    .empty-state .emoji{font-size:40px;margin-bottom:12px}
+    .empty-state p{font-size:14px}
+  </style>
+  <link rel="stylesheet" href="../css/darkmode.css"/>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#f97316"/>
+        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
+        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
+        <rect x="40" y="45" width="28" height="11" fill="white"/>
+        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
+      </svg>
+      <span class="brand-name">EduMate</span>
+    </div>
+    <nav class="nav-section">
+      <div class="nav-label">Menu</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="cari-teman.html" class="nav-item"><span class="nav-icon">🔍</span> Cari Teman Belajar</a>
+      <a href="jadwal.html" class="nav-item"><span class="nav-icon">📅</span> Jadwal Saya</a>
+      <a href="sesi.html" class="nav-item active"><span class="nav-icon">📖</span> Sesi Belajar</a>
+      <div class="nav-label">Lainnya</div>
+      <a href="notifikasi.html" class="nav-item"><span class="nav-icon">🔔</span> Notifikasi<span class="nav-badge" id="notifBadge" style="display:none">0</span></a>
+      <a href="rating.html" class="nav-item"><span class="nav-icon">⭐</span> Rating & Review</a>
+      <a href="profil.html" class="nav-item"><span class="nav-icon">👤</span> Profil Saya</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="user-avatar">👤</div>
+      <div class="user-info">
+        <div class="user-name">Nama User</div>
+        <div class="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6a0f070b03062a0d070b030644090507">[email&#160;protected]</a></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <h1>Sesi Belajar</h1>
+      <p>Kelola semua sesi belajarmu — yang akan datang, sedang berjalan, maupun yang sudah selesai.</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-icon orange">📖</div><div class="stat-num" id="statTotal">-</div><div class="stat-label">Total Sesi</div></div>
+      <div class="stat-card"><div class="stat-icon blue">🕐</div><div class="stat-num" id="statMendatang">-</div><div class="stat-label">Akan Datang</div></div>
+      <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-num" id="statSelesai">-</div><div class="stat-label">Selesai</div></div>
+      <div class="stat-card"><div class="stat-icon yellow">⭐</div><div class="stat-num" id="statRating">-</div><div class="stat-label">Rating Rata-rata</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab(this,'semua')">Semua</button>
+      <button class="tab" onclick="switchTab(this,'mendatang')">Akan Datang</button>
+      <button class="tab" onclick="switchTab(this,'selesai')">Selesai</button>
+      <button class="tab" onclick="switchTab(this,'dibatalkan')">Dibatalkan</button>
+    </div>
+
+    <div class="sesi-list" id="sesiList">
+      <div style="text-align:center;color:var(--gray-400);padding:40px">Memuat sesi...</div>
+    </div>
+  </main>
+
+  <!-- MODAL DETAIL -->
+  <div id="modalDetail" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;">
+    <div id="modalDetailBox" style="background:white;border-radius:16px;padding:28px;width:460px;max-width:90vw;transform:translateY(20px);transition:transform 0.2s;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <h3 style="font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-0.3px;">Detail Sesi Belajar</h3>
+        <button onclick="tutupModalDetail()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#a0a0a0;">×</button>
+      </div>
+      <div id="modalDetailContent"></div>
+    </div>
+  </div>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../js/auth-client.js"></script>
+  <script>
+    const API = 'http://localhost:3000/api';
+    let allSesi = [];
+    let currentUser = null;
+    let currentFilter = 'semua';
+
+    function formatTanggal(tgl) {
+      if (!tgl) return { day: '-', month: '-' };
+      try {
+        const parts = tgl.split('T')[0].split('-');
+        const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        return { day: parseInt(parts[2]), month: bulan[parseInt(parts[1])-1] || '-' };
+      } catch(e) { return { day: '-', month: '-' }; }
+    }
+
+    function formatJam(jam) { return jam ? jam.substring(0,5) : '-'; }
+
+    function getStatusInfo(status) {
+      const map = {
+        'pending':  { label: '⏳ Menunggu',    cls: 'menunggu',     filter: 'mendatang' },
+        'diterima': { label: '✓ Dikonfirmasi', cls: 'dikonfirmasi', filter: 'mendatang' },
+        'selesai':  { label: '✓ Selesai',      cls: 'selesai',      filter: 'selesai'   },
+        'ditolak':  { label: '✕ Dibatalkan',   cls: 'dibatalkan',   filter: 'dibatalkan'},
+      };
+      return map[status] || { label: status, cls: 'dibatalkan', filter: 'dibatalkan' };
+    }
+
+    function renderSesi(filter) {
+      currentFilter = filter;
+      const list = document.getElementById('sesiList');
+      const filtered = filter === 'semua' ? allSesi : allSesi.filter(s => getStatusInfo(s.status).filter === filter);
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="emoji">📭</div><p>Tidak ada sesi di kategori ini.</p></div>';
+        return;
+      }
+
+      list.innerHTML = filtered.map(s => {
+        const tgl = formatTanggal(s.tanggal);
+        const statusInfo = getStatusInfo(s.status);
+        const isKirim = parseInt(s.pengirim_id) === parseInt(currentUser.id);
+        const partnerNama = isKirim ? s.penerima_nama : s.pengirim_nama;
+        const partnerFoto = isKirim ? s.penerima_foto : s.pengirim_foto;
+        const opacity = s.status === 'ditolak' ? 'opacity:0.7;' : '';
+
+        const avatarHtml = partnerFoto
+          ? '<img src="' + encodeURI(partnerFoto) + '" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'
+          : '👤';
+
+        let actions = '';
+        if (s.status === 'pending' && !isKirim) {
+          actions = '<button class="btn-konfirmasi" onclick="updateStatus(' + s.id + ',\'diterima\')">✓ Konfirmasi</button>'
+                  + '<button class="btn-batal" onclick="updateStatus(' + s.id + ',\'ditolak\')">Batalkan</button>';
+        } else if (s.status === 'pending' && isKirim) {
+          actions = '<button class="btn-detail" style="cursor:default;opacity:0.6">Menunggu...</button>'
+                  + '<button class="btn-batal" onclick="updateStatus(' + s.id + ',\'ditolak\')">Batalkan</button>';
+        } else if (s.status === 'diterima') {
+          const joinBtn = s.link_meeting
+            ? '<a class="btn-join" href="' + s.link_meeting + '" target="_blank">🔗 Join Meeting</a>'
+            : '';
+          actions = joinBtn
+                  + '<button class="btn-detail" onclick="bukaDetail(' + s.id + ')">Lihat Detail</button>'
+                  + '<button class="btn-batal" onclick="updateStatus(' + s.id + ',\'ditolak\')">Batalkan</button>';
+        } else if (s.status === 'selesai') {
+          actions = '<button class="btn-review" onclick="window.location.href=\'rating.html\'">⭐ Beri Rating</button>'
+                  + '<button class="btn-detail" onclick="bukaDetail(' + s.id + ')">Lihat Detail</button>'
+                  + '<button class="btn-hapus" onclick="hapusSesi(' + s.id + ')" title="Hapus dari daftar">🗑 Hapus</button>';
+        } else if (s.status === 'ditolak') {
+          actions = '<button class="btn-detail" onclick="bukaDetail(' + s.id + ')">Lihat Detail</button>'
+                  + '<button class="btn-hapus" onclick="hapusSesi(' + s.id + ')" title="Hapus dari daftar">🗑 Hapus</button>';
+        }
+
+        return '<div class="sesi-card" style="' + opacity + '">'
+          + '<div class="sesi-date"><div class="sesi-date-day">' + tgl.day + '</div><div class="sesi-date-month">' + tgl.month + '</div></div>'
+          + '<div class="sesi-info">'
+          + '<div class="sesi-top"><span class="sesi-nama">' + s.mata_kuliah + '</span>'
+          + '<span class="sesi-badge ' + statusInfo.cls + '">' + statusInfo.label + '</span></div>'
+          + '<div class="sesi-meta"><span class="sesi-meta-item">🕐 ' + formatJam(s.jam_mulai) + ' – ' + formatJam(s.jam_selesai) + '</span>'
+          + (s.lokasi ? '<span class="sesi-meta-item">📍 ' + s.lokasi + '</span>' : '')
+          + (s.link_meeting ? '<span class="sesi-meta-item">🔗 <a href="' + s.link_meeting + '" target="_blank" style="color:var(--blue);text-decoration:none;">Link Meeting</a></span>' : '') + '</div>'
+          + '<div class="sesi-partner"><div class="partner-avatar">' + avatarHtml + '</div>'
+          + '<span class="partner-name">Bersama <strong>' + (partnerNama || '-') + '</strong></span></div>'
+          + '</div>'
+          + '<div class="sesi-actions">' + actions + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
+    function updateStats() {
+      document.getElementById('statTotal').textContent = allSesi.length;
+      document.getElementById('statMendatang').textContent = allSesi.filter(s => s.status === 'pending' || s.status === 'diterima').length;
+      document.getElementById('statSelesai').textContent = allSesi.filter(s => s.status === 'selesai').length;
+    }
+
+    function switchTab(el, filter) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderSesi(filter);
+    }
+
+    async function updateStatus(id, status) {
+      const token = getToken();
+      try {
+        const res = await fetch(API + '/sesi/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ status })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(status === 'diterima' ? 'Sesi berhasil dikonfirmasi! ✅' : 'Sesi berhasil dibatalkan.', status === 'diterima' ? 'success' : 'info');
+          await loadSesi();
+        } else {
+          showToast('Gagal: ' + data.message, 'error');
+        }
+      } catch (err) {
+        showToast('Terjadi kesalahan, coba lagi.', 'error');
+      }
+    }
+
+    async function hapusSesi(id) {
+      const token = getToken();
+      try {
+        const res = await fetch(API + '/sesi/' + id, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Sesi berhasil dihapus.', 'info');
+          await loadSesi();
+        } else {
+          showToast('Gagal: ' + data.message, 'error');
+        }
+      } catch (err) {
+        showToast('Terjadi kesalahan, coba lagi.', 'error');
+      }
+    }
+
+    async function loadSesi() {
+      const token = getToken();
+      try {
+        const res = await fetch(API + '/sesi', { headers: { 'Authorization': 'Bearer ' + token } });
+        const data = await res.json();
+        if (data.success) {
+          allSesi = data.sesi;
+          updateStats();
+          renderSesi(currentFilter);
+        }
+      } catch (err) {
+        showToast('Gagal memuat sesi.', 'error');
+      }
+    }
+
+    function bukaDetail(sesiId) {
+      const sesi = allSesi.find(s => s.id === sesiId);
+      if (!sesi) return;
+      const statusInfo = getStatusInfo(sesi.status);
+      const isKirim = parseInt(sesi.pengirim_id) === parseInt(currentUser.id);
+      const partnerNama = isKirim ? sesi.penerima_nama : sesi.pengirim_nama;
+      const partnerFoto = isKirim ? sesi.penerima_foto : sesi.pengirim_foto;
+      const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      const d = new Date(sesi.tanggal);
+      const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+      const tgl = hari[d.getDay()] + ', ' + d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+      const bgStatus = sesi.status === 'diterima' ? '#eff6ff' : sesi.status === 'selesai' ? '#f0fdf4' : '#fffbeb';
+      const clrStatus = sesi.status === 'diterima' ? '#2563eb' : sesi.status === 'selesai' ? '#16a34a' : '#d97706';
+      const avatarHtml = partnerFoto
+        ? '<img src="' + encodeURI(partnerFoto) + '" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;">'
+        : '<span style="font-size:20px">👤</span>';
+
+      document.getElementById('modalDetailContent').innerHTML =
+        '<div style="display:flex;align-items:center;gap:14px;padding:16px;background:#fafafa;border-radius:12px;margin-bottom:20px;">'
+        + '<div style="width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#FFF4ED;display:flex;align-items:center;justify-content:center;">' + avatarHtml + '</div>'
+        + '<div><div style="font-weight:600;font-size:14px;">' + partnerNama + '</div>'
+        + '<div style="font-size:12px;color:#a0a0a0;">' + (isKirim ? 'Kamu mengajak' : 'Mengajakmu belajar') + '</div></div>'
+        + '<span style="margin-left:auto;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:' + bgStatus + ';color:' + clrStatus + ';">' + statusInfo.label + '</span>'
+        + '</div>'
+        + '<div style="display:flex;flex-direction:column;gap:12px;">'
+        + '<div style="display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">📚</span><div><div style="font-size:11px;color:#a0a0a0;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Mata Kuliah</div><div style="font-size:14px;font-weight:600;">' + sesi.mata_kuliah + '</div></div></div>'
+        + '<div style="display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">📅</span><div><div style="font-size:11px;color:#a0a0a0;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Tanggal</div><div style="font-size:14px;font-weight:600;">' + tgl + '</div></div></div>'
+        + '<div style="display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">🕐</span><div><div style="font-size:11px;color:#a0a0a0;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Waktu</div><div style="font-size:14px;font-weight:600;">' + formatJam(sesi.jam_mulai) + ' – ' + formatJam(sesi.jam_selesai) + '</div></div></div>'
+        + (sesi.lokasi ? '<div style="display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">📍</span><div><div style="font-size:11px;color:#a0a0a0;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Lokasi</div><div style="font-size:14px;font-weight:600;">' + sesi.lokasi + '</div></div></div>' : '')
+        + (sesi.link_meeting ? '<div style="display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">🔗</span><div><div style="font-size:11px;color:#a0a0a0;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Link Meeting</div><div style="font-size:14px;font-weight:600;"><a href="' + sesi.link_meeting + '" target="_blank" style="color:#2563eb;">Klik untuk Join</a></div></div></div>' : '')
+        + '</div>'
+        + '<div style="margin-top:20px;padding-top:16px;border-top:1px solid #f4f4f4;display:flex;justify-content:flex-end;">'
+        + '<button onclick="tutupModalDetail()" style="padding:10px 20px;background:#f4f4f4;border:none;border-radius:9px;font-family:\'DM Sans\',sans-serif;font-size:13px;cursor:pointer;">Tutup</button></div>';
+
+      const overlay = document.getElementById('modalDetail');
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'all';
+      document.getElementById('modalDetailBox').style.transform = 'translateY(0)';
+    }
+
+    function tutupModalDetail() {
+      const overlay = document.getElementById('modalDetail');
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+      document.getElementById('modalDetailBox').style.transform = 'translateY(20px)';
+    }
+
+    document.getElementById('modalDetail').addEventListener('click', function(e) {
+      if (e.target === this) tutupModalDetail();
+    });
+    async function loadRating() {
+      const token = getToken();
+      try {
+        const meRes = await fetch(API + '/auth/me', { headers: { 'Authorization': 'Bearer ' + token } });
+        const meData = await meRes.json();
+        if (meData.user) {
+          const ratingRes = await fetch(API + '/rating/' + parseInt(meData.user.id), { headers: { 'Authorization': 'Bearer ' + token } });
+          const ratingData = await ratingRes.json();
+          if (ratingData.success && ratingData.rata_rata) {
+            document.getElementById('statRating').textContent = parseFloat(ratingData.rata_rata).toFixed(1);
+          } else {
+            document.getElementById('statRating').textContent = '-';
+          }
+        }
+      } catch(e) { document.getElementById('statRating').textContent = '-'; }
+    }
+
+    initPage().then(user => {
+      currentUser = user;
+      currentUser.id = parseInt(user.id);
+      loadSesi();
+      loadRating();
+    });
+  </script>
+</body>
+</html>
