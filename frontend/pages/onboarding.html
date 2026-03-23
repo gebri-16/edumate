@@ -18,6 +18,79 @@
         padding: 0;
         box-sizing: border-box;
       }
+      @media (max-width: 480px) {
+  body {
+    padding: 16px 12px;
+    align-items: flex-start;
+  }
+ 
+  .container {
+    max-width: 100%;
+  }
+ 
+  /* Progress step label lebih kecil di HP */
+  .step-label {
+    font-size: 9px !important;
+    white-space: normal !important;
+    text-align: center;
+  }
+ 
+  .step-dot {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 11px !important;
+  }
+ 
+  /* Card padding lebih kecil */
+  .card {
+    padding: 20px 16px !important;
+    border-radius: 12px !important;
+  }
+ 
+  .panel-title {
+    font-size: 18px !important;
+  }
+ 
+  /* Form 1 kolom di HP */
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+ 
+  .form-group.full {
+    grid-column: 1 !important;
+  }
+ 
+  /* Jadwal 1 kolom di HP */
+  .jadwal-grid {
+    grid-template-columns: 1fr !important;
+  }
+ 
+  /* Actions tombol full width */
+  .actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+ 
+  .btn-back {
+    width: 100%;
+    text-align: center;
+  }
+ 
+  .btn-next {
+    width: 100%;
+  }
+ 
+  /* Avatar lebih kecil */
+  .avatar-big {
+    width: 72px !important;
+    height: 72px !important;
+    font-size: 32px !important;
+  }
+ 
+  .avatar-nama {
+    font-size: 15px !important;
+  }
+}
       :root {
         --primary: #f97316;
         --primary-hover: #ea6c0a;

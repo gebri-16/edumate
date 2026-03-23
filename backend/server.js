@@ -13,28 +13,55 @@ require("./scheduler");
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend')));
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/pages/login.html'));
-});
 app.use(express.urlencoded({ extended: true }));
 
-// Session - dibutuhkan untuk Google OAuth
+// FIX: Gunakan MySQL session store hanya di production (Railway)
+// Di localhost pakai MemoryStore agar tidak perlu konek ke FreeSQLDatabase
+let sessionStore;
+if (process.env.NODE_ENV === 'production') {
+  const MySQLStore = require("express-mysql-session")(session);
+  sessionStore = new MySQLStore({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    clearExpired: true,
+    checkExpirationInterval: 900000,
+    expiration: 86400000,
+    createDatabaseTable: true,
+  });
+  console.log('Session store: MySQL (production)');
+} else {
+  console.log('Session store: Memory (development)');
+}
+
 app.use(
   session({
-    secret: process.env.JWT_SECRET,
+    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET,
     resave: false,
     saveUninitialized: false,
-  }),
+    store: sessionStore, // undefined = MemoryStore di development
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      maxAge: 5 * 60 * 1000, // 5 menit
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    }
+  })
 );
 
-// Passport
+// Passport — harus setelah session
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serve frontend static files
-app.use(express.static(path.join(__dirname, "../frontend")));
-app.use(express.static("frontend"));
+// Static files
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Root redirect ke login
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/pages/login.html'));
+});
 
 // Test route
 app.get("/api", (req, res) => {

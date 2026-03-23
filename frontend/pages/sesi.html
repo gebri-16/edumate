@@ -544,8 +544,30 @@
       }
     </style>
     <link rel="stylesheet" href="../css/darkmode.css" />
+    <link rel="stylesheet" href="../css/responsive.css"/>
   </head>
   <body>
+    <!-- Mobile Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Mobile Topbar -->
+<div class="mobile-topbar">
+  <a class="mobile-topbar-brand" href="dashboard.html">
+    <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" rx="22" fill="#f97316"/>
+      <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
+      <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
+      <rect x="40" y="45" width="28" height="11" fill="white"/>
+      <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
+    </svg>
+    EduMate
+  </a>
+  <div class="mobile-topbar-right">
+    <button class="btn-hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</div>
     <aside class="sidebar">
       <div class="sidebar-brand">
         <svg
@@ -1163,5 +1185,15 @@
         loadRating();
       });
     </script>
+    <script>
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const btn = document.getElementById('hamburgerBtn');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+    btn.classList.toggle('open');
+  }
+</script>
   </body>
 </html>
