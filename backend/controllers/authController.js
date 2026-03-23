@@ -4,37 +4,86 @@ require('dotenv').config();
 
 // ==================== GOOGLE CALLBACK ====================
 exports.googleCallback = (req, res) => {
-  const user = req.user;
-  const token = jwt.sign(
-    { id: user.id, nama: user.nama, email: user.email, foto: user.foto },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
-  );
+  // FIX: Regenerate session untuk cegah session fixation
+  // (mencegah session user lama dipakai user baru)
+  req.session.regenerate((err) => {
+    if (err) {
+      console.error('Session regenerate error:', err);
+      return res.redirect('/pages/login.html?error=session');
+    }
 
-  const sudahIsiProfil = user.jurusan !== null && user.jurusan !== undefined && user.jurusan !== '';
-  console.log('User jurusan:', user.jurusan);
-  console.log('Redirect ke:', sudahIsiProfil ? 'dashboard' : 'onboarding');
+    const user = req.user;
 
-  if (sudahIsiProfil) {
-    res.send(`
-      <!DOCTYPE html><html><body>
-      <script>
-        localStorage.setItem('sb_token', '${token}');
-        window.location.href = '/pages/dashboard.html';
-      </script>
-      </body></html>
-    `);
-  } else {
-    res.send(`
-      <!DOCTYPE html><html><body>
-      <script>
-        localStorage.setItem('sb_token', '${token}');
-        window.location.href = '/pages/onboarding.html';
-      </script>
-      </body></html>
-    `);
-  }
+    if (!user) {
+      return res.redirect('/pages/login.html?error=no_user');
+    }
+
+    const token = jwt.sign(
+      { id: user.id, nama: user.nama, email: user.email, foto: user.foto },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    const sudahIsiProfil =
+      user.jurusan !== null &&
+      user.jurusan !== undefined &&
+      user.jurusan !== '';
+
+    console.log('User email:', user.email);
+    console.log('User jurusan:', user.jurusan);
+    console.log('Redirect ke:', sudahIsiProfil ? 'dashboard' : 'onboarding');
+
+    // FIX: Simpan token di session sementara, BUKAN embed langsung di HTML
+    // Embed token di HTML string rentan terhadap caching browser
+    req.session.pendingToken = token;
+    req.session.redirectTarget = sudahIsiProfil ? 'dashboard' : 'onboarding';
+
+    // Simpan session dulu sebelum redirect
+    req.session.save((saveErr) => {
+      if (saveErr) {
+        console.error('Session save error:', saveErr);
+        return res.redirect('/pages/login.html?error=session');
+      }
+      res.redirect('/api/auth/token-exchange');
+    });
+  });
 };
+
+// ==================== TOKEN EXCHANGE ====================
+// FIX: Endpoint baru — ambil token dari session lalu hapus setelah dipakai
+// Ini menggantikan pola embed token langsung di HTML
+exports.tokenExchange = (req, res) => {
+  const token = req.session.pendingToken;
+  const redirectTarget = req.session.redirectTarget;
+
+  if (!token) {
+    return res.redirect('/pages/login.html?error=no_token');
+  }
+
+  // Hapus dari session setelah diambil agar tidak bisa dipakai ulang
+  delete req.session.pendingToken;
+  delete req.session.redirectTarget;
+
+  const page = redirectTarget === 'dashboard' ? 'dashboard' : 'onboarding';
+
+  // FIX: localStorage.removeItem dulu sebelum setItem
+  // agar token user sebelumnya benar-benar terhapus
+  // FIX: JSON.stringify(token) untuk escape karakter aman (cegah XSS)
+  // FIX: window.location.replace agar halaman login tidak masuk history browser
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <body>
+        <script>
+          localStorage.removeItem('sb_token');
+          localStorage.setItem('sb_token', ${JSON.stringify(token)});
+          window.location.replace('/pages/${page}.html');
+        </script>
+      </body>
+    </html>
+  `);
+};
+
 // ==================== GET CURRENT USER ====================
 exports.getMe = (req, res) => {
   const userId = req.user.id;
@@ -97,8 +146,20 @@ exports.updateProfilBelajar = (req, res) => {
 };
 
 // ==================== LOGOUT ====================
+// FIX: session.destroy() agar session server benar-benar dihapus
+// (bukan hanya req.logout() yang hanya unset req.user)
 exports.logout = (req, res) => {
-  req.logout(() => {
-    res.json({ success: true, message: 'Logout berhasil' });
+  req.logout((logoutErr) => {
+    if (logoutErr) {
+      console.error('Logout error:', logoutErr);
+    }
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        console.error('Session destroy error:', destroyErr);
+        return res.status(500).json({ success: false, message: 'Gagal logout' });
+      }
+      res.clearCookie('connect.sid'); // hapus cookie session di browser
+      res.json({ success: true, message: 'Logout berhasil' });
+    });
   });
 };

@@ -20,7 +20,25 @@ function getToken() {
 function requireLogin() {
   const token = getToken();
   if (!token) {
-    window.location.href = '/pages/login.html';
+    window.location.replace('/pages/login.html');
+    return null;
+  }
+
+  // FIX: Cek token expired di sisi client sebelum request ke server
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp && payload.exp < now) {
+      localStorage.removeItem('sb_token');
+      localStorage.removeItem('sb_notif_count');
+      window.location.replace('/pages/login.html?error=session_expired');
+      return null;
+    }
+    return payload;
+  } catch (err) {
+    localStorage.removeItem('sb_token');
+    window.location.replace('/pages/login.html?error=invalid_token');
+    return null;
   }
 }
 
@@ -82,6 +100,13 @@ async function fetchCurrentUser() {
     const res = await fetch(`${API_BASE}/me`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
+    // FIX: Jika 401, token tidak valid — force logout
+    if (res.status === 401 || res.status === 403) {
+      localStorage.removeItem('sb_token');
+      localStorage.removeItem('sb_notif_count');
+      window.location.replace('/pages/login.html?error=unauthorized');
+      return null;
+    }
     if (!res.ok) return null;
     const data = await res.json();
     return data.user;
@@ -108,10 +133,10 @@ function updateSidebar(user) {
     el.textContent = user.nama || 'Pengguna';
   });
 
- document.querySelectorAll('.user-email').forEach(el => {
-  el.innerHTML = '';
-  el.textContent = user.email || '';
-});
+  document.querySelectorAll('.user-email').forEach(el => {
+    el.innerHTML = '';
+    el.textContent = user.email || '';
+  });
 
   document.querySelectorAll('.user-avatar').forEach(el => {
     if (user.foto) {
@@ -138,10 +163,7 @@ async function updateNotifBadge() {
     const data = await res.json();
     const count = data.count || 0;
 
-    // FIX: Update SEMUA elemen nav-badge di sidebar — selector lebih luas
-    // Cari semua .nav-badge di dalam nav-item yang mengarah ke notifikasi
     document.querySelectorAll('.nav-badge').forEach(el => {
-      // Pastikan hanya badge di nav-item notifikasi
       const navItem = el.closest('.nav-item');
       if (navItem && (navItem.href?.includes('notifikasi') || navItem.getAttribute('href')?.includes('notifikasi'))) {
         el.textContent = count;
@@ -149,7 +171,6 @@ async function updateNotifBadge() {
       }
     });
 
-    // Juga update badge dengan id spesifik jika ada (untuk halaman tertentu)
     const namedBadges = ['notifBadge', 'navBadge'];
     namedBadges.forEach(id => {
       const el = document.getElementById(id);
@@ -159,7 +180,6 @@ async function updateNotifBadge() {
       }
     });
 
-    // Deteksi notif baru dan tampilkan toast
     const prevCount = parseInt(localStorage.getItem('sb_notif_count') || '0');
     if (count > prevCount && prevCount !== 0) {
       showToast('Kamu punya notifikasi baru! 🔔', 'info');
@@ -177,20 +197,33 @@ function startNotifPolling() {
 
 // ==================== LOGOUT ====================
 
+// FIX: Kirim request POST ke server untuk destroy session,
+// lalu hapus semua data lokal dan redirect ke login
 async function logout() {
-  localStorage.removeItem('sb_token');
-  localStorage.removeItem('sb_notif_count');
-  window.location.href = '/pages/login.html';
+  try {
+    await fetch(`${API_BASE}/logout`, {
+      method: 'POST', // FIX: harus POST, bukan GET
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (err) {
+    console.error('Logout error:', err);
+    // Tetap lanjut clear lokal meski request gagal
+  } finally {
+    // FIX: Hapus semua data auth di browser
+    localStorage.removeItem('sb_token');
+    localStorage.removeItem('sb_notif_count');
+    sessionStorage.clear();
+    // FIX: Pakai replace agar halaman sebelumnya tidak bisa di-back
+    window.location.replace('/pages/login.html');
+  }
 }
 
 // ==================== DARK MODE ====================
 
 function initDarkMode() {
-  // Terapkan dark mode dari localStorage sebelum render
   const isDark = localStorage.getItem('sb_theme') === 'dark';
   if (isDark) document.documentElement.classList.add('dark');
 
-  // Buat tombol toggle
   const btn = document.createElement('button');
   btn.className = 'theme-toggle';
   btn.title = 'Toggle Dark/Light Mode';

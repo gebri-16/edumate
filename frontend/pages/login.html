@@ -16,7 +16,6 @@
     html, body { min-height: 100vh; font-family: "DM Sans", sans-serif; color: var(--black); overflow-x: hidden; }
     body { background-color: var(--white); position: relative; }
 
-    /* Grid pattern */
     body::before {
       content: "";
       position: fixed; inset: 0;
@@ -24,8 +23,6 @@
       background-size: 36px 36px;
       opacity: 0.55; z-index: 0; pointer-events: none;
     }
-
-    /* Radial fade centre */
     body::after {
       content: "";
       position: fixed; inset: 0;
@@ -33,7 +30,6 @@
       z-index: 0; pointer-events: none;
     }
 
-    /* Floating shapes */
     .shape { position: fixed; z-index: 0; pointer-events: none; }
     .shape-1 { width:90px;height:90px;background:rgba(249,115,22,0.1);border:1.5px solid rgba(249,115,22,0.2);border-radius:20px;top:80px;left:80px;transform:rotate(15deg);animation:float1 7s ease-in-out infinite; }
     .shape-2 { width:50px;height:50px;background:rgba(249,115,22,0.08);border:1.5px solid rgba(249,115,22,0.15);border-radius:12px;bottom:100px;left:120px;transform:rotate(-12deg);animation:float2 9s ease-in-out infinite; }
@@ -46,10 +42,8 @@
     @keyframes float2 { 0%,100%{transform:rotate(-12deg) translateY(0)} 50%{transform:rotate(-12deg) translateY(14px)} }
     @keyframes float3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-22px)} }
 
-    /* Wrapper */
     .wrapper { position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 24px; }
 
-    /* Card */
     .card {
       width:100%;max-width:480px;
       background:rgba(255,255,255,0.93);
@@ -59,23 +53,19 @@
       box-shadow:0 1px 0 rgba(255,255,255,0.8) inset,0 20px 60px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
     }
 
-    /* Brand */
     .brand { display:flex;align-items:center;gap:10px;margin-bottom:28px;opacity:0;animation:slideUp 0.4s ease 0.05s forwards; }
     .brand-icon { width:36px;height:36px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 12px rgba(249,115,22,0.3); }
     .brand-name { font-family:"DM Serif Display",serif;font-size:18px;color:var(--black);letter-spacing:-0.3px; }
 
-    /* Badge */
     .badge { display:inline-flex;align-items:center;gap:7px;background:var(--orange-light);border:1px solid rgba(249,115,22,0.2);color:var(--orange);font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:100px;letter-spacing:0.3px;margin-bottom:16px;opacity:0;animation:slideUp 0.4s ease 0.1s forwards; }
     .badge-dot { width:6px;height:6px;background:var(--orange);border-radius:50%;animation:pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
 
-    /* Heading */
     .heading { margin-bottom:28px;opacity:0;animation:slideUp 0.4s ease 0.15s forwards; }
     .heading h1 { font-family:"DM Serif Display",serif;font-size:36px;color:var(--black);letter-spacing:-1px;line-height:1.15;margin-bottom:10px; }
     .heading h1 em { font-style:italic;color:var(--orange); }
     .heading p { font-size:14px;color:var(--gray-400);line-height:1.6; }
 
-    /* Google button */
     .btn-google { width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:14px 20px;background:var(--black);color:var(--white);border:none;border-radius:12px;font-family:"DM Sans",sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.2s ease;letter-spacing:-0.1px;margin-bottom:24px;position:relative;overflow:hidden;opacity:0;animation:slideUp 0.4s ease 0.2s forwards; }
     .btn-google::after { content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(249,115,22,0.18) 0%,transparent 60%);opacity:0;transition:opacity 0.2s; }
     .btn-google:hover { background:#1c1c1c;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,0.18); }
@@ -84,12 +74,10 @@
     .google-icon { width:20px;height:20px;flex-shrink:0;position:relative;z-index:1; }
     .btn-google span { position:relative;z-index:1; }
 
-    /* Divider */
     .divider { display:flex;align-items:center;gap:12px;margin-bottom:20px;opacity:0;animation:slideUp 0.4s ease 0.25s forwards; }
     .divider-line { flex:1;height:1px;background:var(--gray-200); }
     .divider-text { font-size:11.5px;color:var(--gray-400);font-weight:500;white-space:nowrap; }
 
-    /* Features */
     .feature-list { display:flex;flex-direction:column;gap:10px;margin-bottom:20px;opacity:0;animation:slideUp 0.4s ease 0.3s forwards; }
     .feature-item { display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--gray-100);border-radius:10px;background:var(--gray-50);transition:all 0.15s; }
     .feature-item:hover { border-color:rgba(249,115,22,0.25);background:var(--orange-light);transform:translateX(2px); }
@@ -97,25 +85,109 @@
     .feature-text h4 { font-size:13px;font-weight:600;color:var(--black);margin-bottom:1px; }
     .feature-text p { font-size:11.5px;color:var(--gray-400);line-height:1.4; }
 
-    /* Stats */
     .stats { display:flex;align-items:center;padding:16px 0;border-top:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100);margin-bottom:20px;opacity:0;animation:slideUp 0.4s ease 0.35s forwards; }
     .stat { flex:1;text-align:center;padding:0 12px; }
     .stat+.stat { border-left:1px solid var(--gray-200); }
     .stat-num { font-family:"DM Serif Display",serif;font-size:20px;color:var(--black);letter-spacing:-0.5px;line-height:1;margin-bottom:3px; }
     .stat-label { font-size:10.5px;color:var(--gray-400);font-weight:500; }
 
-    /* Footer */
     .footer { text-align:center;opacity:0;animation:slideUp 0.4s ease 0.4s forwards; }
     .footer p { font-size:11.5px;color:var(--gray-400);line-height:1.6; }
-    .footer a { color:var(--orange);text-decoration:none;font-weight:500; }
+    .footer a { color:var(--orange);text-decoration:none;font-weight:500;cursor:pointer; }
     .footer a:hover { text-decoration:underline; }
 
     @keyframes slideUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ==================== MODAL ==================== */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 16px;
+      width: 100%; max-width: 520px;
+      max-height: 80vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.15);
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from{opacity:0;transform:translateY(16px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
+
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--gray-200);
+      flex-shrink: 0;
+    }
+    .modal-header h2 {
+      font-family: "DM Serif Display", serif;
+      font-size: 18px; color: var(--black);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .modal-close {
+      width: 32px; height: 32px;
+      background: var(--gray-100); border: none;
+      border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: var(--gray-400);
+      transition: all 0.15s;
+    }
+    .modal-close:hover { background: var(--gray-200); color: var(--black); }
+
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .modal-body h3 {
+      font-size: 13px; font-weight: 600; color: var(--black);
+      margin-top: 16px; margin-bottom: 6px;
+    }
+    .modal-body h3:first-child { margin-top: 0; }
+    .modal-body p {
+      font-size: 12.5px; color: var(--gray-400);
+      line-height: 1.7; margin-bottom: 8px;
+    }
+    .modal-body ul {
+      font-size: 12.5px; color: var(--gray-400);
+      line-height: 1.7; padding-left: 16px; margin-bottom: 8px;
+    }
+    .modal-body ul li { margin-bottom: 4px; }
+
+    .modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--gray-200);
+      flex-shrink: 0;
+    }
+    .modal-footer p {
+      font-size: 11px; color: var(--gray-400);
+      text-align: center; line-height: 1.5;
+    }
+    .btn-modal-close {
+      width: 100%; padding: 11px;
+      background: var(--black); color: var(--white);
+      border: none; border-radius: 10px;
+      font-family: "DM Sans", sans-serif;
+      font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+      margin-bottom: 8px;
+    }
+    .btn-modal-close:hover { background: #1c1c1c; }
 
     @media (max-width:520px) {
       .card{padding:28px 24px;}
       .heading h1{font-size:28px;}
       .shape-1,.shape-5{display:none;}
+      .modal { max-height: 90vh; }
     }
   </style>
 </head>
@@ -131,12 +203,12 @@
     <div class="card">
       <div class="brand">
         <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="22" fill="#f97316"/>
-        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
-        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
-        <rect x="40" y="45" width="28" height="11" fill="white"/>
-        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
-      </svg>
+          <rect width="100" height="100" rx="22" fill="#f97316"/>
+          <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
+          <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
+          <rect x="40" y="45" width="28" height="11" fill="white"/>
+          <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
+        </svg>
         <span class="brand-name">EduMate</span>
       </div>
 
@@ -206,9 +278,130 @@
       </div>
 
       <div class="footer">
-        <p>Dengan masuk, kamu menyetujui <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a> EduMate.</p>
+        <p>Dengan masuk, kamu menyetujui <a onclick="openModal('syarat')">Syarat & Ketentuan</a> dan <a onclick="openModal('privasi')">Kebijakan Privasi</a> EduMate.</p>
       </div>
     </div>
   </div>
+
+  <!-- Modal Syarat & Ketentuan -->
+  <div class="modal-overlay" id="modal-syarat" onclick="closeOnOverlay(event, 'syarat')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>📋 Syarat & Ketentuan</h2>
+        <button class="modal-close" onclick="closeModal('syarat')">✕</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Penerimaan Syarat</h3>
+        <p>Dengan menggunakan EduMate, kamu menyetujui syarat dan ketentuan ini. Harap baca dengan seksama sebelum menggunakan layanan kami.</p>
+
+        <h3>2. Penggunaan Layanan</h3>
+        <p>EduMate adalah platform pencarian teman belajar yang ditujukan untuk mahasiswa. Kamu setuju untuk:</p>
+        <ul>
+          <li>Menggunakan platform hanya untuk tujuan belajar yang sah</li>
+          <li>Memberikan informasi yang benar dan akurat saat mendaftar</li>
+          <li>Tidak menyalahgunakan fitur matching untuk tujuan lain</li>
+          <li>Menghormati pengguna lain dan menjaga etika berkomunikasi</li>
+        </ul>
+
+        <h3>3. Akun Pengguna</h3>
+        <p>Akun EduMate dibuat melalui Google OAuth. Kamu bertanggung jawab atas keamanan akunmu dan semua aktivitas yang terjadi di bawah akunmu.</p>
+
+        <h3>4. Konten Pengguna</h3>
+        <p>Kamu bertanggung jawab atas semua informasi yang kamu bagikan di platform, termasuk profil belajar, skill, dan jadwal. Dilarang membagikan konten yang menyinggung, berbahaya, atau melanggar hukum.</p>
+
+        <h3>5. Penghentian Layanan</h3>
+        <p>EduMate berhak menangguhkan atau menghapus akun yang melanggar syarat dan ketentuan ini tanpa pemberitahuan sebelumnya.</p>
+
+        <h3>6. Perubahan Syarat</h3>
+        <p>EduMate dapat mengubah syarat dan ketentuan ini sewaktu-waktu. Perubahan akan diberitahukan melalui platform. Penggunaan berkelanjutan berarti kamu menyetujui perubahan tersebut.</p>
+
+        <h3>7. Kontak</h3>
+        <p>Jika ada pertanyaan mengenai syarat dan ketentuan ini, hubungi kami melalui halaman profil EduMate.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-close" onclick="closeModal('syarat')">Saya Mengerti</button>
+        <p>Terakhir diperbarui: Maret 2026</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Kebijakan Privasi -->
+  <div class="modal-overlay" id="modal-privasi" onclick="closeOnOverlay(event, 'privasi')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>🔒 Kebijakan Privasi</h2>
+        <button class="modal-close" onclick="closeModal('privasi')">✕</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Data yang Kami Kumpulkan</h3>
+        <p>EduMate mengumpulkan data berikut saat kamu mendaftar dan menggunakan platform:</p>
+        <ul>
+          <li>Nama lengkap dan foto profil dari akun Google</li>
+          <li>Alamat email Google</li>
+          <li>Informasi profil belajar (jurusan, universitas, skill, jadwal)</li>
+          <li>Data aktivitas seperti sesi belajar dan rating</li>
+        </ul>
+
+        <h3>2. Cara Kami Menggunakan Data</h3>
+        <p>Data yang dikumpulkan digunakan untuk:</p>
+        <ul>
+          <li>Menampilkan profil kamu kepada pengguna lain yang relevan</li>
+          <li>Menjalankan algoritma matching teman belajar</li>
+          <li>Mengirim notifikasi dan reminder sesi belajar</li>
+          <li>Meningkatkan kualitas layanan EduMate</li>
+        </ul>
+
+        <h3>3. Berbagi Data</h3>
+        <p>EduMate tidak menjual atau membagikan data pribadimu kepada pihak ketiga untuk tujuan komersial. Data hanya dibagikan kepada pengguna lain sesuai kebutuhan fitur matching.</p>
+
+        <h3>4. Keamanan Data</h3>
+        <p>Kami menggunakan enkripsi JWT dan HTTPS untuk melindungi data kamu. Namun tidak ada sistem yang 100% aman — gunakan platform dengan bijak.</p>
+
+        <h3>5. Hak Pengguna</h3>
+        <p>Kamu berhak untuk:</p>
+        <ul>
+          <li>Mengakses dan memperbarui data profilmu kapan saja</li>
+          <li>Menghapus akun dan semua data terkait</li>
+          <li>Meminta informasi tentang data yang kami simpan</li>
+        </ul>
+
+        <h3>6. Cookie & Session</h3>
+        <p>EduMate menggunakan cookie session untuk proses login Google OAuth. Cookie ini bersifat sementara dan dihapus setelah proses login selesai.</p>
+
+        <h3>7. Perubahan Kebijakan</h3>
+        <p>Kebijakan privasi ini dapat berubah sewaktu-waktu. Perubahan signifikan akan diberitahukan melalui platform.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-close" onclick="closeModal('privasi')">Saya Mengerti</button>
+        <p>Terakhir diperbarui: Maret 2026</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal(type) {
+      document.getElementById('modal-' + type).classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(type) {
+      document.getElementById('modal-' + type).classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function closeOnOverlay(event, type) {
+      if (event.target === event.currentTarget) {
+        closeModal(type);
+      }
+    }
+
+    // Tutup modal dengan tombol Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('syarat');
+        closeModal('privasi');
+      }
+    });
+  </script>
 </body>
 </html>

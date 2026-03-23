@@ -1,0 +1,303 @@
+/* ============================================
+   EDUMATE — RESPONSIVE CSS
+   Import di semua halaman kecuali login & onboarding
+   <link rel="stylesheet" href="../css/responsive.css"/>
+   ============================================ */
+
+/* ===== BREAKPOINTS =====
+   Mobile  : < 768px
+   Tablet  : 768px - 1024px
+   Desktop : > 1024px
+   ====================== */
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 200px;
+  }
+
+  .main {
+    padding: 24px 24px;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .right-col {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+  /* Sembunyikan sidebar di mobile */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+    width: 260px !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Overlay gelap saat sidebar terbuka */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 199;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+  }
+
+  /* Main konten full width */
+  .main {
+    margin-left: 0 !important;
+    padding: 72px 16px 24px;
+    width: 100%;
+  }
+
+  /* ===== TOP NAV BAR (mobile) ===== */
+  .mobile-topbar {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 150;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+
+  .mobile-topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "DM Serif Display", serif;
+    font-size: 16px;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .mobile-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-hamburger {
+    width: 36px;
+    height: 36px;
+    background: var(--gray-100);
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .btn-hamburger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--black);
+    border-radius: 2px;
+    transition: all 0.25s ease;
+  }
+
+  .btn-hamburger.open span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .btn-hamburger.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .btn-hamburger.open span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Theme toggle di mobile — masuk ke topbar */
+  .theme-toggle {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+  }
+
+  /* ===== PAGE HEADER ===== */
+  .page-header {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .page-header-left h1 {
+    font-size: 24px !important;
+  }
+
+  .date-badge {
+    align-self: flex-start;
+  }
+
+  /* ===== STATS ROW ===== */
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-value,
+  .stat-num {
+    font-size: 22px !important;
+  }
+
+  /* ===== CONTENT GRID ===== */
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ===== SECTION CARD ===== */
+  .section-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  /* ===== FILTER BAR ===== */
+  .filter-bar {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .filter-input,
+  .filter-select,
+  .sort-select {
+    width: 100% !important;
+  }
+
+  /* ===== BUDDY CARD ===== */
+  .buddy-card {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* ===== PROFIL ===== */
+  .profil-layout,
+  .profil-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ===== FORM GRID ===== */
+  .form-grid,
+  .form-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ===== JADWAL ===== */
+  .jadwal-grid,
+  .jadwal-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .jadwal-checkbox-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ===== SESI ===== */
+  .sesi-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .sesi-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+
+  .sesi-actions button {
+    flex: 1;
+  }
+
+  /* ===== RATING ===== */
+  .rating-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ===== MODAL ===== */
+  .modal-box,
+  .modal {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 0 auto;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  /* ===== TABS ===== */
+  .tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* ===== NOTIFIKASI ===== */
+  .notif-list {
+    border-radius: 12px;
+  }
+}
+
+/* ===== DARK MODE TOPBAR ===== */
+html.dark .mobile-topbar {
+  background: #111111;
+  border-bottom-color: #2a2a2a;
+}
+
+html.dark .mobile-topbar-brand {
+  color: #f0f0f0;
+}
+
+html.dark .btn-hamburger {
+  background: #2a2a2a;
+}
+
+html.dark .btn-hamburger span {
+  background: #f0f0f0;
+}
+
+/* Sembunyikan topbar di desktop */
+.mobile-topbar {
+  display: none;
+}

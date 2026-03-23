@@ -6,10 +6,11 @@ require('dotenv').config();
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-callbackURL: (process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, '') + '/api/auth/google/callback',
-  prompt: 'select_account'
+  callbackURL: (process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, '') + '/api/auth/google/callback',
+  passReqToCallback: true  // FIX: aktifkan agar req tersedia di callback
 },
-(accessToken, refreshToken, profile, done) => {
+// FIX: tambahkan req sebagai parameter pertama
+(req, accessToken, refreshToken, profile, done) => {
   const email = profile.emails[0].value;
   const nama = profile.displayName;
   const foto = profile.photos[0].value;
@@ -29,6 +30,7 @@ callbackURL: (process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, ''
         (err, newUser) => {
           if (err) return done(err);
           db.query('SELECT * FROM users WHERE id = ?', [newUser.insertId], (err, user) => {
+            if (err) return done(err);
             return done(null, user[0]);
           });
         }
@@ -38,9 +40,11 @@ callbackURL: (process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, ''
 }));
 
 passport.serializeUser((user, done) => done(null, user.id));
+
 passport.deserializeUser((id, done) => {
   db.query('SELECT * FROM users WHERE id = ?', [id], (err, result) => {
-    done(err, result[0]);
+    if (err) return done(err);
+    done(null, result[0]);
   });
 });
 
