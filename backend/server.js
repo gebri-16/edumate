@@ -6,6 +6,7 @@ const passport = require("./config/passport");
 require("dotenv").config();
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Scheduler (auto-selesai & reminder)
 require("./scheduler");
