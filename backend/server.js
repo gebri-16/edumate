@@ -16,37 +16,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// FIX: Gunakan MySQL session store hanya di production (Railway)
-// Di localhost pakai MemoryStore agar tidak perlu konek ke FreeSQLDatabase
-let sessionStore;
-if (process.env.NODE_ENV === 'production') {
-  const MySQLStore = require("express-mysql-session")(session);
-  sessionStore = new MySQLStore({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    clearExpired: true,
-    checkExpirationInterval: 900000,
-    expiration: 86400000,
-    createDatabaseTable: true,
-  });
-  console.log('Session store: MySQL (production)');
-} else {
-  console.log('Session store: Memory (development)');
-}
-
+// FIX: Pakai MemoryStore saja — tidak butuh MySQL session store
+// Session hanya dipakai sebentar saat OAuth redirect (< 1 menit)
+// Token JWT yang handle auth jangka panjang, bukan session
 app.use(
   session({
     secret: process.env.SESSION_SECRET || process.env.JWT_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: sessionStore, // undefined = MemoryStore di development
+    // Tidak pakai store — pakai MemoryStore default
+    // MemoryStore cukup karena session hanya hidup saat OAuth berlangsung
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
-      maxAge: 5 * 60 * 1000, // 5 menit
+      maxAge: 5 * 60 * 1000, // 5 menit — cukup untuk proses OAuth
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
   })
