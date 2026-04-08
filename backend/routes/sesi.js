@@ -3,10 +3,14 @@ const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
 const db = require('../config/database');
 
+// FIX: Parse tanggal manual dari string YYYY-MM-DD agar tidak kena offset timezone
 function formatTanggal(tglStr) {
   const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  const d = new Date(tglStr);
-  return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+  // Ambil langsung dari string, jangan pakai new Date() yang konversi ke UTC dulu
+  const parts = (tglStr instanceof Date)
+    ? [tglStr.getFullYear(), tglStr.getMonth() + 1, tglStr.getDate()]
+    : tglStr.toString().split('T')[0].split('-').map(Number);
+  return `${parts[2]} ${bulan[parts[1] - 1]} ${parts[0]}`;
 }
 
 // POST /api/sesi — buat ajakan sesi belajar baru
@@ -26,7 +30,6 @@ router.post('/', verifyToken, (req, res) => {
 
   db.query(query, [pengirim_id, penerima_id, mata_kuliah, tanggal, jam_mulai, jam_selesai, lokasi, link_meeting || null], (err, result) => {
     if (err) {
-      // Kalau kolom link_meeting belum ada di DB, coba tanpa link_meeting
       if (err.code === 'ER_BAD_FIELD_ERROR') {
         const queryFallback = `
           INSERT INTO sesi_belajar (pengirim_id, penerima_id, mata_kuliah, tanggal, jam_mulai, jam_selesai, lokasi, status)
@@ -88,7 +91,6 @@ router.put('/:id', verifyToken, (req, res) => {
   const { status } = req.body;
   const userId = req.user.id;
 
-  // Ambil data sesi dulu
   db.query('SELECT * FROM sesi_belajar WHERE id = ?', [id], (err, sesiResult) => {
     if (err || sesiResult.length === 0) {
       return res.status(404).json({ success: false, message: 'Sesi tidak ditemukan' });
@@ -98,15 +100,11 @@ router.put('/:id', verifyToken, (req, res) => {
     const isPengirim = sesi.pengirim_id === userId;
     const isPenerima = sesi.penerima_id === userId;
 
-    // Validasi hak akses berdasarkan status yang diminta:
-    // - 'diterima' / 'ditolak' → hanya penerima
-    // - 'ditolak' sebagai pembatalan → pengirim ATAU penerima boleh
     if (status === 'diterima') {
       if (!isPenerima) {
         return res.status(403).json({ success: false, message: 'Hanya penerima yang bisa mengkonfirmasi sesi' });
       }
     } else if (status === 'ditolak') {
-      // Baik pengirim maupun penerima boleh batalkan
       if (!isPengirim && !isPenerima) {
         return res.status(403).json({ success: false, message: 'Kamu tidak memiliki akses ke sesi ini' });
       }
@@ -121,7 +119,6 @@ router.put('/:id', verifyToken, (req, res) => {
         if (err) return res.status(500).json({ success: false, message: 'Gagal update status' });
         if (result.affectedRows === 0) return res.status(404).json({ success: false, message: 'Sesi tidak ditemukan' });
 
-        // Kirim notifikasi ke pihak lain
         const targetId = isPengirim ? sesi.penerima_id : sesi.pengirim_id;
         db.query('SELECT nama FROM users WHERE id = ?', [userId], (err, userResult) => {
           if (!err && userResult.length > 0) {
@@ -134,11 +131,9 @@ router.put('/:id', verifyToken, (req, res) => {
               pesan = `${namaUser} menerima ajakanmu belajar ${sesi.mata_kuliah}`;
             } else if (status === 'ditolak') {
               if (isPengirim) {
-                // Pengirim yang batalkan — beritahu penerima
                 judul = 'Sesi Belajar Dibatalkan';
                 pesan = `${namaUser} membatalkan ajakan belajar ${sesi.mata_kuliah}`;
               } else {
-                // Penerima yang tolak — beritahu pengirim
                 judul = 'Ajakan Belajar Ditolak';
                 pesan = `${namaUser} tidak dapat menghadiri sesi ${sesi.mata_kuliah} yang kamu ajukan`;
               }
@@ -161,7 +156,6 @@ router.put('/:id', verifyToken, (req, res) => {
 });
 
 // DELETE /api/sesi/:id — hapus sesi dari tampilan
-// Hanya sesi dengan status 'ditolak' atau 'selesai' yang bisa dihapus
 router.delete('/:id', verifyToken, (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;

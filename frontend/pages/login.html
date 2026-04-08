@@ -54,7 +54,6 @@
     }
 
     .brand { display:flex;align-items:center;gap:10px;margin-bottom:28px;opacity:0;animation:slideUp 0.4s ease 0.05s forwards; }
-    .brand-icon { width:36px;height:36px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 12px rgba(249,115,22,0.3); }
     .brand-name { font-family:"DM Serif Display",serif;font-size:18px;color:var(--black);letter-spacing:-0.3px; }
 
     .badge { display:inline-flex;align-items:center;gap:7px;background:var(--orange-light);border:1px solid rgba(249,115,22,0.2);color:var(--orange);font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:100px;letter-spacing:0.3px;margin-bottom:16px;opacity:0;animation:slideUp 0.4s ease 0.1s forwards; }
@@ -85,11 +84,58 @@
     .feature-text h4 { font-size:13px;font-weight:600;color:var(--black);margin-bottom:1px; }
     .feature-text p { font-size:11.5px;color:var(--gray-400);line-height:1.4; }
 
-    .stats { display:flex;align-items:center;padding:16px 0;border-top:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100);margin-bottom:20px;opacity:0;animation:slideUp 0.4s ease 0.35s forwards; }
+    /* ===== STATS DINAMIS ===== */
+    .stats {
+      display:flex;align-items:center;
+      padding:16px 0;
+      border-top:1px solid var(--gray-100);
+      border-bottom:1px solid var(--gray-100);
+      margin-bottom:20px;
+      opacity:0;animation:slideUp 0.4s ease 0.35s forwards;
+    }
     .stat { flex:1;text-align:center;padding:0 12px; }
     .stat+.stat { border-left:1px solid var(--gray-200); }
-    .stat-num { font-family:"DM Serif Display",serif;font-size:20px;color:var(--black);letter-spacing:-0.5px;line-height:1;margin-bottom:3px; }
+
+    .stat-num {
+      font-family:"DM Serif Display",serif;
+      font-size:20px;color:var(--black);
+      letter-spacing:-0.5px;line-height:1;margin-bottom:3px;
+      transition: all 0.3s ease;
+    }
     .stat-label { font-size:10.5px;color:var(--gray-400);font-weight:500; }
+
+    /* Online dot di label */
+    .stat-online-dot {
+      display:inline-block;
+      width:6px;height:6px;
+      background:#16a34a;border-radius:50%;
+      margin-right:4px;
+      animation:pulse 2s ease-in-out infinite;
+      vertical-align:middle;
+    }
+
+    /* Loading skeleton */
+    .stat-num.loading {
+      background: var(--gray-200);
+      border-radius: 6px;
+      color: transparent;
+      animation: shimmer 1.2s ease-in-out infinite;
+      min-width: 40px;
+      display: inline-block;
+    }
+    @keyframes shimmer {
+      0%,100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Counter animation */
+    @keyframes countUp {
+      from { transform: translateY(8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .stat-num.updated {
+      animation: countUp 0.3s ease forwards;
+    }
 
     .footer { text-align:center;opacity:0;animation:slideUp 0.4s ease 0.4s forwards; }
     .footer p { font-size:11.5px;color:var(--gray-400);line-height:1.6; }
@@ -99,95 +145,30 @@
     @keyframes slideUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 
     /* ==================== MODAL ==================== */
-    .modal-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .modal-overlay.active { display: flex; }
-
-    .modal {
-      background: var(--white);
-      border-radius: 16px;
-      width: 100%; max-width: 520px;
-      max-height: 80vh;
-      display: flex; flex-direction: column;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.15);
-      animation: modalIn 0.25s ease;
-    }
+    .modal-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center;padding:24px; }
+    .modal-overlay.active { display:flex; }
+    .modal { background:var(--white);border-radius:16px;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.15);animation:modalIn 0.25s ease; }
     @keyframes modalIn { from{opacity:0;transform:translateY(16px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
-
-    .modal-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 24px 16px;
-      border-bottom: 1px solid var(--gray-200);
-      flex-shrink: 0;
-    }
-    .modal-header h2 {
-      font-family: "DM Serif Display", serif;
-      font-size: 18px; color: var(--black);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .modal-close {
-      width: 32px; height: 32px;
-      background: var(--gray-100); border: none;
-      border-radius: 8px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; color: var(--gray-400);
-      transition: all 0.15s;
-    }
-    .modal-close:hover { background: var(--gray-200); color: var(--black); }
-
-    .modal-body {
-      padding: 20px 24px;
-      overflow-y: auto;
-      flex: 1;
-    }
-    .modal-body h3 {
-      font-size: 13px; font-weight: 600; color: var(--black);
-      margin-top: 16px; margin-bottom: 6px;
-    }
-    .modal-body h3:first-child { margin-top: 0; }
-    .modal-body p {
-      font-size: 12.5px; color: var(--gray-400);
-      line-height: 1.7; margin-bottom: 8px;
-    }
-    .modal-body ul {
-      font-size: 12.5px; color: var(--gray-400);
-      line-height: 1.7; padding-left: 16px; margin-bottom: 8px;
-    }
-    .modal-body ul li { margin-bottom: 4px; }
-
-    .modal-footer {
-      padding: 14px 24px;
-      border-top: 1px solid var(--gray-200);
-      flex-shrink: 0;
-    }
-    .modal-footer p {
-      font-size: 11px; color: var(--gray-400);
-      text-align: center; line-height: 1.5;
-    }
-    .btn-modal-close {
-      width: 100%; padding: 11px;
-      background: var(--black); color: var(--white);
-      border: none; border-radius: 10px;
-      font-family: "DM Sans", sans-serif;
-      font-size: 13.5px; font-weight: 600;
-      cursor: pointer; transition: background 0.15s;
-      margin-bottom: 8px;
-    }
-    .btn-modal-close:hover { background: #1c1c1c; }
+    .modal-header { display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--gray-200);flex-shrink:0; }
+    .modal-header h2 { font-family:"DM Serif Display",serif;font-size:18px;color:var(--black);display:flex;align-items:center;gap:8px; }
+    .modal-close { width:32px;height:32px;background:var(--gray-100);border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gray-400);transition:all 0.15s; }
+    .modal-close:hover { background:var(--gray-200);color:var(--black); }
+    .modal-body { padding:20px 24px;overflow-y:auto;flex:1; }
+    .modal-body h3 { font-size:13px;font-weight:600;color:var(--black);margin-top:16px;margin-bottom:6px; }
+    .modal-body h3:first-child { margin-top:0; }
+    .modal-body p { font-size:12.5px;color:var(--gray-400);line-height:1.7;margin-bottom:8px; }
+    .modal-body ul { font-size:12.5px;color:var(--gray-400);line-height:1.7;padding-left:16px;margin-bottom:8px; }
+    .modal-body ul li { margin-bottom:4px; }
+    .modal-footer { padding:14px 24px;border-top:1px solid var(--gray-200);flex-shrink:0; }
+    .modal-footer p { font-size:11px;color:var(--gray-400);text-align:center;line-height:1.5; }
+    .btn-modal-close { width:100%;padding:11px;background:var(--black);color:var(--white);border:none;border-radius:10px;font-family:"DM Sans",sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;transition:background 0.15s;margin-bottom:8px; }
+    .btn-modal-close:hover { background:#1c1c1c; }
 
     @media (max-width:520px) {
       .card{padding:28px 24px;}
       .heading h1{font-size:28px;}
       .shape-1,.shape-5{display:none;}
-      .modal { max-height: 90vh; }
+      .modal{max-height:90vh;}
     }
   </style>
 </head>
@@ -262,18 +243,21 @@
         </div>
       </div>
 
+      <!-- Stats dinamis dari database -->
       <div class="stats">
         <div class="stat">
-          <div class="stat-num">100%</div>
-          <div class="stat-label">Gratis</div>
+          <div class="stat-num loading" id="statUsers">—</div>
+          <div class="stat-label">Pengguna Terdaftar</div>
         </div>
         <div class="stat">
-          <div class="stat-num">Smart</div>
-          <div class="stat-label">Algoritma Matching</div>
+          <div class="stat-num loading" id="statOnline">—</div>
+          <div class="stat-label">
+            <span class="stat-online-dot"></span>Sedang Online
+          </div>
         </div>
         <div class="stat">
-          <div class="stat-num">Auto</div>
-          <div class="stat-label">Reminder Sesi</div>
+          <div class="stat-num loading" id="statSesi">—</div>
+          <div class="stat-label">Sesi Selesai</div>
         </div>
       </div>
 
@@ -293,7 +277,6 @@
       <div class="modal-body">
         <h3>1. Penerimaan Syarat</h3>
         <p>Dengan menggunakan EduMate, kamu menyetujui syarat dan ketentuan ini. Harap baca dengan seksama sebelum menggunakan layanan kami.</p>
-
         <h3>2. Penggunaan Layanan</h3>
         <p>EduMate adalah platform pencarian teman belajar yang ditujukan untuk mahasiswa. Kamu setuju untuk:</p>
         <ul>
@@ -302,19 +285,14 @@
           <li>Tidak menyalahgunakan fitur matching untuk tujuan lain</li>
           <li>Menghormati pengguna lain dan menjaga etika berkomunikasi</li>
         </ul>
-
         <h3>3. Akun Pengguna</h3>
         <p>Akun EduMate dibuat melalui Google OAuth. Kamu bertanggung jawab atas keamanan akunmu dan semua aktivitas yang terjadi di bawah akunmu.</p>
-
         <h3>4. Konten Pengguna</h3>
         <p>Kamu bertanggung jawab atas semua informasi yang kamu bagikan di platform, termasuk profil belajar, skill, dan jadwal. Dilarang membagikan konten yang menyinggung, berbahaya, atau melanggar hukum.</p>
-
         <h3>5. Penghentian Layanan</h3>
         <p>EduMate berhak menangguhkan atau menghapus akun yang melanggar syarat dan ketentuan ini tanpa pemberitahuan sebelumnya.</p>
-
         <h3>6. Perubahan Syarat</h3>
-        <p>EduMate dapat mengubah syarat dan ketentuan ini sewaktu-waktu. Perubahan akan diberitahukan melalui platform. Penggunaan berkelanjutan berarti kamu menyetujui perubahan tersebut.</p>
-
+        <p>EduMate dapat mengubah syarat dan ketentuan ini sewaktu-waktu. Perubahan akan diberitahukan melalui platform.</p>
         <h3>7. Kontak</h3>
         <p>Jika ada pertanyaan mengenai syarat dan ketentuan ini, hubungi kami melalui halaman profil EduMate.</p>
       </div>
@@ -341,7 +319,6 @@
           <li>Informasi profil belajar (jurusan, universitas, skill, jadwal)</li>
           <li>Data aktivitas seperti sesi belajar dan rating</li>
         </ul>
-
         <h3>2. Cara Kami Menggunakan Data</h3>
         <p>Data yang dikumpulkan digunakan untuk:</p>
         <ul>
@@ -350,13 +327,10 @@
           <li>Mengirim notifikasi dan reminder sesi belajar</li>
           <li>Meningkatkan kualitas layanan EduMate</li>
         </ul>
-
         <h3>3. Berbagi Data</h3>
-        <p>EduMate tidak menjual atau membagikan data pribadimu kepada pihak ketiga untuk tujuan komersial. Data hanya dibagikan kepada pengguna lain sesuai kebutuhan fitur matching.</p>
-
+        <p>EduMate tidak menjual atau membagikan data pribadimu kepada pihak ketiga untuk tujuan komersial.</p>
         <h3>4. Keamanan Data</h3>
-        <p>Kami menggunakan enkripsi JWT dan HTTPS untuk melindungi data kamu. Namun tidak ada sistem yang 100% aman — gunakan platform dengan bijak.</p>
-
+        <p>Kami menggunakan enkripsi JWT dan HTTPS untuk melindungi data kamu.</p>
         <h3>5. Hak Pengguna</h3>
         <p>Kamu berhak untuk:</p>
         <ul>
@@ -364,10 +338,8 @@
           <li>Menghapus akun dan semua data terkait</li>
           <li>Meminta informasi tentang data yang kami simpan</li>
         </ul>
-
         <h3>6. Cookie & Session</h3>
         <p>EduMate menggunakan cookie session untuk proses login Google OAuth. Cookie ini bersifat sementara dan dihapus setelah proses login selesai.</p>
-
         <h3>7. Perubahan Kebijakan</h3>
         <p>Kebijakan privasi ini dapat berubah sewaktu-waktu. Perubahan signifikan akan diberitahukan melalui platform.</p>
       </div>
@@ -379,6 +351,43 @@
   </div>
 
   <script>
+    // ===== LOAD STATS DARI DATABASE =====
+    async function loadStats() {
+      try {
+        const res  = await fetch('/api/auth/stats');
+        const data = await res.json();
+        if (!data.success) return;
+
+        // Animasi counter
+        function animateCount(el, target) {
+          el.classList.remove('loading');
+          el.classList.add('updated');
+          // Format angka dengan + jika > 0
+          const formatted = target >= 1000
+            ? (target / 1000).toFixed(1) + 'k'
+            : target.toString();
+          el.textContent = formatted;
+          setTimeout(() => el.classList.remove('updated'), 400);
+        }
+
+        animateCount(document.getElementById('statUsers'),  data.total_users);
+        animateCount(document.getElementById('statOnline'), data.online_users);
+        animateCount(document.getElementById('statSesi'),   data.total_sesi);
+
+      } catch(err) {
+        // Fallback jika gagal — tampilkan tanda tanya
+        ['statUsers', 'statOnline', 'statSesi'].forEach(id => {
+          const el = document.getElementById(id);
+          el.classList.remove('loading');
+          el.textContent = '—';
+        });
+      }
+    }
+
+    // Load stats saat halaman dibuka
+    loadStats();
+
+    // ===== MODAL =====
     function openModal(type) {
       document.getElementById('modal-' + type).classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -390,12 +399,9 @@
     }
 
     function closeOnOverlay(event, type) {
-      if (event.target === event.currentTarget) {
-        closeModal(type);
-      }
+      if (event.target === event.currentTarget) closeModal(type);
     }
 
-    // Tutup modal dengan tombol Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeModal('syarat');

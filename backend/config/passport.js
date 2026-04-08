@@ -6,7 +6,7 @@ require('dotenv').config();
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: (process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, '') + '/api/auth/google/callback',
+  callbackURL: (process.env.NEXTAUTH_URL || 'http://localhost:3000').replace(/\/$/, '') + '/api/auth/google/callback',
   passReqToCallback: true  // FIX: aktifkan agar req tersedia di callback
 },
 // FIX: tambahkan req sebagai parameter pertama

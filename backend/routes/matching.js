@@ -52,18 +52,33 @@ function hitungSkor(userA, userB, jadwalA, jadwalB) {
   return skor;
 }
 
+// helper//
+function getOnlineStatus(lastActive) {
+  if (!lastActive) return { online: false, label: 'Offline' };
+  const diff  = Date.now() - new Date(lastActive).getTime();
+  const menit = Math.floor(diff / 60000);
+  if (menit < 5)  return { online: true,  label: 'Online' };
+  if (menit < 60) return { online: false, label: `${menit} mnt lalu` };
+  const jam = Math.floor(menit / 60);
+  if (jam < 24)   return { online: false, label: `${jam} jam lalu` };
+  const hari = Math.floor(jam / 24);
+  if (hari === 1) return { online: false, label: 'Kemarin' };
+  return { online: false, label: `${hari} hari lalu` };
+}
+
 // GET /api/matching
 router.get('/', verifyToken, (req, res) => {
   const userId = req.user.id;
 
-  // 1. Ambil profil user yang sedang login
-  const queryUserSaya = `
-    SELECT u.id, u.nama, u.email, u.foto, u.jurusan, u.universitas,
-           pb.skill, pb.topik_belajar, pb.tingkat_kemampuan, pb.gaya_belajar, pb.lokasi_belajar
-    FROM users u
-    LEFT JOIN profil_belajar pb ON u.id = pb.user_id
-    WHERE u.id = ?
-  `;
+  // query queryUserSaya:
+const queryUserSaya = `
+  SELECT u.id, u.nama, u.email, u.foto, u.jurusan, u.universitas,
+         u.last_active,
+         pb.skill, pb.topik_belajar, pb.tingkat_kemampuan, pb.gaya_belajar, pb.lokasi_belajar
+  FROM users u
+  LEFT JOIN profil_belajar pb ON u.id = pb.user_id
+  WHERE u.id = ?
+`;
 
   db.query(queryUserSaya, [userId], (err, userSayaResult) => {
     if (err) return res.status(500).json({ success: false, message: 'Error ambil profil saya' });
@@ -77,12 +92,13 @@ router.get('/', verifyToken, (req, res) => {
 
       // 3. Ambil semua user lain beserta profil belajar
       const querySemuaUser = `
-        SELECT u.id, u.nama, u.email, u.foto, u.jurusan, u.universitas,
-               pb.skill, pb.topik_belajar, pb.tingkat_kemampuan, pb.gaya_belajar, pb.lokasi_belajar
-        FROM users u
-        LEFT JOIN profil_belajar pb ON u.id = pb.user_id
-        WHERE u.id != ?
-      `;
+  SELECT u.id, u.nama, u.email, u.foto, u.jurusan, u.universitas,
+         u.last_active,
+         pb.skill, pb.topik_belajar, pb.tingkat_kemampuan, pb.gaya_belajar, pb.lokasi_belajar
+  FROM users u
+  LEFT JOIN profil_belajar pb ON u.id = pb.user_id
+  WHERE u.id != ?
+`;
 
       db.query(querySemuaUser, [userId], (err, semuaUser) => {
         if (err) return res.status(500).json({ success: false, message: 'Error ambil semua user' });
@@ -98,14 +114,17 @@ router.get('/', verifyToken, (req, res) => {
 
           // 5. Hitung skor matching untuk setiap user
           const matches = semuaUser.map(userLain => {
-            const jadwalLain = semuaJadwal.filter(j => j.user_id === userLain.id);
-            const skor = hitungSkor(userSaya, userLain, jadwalSaya, jadwalLain);
-            return {
-              ...userLain,
-              skor,
-              persentase: skor
-            };
-          });
+  const jadwalLain = semuaJadwal.filter(j => j.user_id === userLain.id);
+  const skor = hitungSkor(userSaya, userLain, jadwalSaya, jadwalLain);
+  const status = getOnlineStatus(userLain.last_active);
+  return {
+    ...userLain,
+    skor,
+    persentase: skor,
+    online: status.online,
+    label:  status.label,
+  };
+});
 
           // 6. Tampilkan SEMUA user, urutkan dari skor tertinggi
           // Tidak ada filter skor > 0 agar semua user lain tetap muncul

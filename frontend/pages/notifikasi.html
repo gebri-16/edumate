@@ -1,819 +1,431 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EduMate</title>
-    <script>
-      if (localStorage.getItem("sb_theme") === "dark") {
-        document.documentElement.classList.add("dark");
-      }
-    </script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../css/darkmode.css" />
-    <link rel="stylesheet" href="../css/responsive.css"/>
-    <style>
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      :root {
-        --black: #0a0a0a;
-        --primary: #f97316;
-        --primary-hover: #ea6c0a;
-        --primary-light: #fff4ed;
-        --white: #ffffff;
-        --gray-50: #fafafa;
-        --gray-100: #f4f4f4;
-        --gray-200: #e8e8e8;
-        --gray-400: #a0a0a0;
-        --gray-600: #555;
-        --green: #16a34a;
-        --green-light: #f0fdf4;
-        --blue: #2563eb;
-        --blue-light: #eff6ff;
-        --yellow: #d97706;
-        --yellow-light: #fffbeb;
-        --sidebar-width: 240px;
-      }
-      body {
-        font-family: "DM Sans", sans-serif;
-        background: var(--gray-50);
-        min-height: 100vh;
-        display: flex;
-        color: var(--black);
-      }
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduMate — Notifikasi</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/responsive.css"/>
+  <link rel="stylesheet" href="../css/sidebar.css"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-      /* ===== SIDEBAR ===== */
-      .sidebar {
-        width: var(--sidebar-width);
-        background: var(--white);
-        border-right: 1px solid var(--gray-200);
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        z-index: 100;
-        padding: 24px 0;
-      }
-      .sidebar-brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 0 20px 24px;
-        border-bottom: 1px solid var(--gray-100);
-        margin-bottom: 16px;
-      }
-      .brand-icon {
-        width: 34px;
-        height: 34px;
-        background: var(--primary);
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        flex-shrink: 0;
-      }
-      .brand-name {
-        font-family: "DM Serif Display", serif;
-        font-size: 17px;
-        color: var(--black);
-        letter-spacing: -0.3px;
-      }
-      .nav-section {
-        padding: 0 12px;
-        flex: 1;
-      }
-      .nav-label {
-        font-size: 10px;
-        font-weight: 600;
-        color: var(--gray-400);
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        padding: 0 8px;
-        margin-bottom: 6px;
-        margin-top: 16px;
-      }
-      .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 9px 10px;
-        border-radius: 9px;
-        cursor: pointer;
-        transition: all 0.15s;
-        text-decoration: none;
-        color: var(--gray-600);
-        font-size: 13.5px;
-        margin-bottom: 2px;
-      }
-      .nav-item:hover {
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-      .nav-item.active {
-        background: var(--primary);
-        color: var(--white);
-      }
-      .nav-icon {
-        font-size: 16px;
-        width: 20px;
-        text-align: center;
-        flex-shrink: 0;
-      }
-      .nav-badge {
-        margin-left: auto;
-        background: var(--primary);
-        color: white;
-        font-size: 10px;
-        font-weight: 600;
-        padding: 2px 6px;
-        border-radius: 20px;
-        min-width: 18px;
-        text-align: center;
-        display: none;
-      }
-      .nav-item.active .nav-badge {
-        background: white;
-        color: var(--primary);
-      }
-      .sidebar-user {
-        padding: 16px 20px;
-        border-top: 1px solid var(--gray-100);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        transition: background 0.15s;
-      }
-      .sidebar-user:hover {
-        background: var(--gray-50);
-      }
-      .user-avatar {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: var(--primary-light);
-        border: 2px solid var(--primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        flex-shrink: 0;
-        overflow: hidden;
-      }
-      .user-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-      .user-info {
-        flex: 1;
-        min-width: 0;
-      }
-      .user-name {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--black);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .user-email {
-        font-size: 11px;
-        color: var(--gray-400);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+    :root {
+      --black: #0a0a0a;
+      --primary: #f97316;
+      --primary-hover: #ea6c0a;
+      --primary-light: #fff4ed;
+      --primary-mid: #fed7aa;
+      --white: #ffffff;
+      --gray-50: #f8f8f7;
+      --gray-100: #f1f0ef;
+      --gray-200: #e3e2e0;
+      --gray-300: #cccac7;
+      --gray-400: #9b9894;
+      --gray-600: #6b6966;
+      --green-light: #f0fdf4;
+      --blue-light: #eff6ff;
+      --yellow-light: #fffbeb;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --red-mid: #fecaca;
+      --sidebar-width: 252px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
 
-      /* ===== MAIN ===== */
-      .main {
-        margin-left: var(--sidebar-width);
-        flex: 1;
-        padding: 32px;
-        max-width: calc(var(--sidebar-width) + 740px);
-      }
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(12px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+    body { font-family: "DM Sans", sans-serif; background: var(--gray-50); min-height: 100vh; display: flex; color: var(--black); -webkit-font-smoothing: antialiased; }
 
-      /* ===== PAGE HEADER ===== */
-      .page-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        margin-bottom: 28px;
-        opacity: 0;
-        animation: fadeUp 0.4s ease 0.05s forwards;
-      }
-      .page-header h1 {
-        font-family: "DM Serif Display", serif;
-        font-size: 26px;
-        letter-spacing: -0.5px;
-        margin-bottom: 4px;
-        color: var(--black);
-      }
-      .page-header p {
-        color: var(--gray-400);
-        font-size: 14px;
-      }
+    /* ===== SIDEBAR ===== */
+.sidebar { width: var(--sidebar-width); background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 100; }
+.sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 20px 16px 20px; background: rgba(249, 115, 22, 0.08); border-bottom: 1.5px solid rgba(249, 115, 22, 0.15); flex-shrink: 0; width: 100%; }
+.brand-name { font-family: "DM Serif Display", serif; font-size: 19px; color: var(--black); letter-spacing: -0.4px; }
+.nav-section { padding: 8px 10px; flex: 1; overflow-y: auto; scrollbar-width: none; }
+.nav-section::-webkit-scrollbar { display: none; }
+.nav-label { font-size: 9.5px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1.1px; padding: 0 12px; margin: 4px 0 2px; display: block; }
+.nav-item { display: flex; align-items: center; gap: 11px; padding: 12px; border-radius: 9px; cursor: pointer; transition: all 0.12s; text-decoration: none; color: var(--gray-400); font-size: 14px; font-weight: 400; position: relative; margin-bottom: 1px; }
+.nav-item:hover { background: var(--gray-100); color: var(--black); }
+.nav-item.active { background: var(--gray-100); color: var(--black); font-weight: 500; }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; background: var(--primary); border-radius: 0 3px 3px 0; }
+.nav-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0.45; transition: opacity 0.12s; }
+.nav-item:hover .nav-icon, .nav-item.active .nav-icon { opacity: 1; }
+.nav-icon svg { width: 17px; height: 17px; stroke-width: 1.75; }
+.nav-badge { margin-left: auto; background: var(--primary); color: white; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; min-width: 18px; text-align: center; display: none; }
+.nav-divider { height: 1px; background: var(--gray-100); margin: 2px 12px; }
+.sidebar-footer { flex-shrink: 0; border-top: 1px solid var(--gray-100); padding: 14px 10px; }
+.sidebar-user { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 9px; cursor: pointer; transition: background 0.12s; text-decoration: none; }
+.sidebar-user:hover { background: var(--gray-100); }
+.user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary-light); border: 1.5px solid var(--primary-mid); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; overflow: hidden; }
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 13.5px; font-weight: 600; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-email { font-size: 11.5px; color: var(--gray-400); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* ===== MAIN CONTENT ===== */
+    .main { margin-left: var(--sidebar-width); flex: 1; padding: 40px 48px; }
 
-      .btn-baca-semua {
-        padding: 9px 18px;
-        background: var(--white);
-        color: var(--primary);
-        border: 1.5px solid var(--primary);
-        border-radius: 9px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-        white-space: nowrap;
-        margin-top: 4px;
-      }
-      .btn-baca-semua:hover {
-        background: var(--primary-light);
-      }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideOut {
+      from { opacity: 1; transform: translateX(0); max-height: 120px; padding-top: 15px; padding-bottom: 15px; }
+      to   { opacity: 0; transform: translateX(48px); max-height: 0; padding-top: 0; padding-bottom: 0; border: none; }
+    }
 
-      /* ===== TABS ===== */
-      .tabs {
-        display: flex;
-        gap: 4px;
-        background: var(--gray-100);
-        border-radius: 10px;
-        padding: 4px;
-        width: fit-content;
-        margin-bottom: 20px;
-        opacity: 0;
-        animation: fadeUp 0.4s ease 0.1s forwards;
-      }
-      .tab {
-        padding: 8px 18px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.15s;
-        color: var(--gray-600);
-        border: none;
-        background: transparent;
-        font-family: "DM Sans", sans-serif;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .tab.active {
-        background: var(--white);
-        color: var(--black);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-      }
-      .tab-count {
-        background: var(--primary);
-        color: white;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 1px 6px;
-        border-radius: 20px;
-      }
+    .anim-1 { opacity: 0; animation: fadeUp 0.5s ease 0.05s forwards; }
+    .anim-2 { opacity: 0; animation: fadeUp 0.5s ease 0.12s forwards; }
+    .anim-3 { opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
 
-      /* ===== NOTIF LIST ===== */
-      .notif-list {
-        display: flex;
-        flex-direction: column;
-        background: var(--white);
-        border: 1px solid var(--gray-200);
-        border-radius: 14px;
-        overflow: hidden;
-        opacity: 0;
-        animation: fadeUp 0.4s ease 0.15s forwards;
-      }
+    .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
+    .page-header h1 { font-family: "DM Serif Display", serif; font-size: 36px; color: var(--black); letter-spacing: -1px; margin-bottom: 6px; line-height: 1.1; }
+    .page-header p { color: var(--gray-400); font-size: 14px; }
 
-      .notif-group-label {
-        padding: 10px 20px;
-        background: var(--gray-50);
-        border-bottom: 1px solid var(--gray-100);
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--gray-400);
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-      }
+    .header-actions { display: flex; gap: 8px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
 
-      .notif-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--gray-100);
-        transition: background 0.15s;
-        cursor: pointer;
-        position: relative;
-      }
-      .notif-item:last-child {
-        border-bottom: none;
-      }
-      .notif-item:hover {
-        background: var(--gray-50);
-      }
-      .notif-item.unread {
-        background: var(--primary-light);
-      }
-      .notif-item.unread:hover {
-        background: #ffe8d6;
-      }
+    .btn-header { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--white); color: var(--black); border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-family: "DM Sans", sans-serif; font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .btn-header:hover { background: var(--gray-100); border-color: var(--gray-300); }
+    .btn-header.danger { color: var(--red); border-color: var(--red-mid); background: var(--red-light); }
+    .btn-header.danger:hover { background: #fee2e2; border-color: var(--red); }
 
-      .unread-dot {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--primary);
-      }
+    .tabs-wrap { display: flex; align-items: center; gap: 4px; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 4px; width: fit-content; margin-bottom: 20px; }
+    .tab { display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--gray-400); border: none; background: transparent; font-family: "DM Sans", sans-serif; white-space: nowrap; }
+    .tab:hover { color: var(--black); background: var(--gray-50); }
+    .tab.active { background: var(--black); color: white; }
+    .tab.active .tab-count { background: var(--primary); color: white; }
+    .tab-count { background: var(--primary); color: white; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 99px; min-width: 18px; text-align: center; display: none; }
 
-      .notif-icon-wrap {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-      }
-      .notif-icon-wrap.orange {
-        background: var(--primary-light);
-      }
-      .notif-icon-wrap.green {
-        background: var(--green-light);
-      }
-      .notif-icon-wrap.blue {
-        background: var(--blue-light);
-      }
-      .notif-icon-wrap.yellow {
-        background: var(--yellow-light);
-      }
-      .notif-icon-wrap.gray {
-        background: var(--gray-100);
-      }
+    .notif-container { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; }
 
-      .notif-content {
-        flex: 1;
-        min-width: 0;
-      }
-      .notif-title {
-        font-size: 13.5px;
-        font-weight: 600;
-        color: var(--black);
-        margin-bottom: 3px;
-        line-height: 1.4;
-      }
-      .notif-desc {
-        font-size: 12.5px;
-        color: var(--gray-600);
-        line-height: 1.5;
-        margin-bottom: 6px;
-      }
-      .notif-time {
-        font-size: 11px;
-        color: var(--gray-400);
-      }
+    .notif-group-label { padding: 9px 20px; background: var(--gray-50); border-bottom: 1px solid var(--gray-100); font-size: 10.5px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 8px; }
+    .notif-group-label::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
 
-      /* Empty state */
-      .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--gray-400);
-      }
-      .empty-state .emoji {
-        font-size: 40px;
-        margin-bottom: 12px;
-      }
-      .empty-state p {
-        font-size: 14px;
-      }
+    .notif-item { display: flex; align-items: flex-start; gap: 14px; padding: 15px 20px; border-bottom: 1px solid var(--gray-100); transition: background 0.12s; position: relative; overflow: hidden; }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--gray-50); }
+    .notif-item:hover .btn-dismiss { opacity: 1; }
+    .notif-item.unread { background: #fffbf7; }
+    .notif-item.unread:hover { background: var(--primary-light); }
+    .notif-item.unread::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--primary); border-radius: 0 2px 2px 0; }
+    .notif-item.dismissing { animation: slideOut 0.3s ease forwards; pointer-events: none; }
 
-      /* ===== DARK MODE NOTIFIKASI ===== */
-      html.dark .btn-baca-semua {
-        background: transparent;
-        color: var(--primary);
-        border-color: var(--primary);
-      }
-      html.dark .btn-baca-semua:hover {
-        background: #2a1500;
-      }
-      html.dark .notif-list {
-        background: #1a1a1a;
-        border-color: #2a2a2a;
-      }
-      html.dark .notif-group-label {
-        background: #151515;
-        border-bottom-color: #2a2a2a;
-        color: #666;
-      }
-      html.dark .notif-item {
-        border-bottom-color: #2a2a2a;
-      }
-      html.dark .notif-item:hover {
-        background: #1f1f1f;
-      }
-      html.dark .notif-item.unread {
-        background: #2a1500;
-      }
-      html.dark .notif-item.unread:hover {
-        background: #331a00;
-      }
-      html.dark .notif-title {
-        color: #f0f0f0;
-      }
-      html.dark .notif-desc {
-        color: #aaa;
-      }
-      html.dark .notif-time {
-        color: #666;
-      }
-      html.dark .notif-icon-wrap.orange {
-        background: #2a1500;
-      }
-      html.dark .notif-icon-wrap.green {
-        background: #0a1f0f;
-      }
-      html.dark .notif-icon-wrap.blue {
-        background: #0a1428;
-      }
-      html.dark .notif-icon-wrap.yellow {
-        background: #1f1400;
-      }
-      html.dark .notif-icon-wrap.gray {
-        background: #2a2a2a;
-      }
-      html.dark .tabs {
-        background: #1a1a1a;
-      }
-      html.dark .tab {
-        color: #888;
-      }
-      html.dark .tab.active {
-        background: #2a2a2a;
-        color: #f0f0f0;
-      }
-      html.dark .page-header h1 {
-        color: #f0f0f0;
-      }
-      html.dark .page-header p {
-        color: #888;
-      }
-      html.dark .empty-state {
-        color: #666;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Mobile Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    .notif-icon-wrap { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    .notif-icon-wrap.orange { background: var(--primary-light); }
+    .notif-icon-wrap.green  { background: var(--green-light); }
+    .notif-icon-wrap.blue   { background: var(--blue-light); }
+    .notif-icon-wrap.yellow { background: var(--yellow-light); }
+    .notif-icon-wrap.gray   { background: var(--gray-100); }
 
-<!-- Mobile Topbar -->
-<div class="mobile-topbar">
-  <a class="mobile-topbar-brand" href="dashboard.html">
-    <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100" height="100" rx="22" fill="#f97316"/>
-      <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
-      <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
-      <rect x="40" y="45" width="28" height="11" fill="white"/>
-      <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
-    </svg>
-    EduMate
-  </a>
-  <div class="mobile-topbar-right">
-    <button class="btn-hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
-      <span></span><span></span><span></span>
-    </button>
+    .notif-content { flex: 1; min-width: 0; cursor: pointer; }
+    .notif-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 3px; }
+    .notif-title { font-size: 13.5px; font-weight: 600; color: var(--black); line-height: 1.4; }
+    .notif-time { font-size: 11px; color: var(--gray-400); white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+    .notif-desc { font-size: 13px; color: var(--gray-600); line-height: 1.55; }
+
+    .unread-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); flex-shrink: 0; margin-top: 6px; }
+
+    /* Tombol dismiss — muncul saat hover */
+    .btn-dismiss {
+      width: 28px; height: 28px;
+      background: var(--gray-100); border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; cursor: pointer; color: var(--gray-400);
+      transition: all 0.15s; flex-shrink: 0;
+      opacity: 0; align-self: flex-start; margin-top: 2px;
+      font-family: "DM Sans", sans-serif; line-height: 1;
+    }
+    .btn-dismiss:hover { background: var(--red-light); color: var(--red); border-color: var(--red-mid); }
+
+    .unread-summary { display: flex; align-items: center; gap: 10px; padding: 11px 20px; background: var(--primary-light); border-bottom: 1px solid var(--primary-mid); }
+    .unread-summary-text { font-size: 13px; color: var(--primary); font-weight: 500; }
+    .unread-summary-count { font-weight: 700; }
+
+    .empty-state { text-align: center; padding: 64px 20px; color: var(--gray-400); }
+    .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
+    .empty-state p { font-size: 14px; line-height: 1.7; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="mobile-topbar">
+    <a class="mobile-topbar-brand" href="dashboard.html">
+      <svg width="26" height="26" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#f97316"/>
+        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
+        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
+        <rect x="40" y="45" width="28" height="11" fill="white"/>
+        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
+      </svg>
+      EduMate
+    </a>
+    <div class="mobile-topbar-right">
+      <button class="btn-hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
-</div>
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-brand">
-        <svg
-          width="34"
-          height="34"
-          viewBox="0 0 100 100"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect width="100" height="100" rx="22" fill="#f97316" />
-          <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a" />
-          <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white" />
-          <rect x="40" y="45" width="28" height="11" fill="white" />
-          <path
-            d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z"
-            fill="#f97316"
-          />
-        </svg>
-        <span class="brand-name">EduMate</span>
-      </div>
-      <nav class="nav-section">
-        <div class="nav-label">Menu</div>
-        <a href="dashboard.html" class="nav-item"
-          ><span class="nav-icon">🏠</span> Dashboard</a
-        >
-        <a href="cari-teman.html" class="nav-item"
-          ><span class="nav-icon">🔍</span> Cari Teman Belajar</a
-        >
-        <a href="jadwal.html" class="nav-item"
-          ><span class="nav-icon">📅</span> Jadwal Saya</a
-        >
-        <a href="sesi.html" class="nav-item"
-          ><span class="nav-icon">📖</span> Sesi Belajar</a
-        >
-        <div class="nav-label">Lainnya</div>
-        <a href="notifikasi.html" class="nav-item active"
-          ><span class="nav-icon">🔔</span> Notifikasi<span
-            class="nav-badge"
-            id="navBadge"
-            style="display: none"
-            >0</span
-          ></a
-        >
-        <a href="rating.html" class="nav-item"
-          ><span class="nav-icon">⭐</span> Rating & Review</a
-        >
-        <a href="profil.html" class="nav-item"
-          ><span class="nav-icon">👤</span> Profil Saya</a
-        >
-      </nav>
-      <div class="sidebar-user">
-        <div class="user-avatar">👤</div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#f97316"/>
+        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
+        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
+        <rect x="40" y="45" width="28" height="11" fill="white"/>
+        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
+      </svg>
+      <span class="brand-name">EduMate</span>
+    </div>
+    <nav class="nav-section">
+      <span class="nav-label">Menu</span>
+      <a href="dashboard.html" class="nav-item ">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+        Dashboard
+      </a>
+      <a href="cari-teman.html" class="nav-item ">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+        Cari Teman Belajar
+      </a>
+      <a href="jadwal.html" class="nav-item ">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+        Jadwal Saya
+      </a>
+      <a href="sesi.html" class="nav-item ">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        Sesi Belajar
+      </a>
+      <div class="nav-divider"></div>
+      <span class="nav-label">Lainnya</span>
+      <a href="notifikasi.html" class="nav-item active">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        Notifikasi<span class="nav-badge" id="navBadge">0</span>
+      </a>
+      <a href="rating.html" class="nav-item ">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+        Rating & Review
+      </a>
+      <a href="profil.html" class="nav-item ">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        Profil Saya
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="profil.html" class="sidebar-user">
+        <div class="user-avatar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9b9894" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
         <div class="user-info">
           <div class="user-name">Nama User</div>
-          <div class="user-email">
-            <a
-              href="/cdn-cgi/l/email-protection"
-              class="__cf_email__"
-              data-cfemail="157078747c79557278747c793b767a78"
-              >[email&#160;protected]</a
-            >
-          </div>
+          <div class="user-email"><span class="__cf_email__" data-cfemail="b5d0d8d4dcd9f5d2d8d4dcd99bd6dad8">[email&#160;protected]</span></div>
         </div>
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header anim-1">
+      <div>
+        <h1>Notifikasi</h1>
+        <p>Pantau semua aktivitas dan permintaan belajarmu di sini.</p>
       </div>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="main">
-      <div class="page-header">
-        <div>
-          <h1>Notifikasi</h1>
-          <p>Pantau semua aktivitas dan permintaan belajarmu di sini.</p>
-        </div>
-        <button class="btn-baca-semua" onclick="bacaSemua()">
-          ✓ Tandai Semua Dibaca
-        </button>
+      <div class="header-actions">
+        <button class="btn-header" onclick="bacaSemua()">✓ Tandai Semua Dibaca</button>
+        <button class="btn-header danger" onclick="hapusYangSudahDibaca()">🗑 Hapus yang Dibaca</button>
       </div>
+    </div>
 
-      <!-- Tabs -->
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab(this, 'semua')">
-          Semua
-          <span class="tab-count" id="countSemua" style="display: none">0</span>
-        </button>
-        <button class="tab" onclick="switchTab(this, 'ajakan')">
-          Ajakan Belajar
-          <span class="tab-count" id="countAjakan" style="display: none"
-            >0</span
-          >
-        </button>
-        <button class="tab" onclick="switchTab(this, 'sesi')">Sesi</button>
-        <button class="tab" onclick="switchTab(this, 'rating')">Rating</button>
-      </div>
+    <div class="tabs-wrap anim-2">
+      <button class="tab active" onclick="switchTab(this, 'semua')">Semua <span class="tab-count" id="countSemua">0</span></button>
+      <button class="tab" onclick="switchTab(this, 'ajakan')">Ajakan <span class="tab-count" id="countAjakan">0</span></button>
+      <button class="tab" onclick="switchTab(this, 'sesi')">Sesi</button>
+      <button class="tab" onclick="switchTab(this, 'rating')">Rating</button>
+    </div>
 
-      <!-- Notif List -->
-      <div class="notif-list" id="notifList">
-        <div style="text-align: center; color: var(--gray-400); padding: 40px">
-          Memuat notifikasi...
-        </div>
-      </div>
-    </main>
+    <div class="notif-container anim-3" id="notifList">
+      <div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat notifikasi...</p></div>
+    </div>
+  </main><script src="../js/auth-client.js"></script>
+  <script>
+    const API = window.location.hostname === 'localhost'
+      ? 'http://localhost:3000/api'
+: window.location.origin + '/api'
 
-    <script
-      data-cfasync="false"
-      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
-    ></script>
-    <script src="../js/auth-client.js"></script>
-    <script>
-      const API =
-        window.location.hostname === "localhost"
-          ? "http://localhost:3000/api"
-          : "https://edumate-production-c2df.up.railway.app/api";
-      let allNotif = [];
-      let currentFilter = "semua";
+    let allNotif = [];
+    let currentFilter = 'semua';
 
-      const TIPE_ICON = {
-        ajakan: { icon: "🤝", cls: "orange" },
-        sesi: { icon: "📖", cls: "blue" },
-        rating: { icon: "⭐", cls: "yellow" },
-        sistem: { icon: "🔔", cls: "gray" },
-      };
+    const TIPE_ICON = {
+      ajakan: { icon: '🤝', cls: 'orange' },
+      sesi:   { icon: '📖', cls: 'blue'   },
+      rating: { icon: '⭐', cls: 'yellow' },
+      sistem: { icon: '🔔', cls: 'gray'   },
+    };
 
-      function formatWaktu(dateStr) {
-        if (!dateStr) return "-";
-        const d = new Date(dateStr);
-        const now = new Date();
-        const diffMnt = Math.floor((now - d) / 60000);
-        const diffJam = Math.floor(diffMnt / 60);
-        const diffHari = Math.floor(diffJam / 24);
-        if (diffMnt < 1) return "Baru saja";
-        if (diffMnt < 60) return `${diffMnt} menit yang lalu`;
-        if (diffJam < 24) return `${diffJam} jam yang lalu`;
-        if (diffHari === 1) return "Kemarin";
-        return d.toLocaleDateString("id-ID", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        });
+    function formatWaktu(dateStr) {
+      if (!dateStr) return '-';
+      const d    = new Date(dateStr);
+      const diff = Math.floor((Date.now() - d) / 60000);
+      if (diff < 1)   return 'Baru saja';
+      if (diff < 60)  return `${diff} mnt lalu`;
+      const jam = Math.floor(diff / 60);
+      if (jam < 24)   return `${jam} jam lalu`;
+      const hari = Math.floor(jam / 24);
+      if (hari === 1) return 'Kemarin';
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function renderNotif(filter) {
+      currentFilter = filter;
+      const container = document.getElementById('notifList');
+      const filtered  = filter === 'semua' ? allNotif : allNotif.filter(n => n.tipe === filter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><p>Tidak ada notifikasi di kategori ini.</p></div>';
+        return;
       }
 
-      function renderNotif(filter) {
-        currentFilter = filter;
-        const list = document.getElementById("notifList");
-        const filtered =
-          filter === "semua"
-            ? allNotif
-            : allNotif.filter((n) => n.tipe === filter);
+      const unreadCount = filtered.filter(n => !n.is_read).length;
+      let html = '';
 
-        if (filtered.length === 0) {
-          list.innerHTML =
-            '<div class="empty-state"><div class="emoji">🔔</div><p>Tidak ada notifikasi di kategori ini.</p></div>';
-          return;
-        }
+      if (unreadCount > 0) {
+        html += `<div class="unread-summary"><span>🔔</span><span class="unread-summary-text"><span class="unread-summary-count">${unreadCount} notifikasi</span> belum dibaca</span></div>`;
+      }
 
-        const now = new Date();
-        const today = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate(),
-        );
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-        const weekAgo = new Date(today);
-        weekAgo.setDate(today.getDate() - 7);
+      const now       = new Date();
+      const today     = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+      const weekAgo   = new Date(today); weekAgo.setDate(today.getDate() - 7);
 
-        const groups = {
-          "Hari Ini": [],
-          Kemarin: [],
-          "Minggu Ini": [],
-          "Lebih Lama": [],
-        };
-        filtered.forEach((n) => {
-          const d = new Date(n.created_at);
-          const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-          if (day >= today) groups["Hari Ini"].push(n);
-          else if (day >= yesterday) groups["Kemarin"].push(n);
-          else if (day >= weekAgo) groups["Minggu Ini"].push(n);
-          else groups["Lebih Lama"].push(n);
-        });
+      const groups = { 'Hari Ini': [], 'Kemarin': [], 'Minggu Ini': [], 'Lebih Lama': [] };
+      filtered.forEach(n => {
+        const d   = new Date(n.created_at);
+        const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        if (day >= today)          groups['Hari Ini'].push(n);
+        else if (day >= yesterday) groups['Kemarin'].push(n);
+        else if (day >= weekAgo)   groups['Minggu Ini'].push(n);
+        else                       groups['Lebih Lama'].push(n);
+      });
 
-        let html = "";
-        Object.entries(groups).forEach(([label, items]) => {
-          if (items.length === 0) return;
-          html += `<div class="notif-group-label">${label}</div>`;
-          items.forEach((n) => {
-            const info = TIPE_ICON[n.tipe] || TIPE_ICON.sistem;
-            const unreadClass = n.is_read ? "" : "unread";
-            const dot = n.is_read ? "" : '<div class="unread-dot"></div>';
-            html += `
-            <div class="notif-item ${unreadClass}" data-id="${n.id}" onclick="bacaNotif(${n.id}, this)">
-              ${dot}
+      Object.entries(groups).forEach(([label, items]) => {
+        if (!items.length) return;
+        html += `<div class="notif-group-label">${label}</div>`;
+        items.forEach(n => {
+          const info      = TIPE_ICON[n.tipe] || TIPE_ICON.sistem;
+          const unreadCls = n.is_read ? '' : 'unread';
+          const unreadDot = n.is_read ? '' : '<div class="unread-dot"></div>';
+          html += `
+            <div class="notif-item ${unreadCls}" data-id="${n.id}">
               <div class="notif-icon-wrap ${info.cls}">${info.icon}</div>
-              <div class="notif-content">
-                <div class="notif-title">${n.judul || "Notifikasi"}</div>
+              <div class="notif-content" onclick="bacaNotif(${n.id}, this.closest('.notif-item'))">
+                <div class="notif-top">
+                  <div class="notif-title">${n.judul || 'Notifikasi'}</div>
+                  <div class="notif-time">${formatWaktu(n.created_at)}</div>
+                </div>
                 <div class="notif-desc">${n.pesan}</div>
-                <div class="notif-time">${formatWaktu(n.created_at)}</div>
               </div>
+              ${unreadDot}
+              <button class="btn-dismiss" onclick="dismissNotif(${n.id}, this)" title="Hapus notifikasi">×</button>
             </div>`;
-          });
         });
+      });
 
-        list.innerHTML = html;
-      }
+      container.innerHTML = html;
+    }
 
-      function updateBadges() {
-        const unread = allNotif.filter((n) => !n.is_read).length;
-        const unreadAjakan = allNotif.filter(
-          (n) => !n.is_read && n.tipe === "ajakan",
-        ).length;
+    function updateBadges() {
+      const unread       = allNotif.filter(n => !n.is_read).length;
+      const unreadAjakan = allNotif.filter(n => !n.is_read && n.tipe === 'ajakan').length;
+      const navBadge     = document.getElementById('navBadge');
+      const countSemua   = document.getElementById('countSemua');
+      const countAjakan  = document.getElementById('countAjakan');
+      if (navBadge)    { navBadge.textContent    = unread;       navBadge.style.display    = unread > 0       ? 'inline-block' : 'none'; }
+      if (countSemua)  { countSemua.textContent  = unread;       countSemua.style.display  = unread > 0       ? 'inline-block' : 'none'; }
+      if (countAjakan) { countAjakan.textContent = unreadAjakan; countAjakan.style.display = unreadAjakan > 0 ? 'inline-block' : 'none'; }
+    }
 
-        const navBadge = document.getElementById("navBadge");
-        const countSemua = document.getElementById("countSemua");
-        const countAjakan = document.getElementById("countAjakan");
+    function switchTab(el, filter) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderNotif(filter);
+    }
 
-        if (navBadge) {
-          navBadge.textContent = unread;
-          navBadge.style.display = unread > 0 ? "inline-block" : "none";
-        }
-        if (countSemua) {
-          countSemua.textContent = unread;
-          countSemua.style.display = unread > 0 ? "inline-block" : "none";
-        }
-        if (countAjakan) {
-          countAjakan.textContent = unreadAjakan;
-          countAjakan.style.display =
-            unreadAjakan > 0 ? "inline-block" : "none";
-        }
-      }
+    async function bacaNotif(id, el) {
+      if (!el || !el.classList.contains('unread')) return;
+      try {
+        await fetch(`${API}/notifikasi/${id}/baca`, {
+          method: 'PUT', headers: { 'Authorization': `Bearer ${getToken()}` },
+        });
+        const notif = allNotif.find(n => n.id === id);
+        if (notif) notif.is_read = 1;
+        updateBadges();
+        renderNotif(currentFilter);
+      } catch(err) {}
+    }
 
-      function switchTab(el, filter) {
-        document
-          .querySelectorAll(".tab")
-          .forEach((t) => t.classList.remove("active"));
-        el.classList.add("active");
-        renderNotif(filter);
-      }
-
-      async function bacaNotif(id, el) {
-        if (!el.classList.contains("unread")) return;
-        const token = getToken();
-        try {
-          await fetch(`${API}/notifikasi/${id}/baca`, {
-            method: "PUT",
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          el.classList.remove("unread");
-          const dot = el.querySelector(".unread-dot");
-          if (dot) dot.remove();
-          const notif = allNotif.find((n) => n.id === id);
-          if (notif) notif.is_read = 1;
+    async function dismissNotif(id, btn) {
+      const item = btn.closest('.notif-item');
+      item.classList.add('dismissing');
+      try {
+        const res  = await fetch(`${API}/notifikasi/${id}`, {
+          method: 'DELETE', headers: { 'Authorization': `Bearer ${getToken()}` },
+        });
+        const data = await res.json();
+        if (data.success) {
+          allNotif = allNotif.filter(n => n.id !== id);
           updateBadges();
-        } catch (err) {
-          console.error("Gagal tandai baca:", err);
+          setTimeout(() => renderNotif(currentFilter), 320);
+        } else {
+          item.classList.remove('dismissing');
+          showToast('Gagal menghapus notifikasi.', 'error');
         }
+      } catch(err) {
+        item.classList.remove('dismissing');
+        showToast('Terjadi kesalahan.', 'error');
       }
+    }
 
-      async function bacaSemua() {
-        const token = getToken();
-        try {
-          const res = await fetch(`${API}/notifikasi/baca-semua`, {
-            method: "PUT",
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await res.json();
-          if (data.success) {
-            allNotif.forEach((n) => (n.is_read = 1));
-            renderNotif(currentFilter);
-            updateBadges();
-            showToast("Semua notifikasi ditandai dibaca!", "success");
-          }
-        } catch (err) {
-          showToast("Gagal menandai notifikasi.", "error");
+    async function bacaSemua() {
+      try {
+        const res  = await fetch(`${API}/notifikasi/baca-semua`, {
+          method: 'PUT', headers: { 'Authorization': `Bearer ${getToken()}` },
+        });
+        const data = await res.json();
+        if (data.success) {
+          allNotif.forEach(n => n.is_read = 1);
+          renderNotif(currentFilter);
+          updateBadges();
+          showToast('Semua notifikasi ditandai dibaca!', 'success');
         }
-      }
+      } catch(err) { showToast('Gagal menandai notifikasi.', 'error'); }
+    }
 
-      async function loadNotifikasi() {
-        const token = getToken();
-        try {
-          const res = await fetch(`${API}/notifikasi`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await res.json();
-          if (data.success) {
-            allNotif = data.notifikasi;
-            updateBadges();
-            renderNotif(currentFilter);
-          }
-        } catch (err) {
-          showToast("Gagal memuat notifikasi.", "error");
+    async function hapusYangSudahDibaca() {
+      const sudahDibaca = allNotif.filter(n => n.is_read).length;
+      if (sudahDibaca === 0) { showToast('Tidak ada notifikasi yang sudah dibaca.', 'info'); return; }
+      try {
+        const res  = await fetch(`${API}/notifikasi/hapus-semua`, {
+          method: 'DELETE', headers: { 'Authorization': `Bearer ${getToken()}` },
+        });
+        const data = await res.json();
+        if (data.success) {
+          allNotif = allNotif.filter(n => !n.is_read);
+          renderNotif(currentFilter);
+          updateBadges();
+          showToast(`${sudahDibaca} notifikasi berhasil dihapus.`, 'success');
         }
-      }
+      } catch(err) { showToast('Gagal menghapus notifikasi.', 'error'); }
+    }
 
-      initPage().then(() => loadNotifikasi());
-    </script>
-    <script>
-  function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    const btn = document.getElementById('hamburgerBtn');
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('active');
-    btn.classList.toggle('open');
-  }
-</script>
-  </body>
+    async function loadNotifikasi() {
+      try {
+        const res  = await fetch(`${API}/notifikasi`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
+        const data = await res.json();
+        if (data.success) { allNotif = data.notifikasi; updateBadges(); renderNotif(currentFilter); }
+      } catch(err) { showToast('Gagal memuat notifikasi.', 'error'); }
+    }
+
+    initPage().then(() => loadNotifikasi());
+  </script>
+</body>
 </html>

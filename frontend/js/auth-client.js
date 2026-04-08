@@ -1,4 +1,6 @@
-const BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://edumate-production-c2df.up.railway.app/api';
+const BASE = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3000/api' 
+  : window.location.origin + '/api';
 const API_BASE = BASE + '/auth';
 const API_NOTIF = BASE + '/notifikasi';
 
@@ -23,8 +25,6 @@ function requireLogin() {
     window.location.replace('/pages/login.html');
     return null;
   }
-
-  // FIX: Cek token expired di sisi client sebelum request ke server
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const now = Math.floor(Date.now() / 1000);
@@ -100,7 +100,6 @@ async function fetchCurrentUser() {
     const res = await fetch(`${API_BASE}/me`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    // FIX: Jika 401, token tidak valid — force logout
     if (res.status === 401 || res.status === 403) {
       localStorage.removeItem('sb_token');
       localStorage.removeItem('sb_notif_count');
@@ -165,14 +164,13 @@ async function updateNotifBadge() {
 
     document.querySelectorAll('.nav-badge').forEach(el => {
       const navItem = el.closest('.nav-item');
-      if (navItem && (navItem.href?.includes('notifikasi') || navItem.getAttribute('href')?.includes('notifikasi'))) {
+      if (navItem && navItem.getAttribute('href')?.includes('notifikasi')) {
         el.textContent = count;
         el.style.display = count > 0 ? 'inline-block' : 'none';
       }
     });
 
-    const namedBadges = ['notifBadge', 'navBadge'];
-    namedBadges.forEach(id => {
+    ['notifBadge', 'navBadge'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.textContent = count;
@@ -180,14 +178,16 @@ async function updateNotifBadge() {
       }
     });
 
-    const prevCount = parseInt(localStorage.getItem('sb_notif_count') || '0');
-    if (count > prevCount && prevCount !== 0) {
-      showToast('Kamu punya notifikasi baru! 🔔', 'info');
-    }
-    localStorage.setItem('sb_notif_count', count);
-  } catch (err) {
-    // Silent fail
-  }
+    const prevRaw  = localStorage.getItem('sb_notif_count');
+const prevCount = prevRaw !== null ? parseInt(prevRaw) : null;
+// prevCount null = pertama kali load (jangan bunyi)
+// prevCount 0 = sebelumnya memang 0, kalau sekarang > 0 berarti ada baru → bunyi
+if (prevCount !== null && count > prevCount) {
+  showToast('Kamu punya notifikasi baru! 🔔', 'info');
+  playNotifSound();
+}
+localStorage.setItem('sb_notif_count', count);
+  } catch (err) {}
 }
 
 function startNotifPolling() {
@@ -195,46 +195,75 @@ function startNotifPolling() {
   setInterval(updateNotifBadge, 15000);
 }
 
+// ==================== NOTIF SOUND ====================
+let audioCtx = null;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioCtx;
+}
+
+function playNotifSound() {
+  try {
+    const ctx = getAudioContext();
+    if (ctx.state === 'suspended') ctx.resume();
+
+    function playTone(freq, startTime, duration, volume) {
+      volume = volume || 0.3;
+      const oscillator = ctx.createOscillator();
+      const gainNode   = ctx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(freq, startTime);
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration);
+    }
+
+    const now = ctx.currentTime;
+    playTone(659, now, 0.18);
+    playTone(988, now + 0.18, 0.28);
+
+  } catch (err) {
+    console.warn('Web Audio API tidak tersedia:', err.message);
+  }
+}
+
 // ==================== LOGOUT ====================
 
-// FIX: Kirim request POST ke server untuk destroy session,
-// lalu hapus semua data lokal dan redirect ke login
 async function logout() {
   try {
     await fetch(`${API_BASE}/logout`, {
-      method: 'POST', // FIX: harus POST, bukan GET
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
-  } catch (err) {
-    console.error('Logout error:', err);
-    // Tetap lanjut clear lokal meski request gagal
-  } finally {
-    // FIX: Hapus semua data auth di browser
+  } catch (err) {}
+  finally {
     localStorage.removeItem('sb_token');
     localStorage.removeItem('sb_notif_count');
     sessionStorage.clear();
-    // FIX: Pakai replace agar halaman sebelumnya tidak bisa di-back
     window.location.replace('/pages/login.html');
   }
 }
 
-// ==================== DARK MODE ====================
+// ==================== SIDEBAR TOGGLE (MOBILE) ====================
 
-function initDarkMode() {
-  const isDark = localStorage.getItem('sb_theme') === 'dark';
-  if (isDark) document.documentElement.classList.add('dark');
-
-  const btn = document.createElement('button');
-  btn.className = 'theme-toggle';
-  btn.title = 'Toggle Dark/Light Mode';
-  btn.setAttribute('aria-label', 'Toggle dark mode');
-  btn.addEventListener('click', toggleDarkMode);
-  document.body.appendChild(btn);
-}
-
-function toggleDarkMode() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('sb_theme', isDark ? 'dark' : 'light');
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const btn = document.getElementById('hamburgerBtn');
+  if (!sidebar) return;
+  const isOpen = sidebar.classList.toggle('open');
+  if (overlay) {
+    overlay.classList.toggle('active', isOpen);
+    overlay.style.pointerEvents = isOpen ? 'none' : 'none';
+  }
+  if (btn) btn.classList.toggle('open', isOpen);
 }
 
 // ==================== INIT ====================
@@ -242,11 +271,40 @@ function toggleDarkMode() {
 async function initPage() {
   saveTokenFromURL();
   requireLogin();
-  initDarkMode();
   const user = await fetchCurrentUser();
   if (user) {
     updateSidebar(user);
     startNotifPolling();
+    startActivityPing();
   }
+  document.addEventListener('click', () => getAudioContext(), { once: true });
   return user;
+}
+
+// ==================== ACTIVITY PING ====================
+// Kirim ping ke server setiap 60 detik agar last_active terupdate
+
+async function pingActivity() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    await fetch(`${API_BASE}/ping`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  } catch (err) {}
+}
+
+function startActivityPing() {
+  pingActivity();
+  setInterval(pingActivity, 60000);
+}
+
+// ==================== HELPER: render status online ====================
+function renderOnlineStatus(online, label) {
+  const color = online ? '#16a34a' : '#9b9894';
+  return `<span style="display:inline-flex;align-items:center;gap:5px;">
+    <span style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;display:inline-block;"></span>
+    <span style="font-size:11.5px;color:${color};font-weight:500;">${label || (online ? 'Online' : 'Offline')}</span>
+  </span>`;
 }
