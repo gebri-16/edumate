@@ -399,18 +399,6 @@
         color: white;
       }
 
-      @media (max-width: 768px) {
-        .tabs-wrap {
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: auto !important;
-          -webkit-overflow-scrolling: touch !important;
-        }
-        .tabs-wrap .tab {
-          flex-shrink: 0 !important;
-        }
-      }
-
       /* ===== SESI LIST ===== */
       .sesi-list {
         display: flex;
@@ -1039,6 +1027,17 @@
             </div>
           </div>
         </a>
+        <button class="btn-logout" onclick="logout()">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </span>
+    Keluar
+  </button>
+</div>
       </div>
     </aside>
 
@@ -1265,10 +1264,10 @@
             <button class="btn-action disabled">Menunggu...</button>
             <button class="btn-action danger" onclick="updateStatus(${s.id},'ditolak')">Batalkan</button>`;
             } else if (s.status === "diterima") {
-              actions = `
-            ${s.link_meeting ? `<a class="btn-action info" href="${s.link_meeting}" target="_blank">🔗 Join Meeting</a>` : ""}
-            <button class="btn-action secondary" onclick="bukaDetail(${s.id})">Detail</button>
-            <button class="btn-action danger" onclick="updateStatus(${s.id},'ditolak')">Batalkan</button>`;
+  actions = `
+    ${s.link_meeting ? `<a class="btn-action info" href="${s.link_meeting}" target="_blank">🔗 Join Meeting</a>` : ""}
+    <button class="btn-action secondary" onclick="bukaDetail(${s.id})">Detail</button>
+    <button class="btn-action danger" onclick="updateStatus(${s.id},'ditolak')">Batalkan</button>`;
             } else if (s.status === "selesai") {
               actions = `
             <button class="btn-action success" onclick="window.location.href='rating.html'">⭐ Beri Rating</button>
@@ -1298,9 +1297,13 @@
                 ${s.link_meeting ? `<span class="sesi-meta-item">🔗 <a href="${s.link_meeting}" target="_blank">Link Meeting</a></span>` : ""}
               </div>
               <div class="sesi-partner">
-                <div class="partner-avatar">${avatarHtml}</div>
-                <span class="partner-name">Bersama <strong>${partnerNama || "-"}</strong></span>
-              </div>
+  <div class="partner-avatar">${avatarHtml}</div>
+  <span class="partner-name">Bersama <strong>${partnerNama || "-"}</strong></span>
+</div>
+${s.status === 'diterima' ? `
+  <div style="margin-top:8px;font-size:12px;color:#16a34a;font-weight:500;">
+    💬 Hubungi teman belajarmu — lihat kontak WA di <button onclick="bukaDetail(${s.id})" style="background:none;border:none;color:#16a34a;font-weight:600;font-size:12px;cursor:pointer;padding:0;text-decoration:underline;">detail sesi</button>.
+  </div>` : ''}
             </div>
             <div class="sesi-actions">${actions}</div>
           </div>`;
@@ -1434,6 +1437,14 @@
           </div>
           <span style="margin-left:auto;font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;background:${sc.bg};color:${sc.color};border:1px solid ${sc.border};">${statusInfo.label}</span>
         </div>
+        ${s.status === 'diterima' ? `
+  <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+    <span style="font-size:18px;">💬</span>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:#16a34a;">Sesi Dikonfirmasi!</div>
+      <div style="font-size:12px;color:#15803d;margin-top:2px;">Hubungi teman belajarmu via WhatsApp melalui <a href="profil-publik.html?id=${isKirim ? s.penerima_id : s.pengirim_id}" target="_blank" style="color:#16a34a;font-weight:600;">profil mereka</a>.</div>
+    </div>
+  </div>` : ''}
         <div class="modal-detail-list">
           <div class="modal-detail-item">
             <div class="modal-detail-icon">📚</div>
@@ -1502,13 +1513,38 @@
           document.getElementById("statRating").textContent = "—";
         }
       }
+// Auto-refresh ketika sesi 'diterima' sudah melewati jam selesai
+function startSessionWatcher() {
+  setInterval(async () => {
+    const now = new Date();
+    const todayStr = now.toISOString().split("T")[0]; // "YYYY-MM-DD"
 
+    const adaSesiYangHarusSelesai = allSesi.some((s) => {
+      if (s.status !== "diterima") return false;
+
+      const sesiDate = s.tanggal.split("T")[0]; // "YYYY-MM-DD"
+      if (sesiDate !== todayStr) return false;
+
+      // Bandingkan jam selesai dengan waktu sekarang
+      const [jamH, jamM] = s.jam_selesai.split(":").map(Number);
+      const selesaiMs = jamH * 60 + jamM; // dalam menit
+      const nowMs = now.getHours() * 60 + now.getMinutes();
+
+      return nowMs >= selesaiMs; // waktu sekarang sudah lewat jam selesai
+    });
+
+    if (adaSesiYangHarusSelesai) {
+      await loadSesi(); // reload data dari server
+    }
+  }, 10_000); // cek setiap 10 detik
+}
       initPage().then((user) => {
-        currentUser = user;
-        currentUser.id = parseInt(user.id);
-        loadSesi();
-        loadRating();
-      });
+  currentUser = user;
+  currentUser.id = parseInt(user.id);
+  loadSesi();
+  loadRating();
+  startSessionWatcher(); // ← tambahkan ini
+});
     </script>
   </body>
 </html>

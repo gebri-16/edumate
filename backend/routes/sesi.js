@@ -182,4 +182,29 @@ router.delete('/:id', verifyToken, (req, res) => {
   });
 });
 
+// ===== AUTO-COMPLETE SESI =====
+// Jalankan setiap 1 menit, ubah status 'diterima' → 'selesai' jika waktu sudah lewat
+function autoCompleteSesi() {
+  const query = `
+    UPDATE sesi_belajar 
+    SET status = 'selesai'
+    WHERE status = 'diterima'
+      AND CONCAT(tanggal, ' ', jam_selesai) <= NOW()
+  `;
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('[AutoComplete] Gagal update sesi:', err.message);
+    } else if (result.affectedRows > 0) {
+      console.log(`[AutoComplete] ${result.affectedRows} sesi ditandai selesai.`);
+    }
+  });
+}
+
+// Jalankan setiap 1 menit
+setInterval(autoCompleteSesi, 60_000);
+
+// Jalankan sekali saat server start (untuk sesi yang terlewat saat server mati)
+autoCompleteSesi();
+
 module.exports = router;

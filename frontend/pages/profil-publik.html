@@ -1,738 +1,1490 @@
 <!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg"/>
-  <title>EduMate — Profil</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="../css/responsive.css"/>
-  <link rel="stylesheet" href="../css/sidebar.css"/>
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --black: #0a0a0a;
-      --primary: #f97316;
-      --primary-hover: #ea6c0a;
-      --primary-light: #fff4ed;
-      --primary-mid: #fed7aa; 
-      --white: #ffffff;
-      --gray-50: #fafafa;
-      --gray-100: #f4f4f4;
-      --gray-200: #e8e8e8;
-      --gray-400: #a0a0a0;
-      --gray-600: #555;
-      --sidebar-width: 252px;
-    }
-    body { font-family: "DM Sans", sans-serif; background: var(--gray-50); min-height: 100vh; display: flex; color: var(--black); }
-
-    /* ===== SIDEBAR ===== */
-.sidebar { width: var(--sidebar-width); background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 100; }
-.sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 20px 16px 20px; background: rgba(249, 115, 22, 0.08); border-bottom: 1.5px solid rgba(249, 115, 22, 0.15); flex-shrink: 0; width: 100%; }
-.brand-name { font-family: "DM Serif Display", serif; font-size: 19px; color: var(--black); letter-spacing: -0.4px; }
-.nav-section { padding: 8px 10px; flex: 1; overflow-y: auto; scrollbar-width: none; }
-.nav-section::-webkit-scrollbar { display: none; }
-.nav-label { font-size: 9.5px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1.1px; padding: 0 12px; margin: 4px 0 2px; display: block; }
-.nav-item { display: flex; align-items: center; gap: 11px; padding: 12px; border-radius: 9px; cursor: pointer; transition: all 0.12s; text-decoration: none; color: var(--gray-400); font-size: 14px; font-weight: 400; position: relative; margin-bottom: 1px; }
-.nav-item:hover { background: var(--gray-100); color: var(--black); }
-.nav-item.active { background: var(--gray-100); color: var(--black); font-weight: 500; }
-.nav-item.active::before { content: ''; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; background: var(--primary); border-radius: 0 3px 3px 0; }
-.nav-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0.45; transition: opacity 0.12s; }
-.nav-item:hover .nav-icon, .nav-item.active .nav-icon { opacity: 1; }
-.nav-icon svg { width: 17px; height: 17px; stroke-width: 1.75; }
-.nav-badge { margin-left: auto; background: var(--primary); color: white; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; min-width: 18px; text-align: center; display: none; }
-.nav-divider { height: 1px; background: var(--gray-100); margin: 2px 12px; }
-.sidebar-footer { flex-shrink: 0; border-top: 1px solid var(--gray-100); padding: 14px 10px; }
-.sidebar-user { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 9px; cursor: pointer; transition: background 0.12s; text-decoration: none; }
-.sidebar-user:hover { background: var(--gray-100); }
-.user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary-light); border: 1.5px solid var(--primary-mid); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; overflow: hidden; }
-.user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.user-info { flex: 1; min-width: 0; }
-.user-name { font-size: 13.5px; font-weight: 600; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.user-email { font-size: 11.5px; color: var(--gray-400); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    
-
-    /* ===== MAIN ===== */
-    .main { margin-left: var(--sidebar-width); flex: 1; padding: 36px 40px; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* ===== BACK BUTTON ===== */
-    .btn-back {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 8px 16px; background: var(--white); color: var(--gray-600);
-      border: 1px solid var(--gray-200); border-radius: 9px;
-      font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 500;
-      cursor: pointer; text-decoration: none; transition: all 0.15s;
-      margin-bottom: 24px; opacity: 0; animation: fadeUp 0.4s ease 0.05s forwards;
-    }
-    .btn-back:hover { background: var(--gray-100); color: var(--black); }
-
-    /* ===== LAYOUT ===== */
-    .profil-layout {
-      display: grid; grid-template-columns: 300px 1fr; gap: 24px;
-      opacity: 0; animation: fadeUp 0.4s ease 0.1s forwards;
-    }
-
-    /* ===== CARD ===== */
-    .card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 14px; padding: 24px; margin-bottom: 20px; }
-    .card:last-child { margin-bottom: 0; }
-    .card-title { font-family: "DM Serif Display", serif; font-size: 15px; color: var(--black); letter-spacing: -0.3px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--gray-100); }
-
-    /* ===== KOLOM KIRI ===== */
-    .avatar-section { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--gray-100); }
-    .avatar-lg { width: 90px; height: 90px; border-radius: 50%; background: var(--primary-light); border: 3px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 38px; margin-bottom: 14px; overflow: hidden; }
-    .avatar-lg img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-    .profil-nama { font-family: "DM Serif Display", serif; font-size: 20px; color: var(--black); letter-spacing: -0.3px; margin-bottom: 3px; }
-    .profil-jurusan { font-size: 13px; color: var(--gray-600); margin-bottom: 2px; }
-    .profil-univ { font-size: 12px; color: var(--gray-400); margin-bottom: 14px; }
-
-    .profil-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 16px; }
-    .tag { background: var(--primary-light); border: 1px solid rgba(249,115,22,0.2); color: var(--primary); font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
-    .tag.gray { background: var(--gray-100); border-color: var(--gray-200); color: var(--gray-600); }
-
-    /* ===== ACTION BUTTONS ===== */
-    .profil-actions { display: flex; flex-direction: column; gap: 8px; }
-    .btn-ajak {
-      width: 100%; padding: 11px; background: var(--primary); color: white;
-      border: none; border-radius: 10px; font-family: "DM Sans", sans-serif;
-      font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.15s;
-    }
-    .btn-ajak:hover { background: var(--primary-hover); box-shadow: 0 4px 12px rgba(249,115,22,0.25); }
-    .btn-wa {
-      width: 100%; padding: 11px; background: #f0fdf4; color: #16a34a;
-      border: 1.5px solid #86efac; border-radius: 10px; font-family: "DM Sans", sans-serif;
-      font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.15s;
-      text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 7px;
-    }
-    .btn-wa:hover { background: #16a34a; color: white; border-color: #16a34a; }
-
-    /* ===== STATS ===== */
-    .stats-mini { display: flex; flex-direction: column; gap: 8px; }
-    .stat-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--gray-50); border-radius: 9px; }
-    .stat-row-label { font-size: 12px; color: var(--gray-600); display: flex; align-items: center; gap: 7px; }
-    .stat-row-value { font-size: 13px; font-weight: 600; color: var(--black); }
-
-    /* ===== KOLOM KANAN ===== */
-    .info-section { margin-bottom: 6px; }
-    .info-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); }
-    .info-row:last-child { border-bottom: none; }
-    .info-icon { font-size: 15px; width: 22px; flex-shrink: 0; margin-top: 1px; }
-    .info-label { font-size: 11px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
-    .info-value { font-size: 13.5px; color: var(--black); line-height: 1.5; }
-    .info-value.empty { color: var(--gray-400); font-style: italic; }
-
-    .tags-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-
-    /* Rating */
-    .rating-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gray-100); }
-    .rating-item:last-child { border-bottom: none; padding-bottom: 0; }
-    .rating-item:first-child { padding-top: 0; }
-    .rating-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; overflow: hidden; }
-    .rating-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-    .rating-name { font-size: 13px; font-weight: 600; color: var(--black); margin-bottom: 2px; }
-    .rating-stars { color: var(--primary); font-size: 12px; margin-bottom: 3px; }
-    .rating-text { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
-    .rating-date { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
-    .empty-hint { text-align: center; color: var(--gray-400); font-size: 13px; padding: 20px 0; }
-
-    /* ===== LOADING STATE ===== */
-    .loading-state { text-align: center; padding: 60px 20px; color: var(--gray-400); }
-    .loading-state .spinner { font-size: 32px; animation: spin 1s linear infinite; display: inline-block; margin-bottom: 12px; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-    /* ===== MODAL AJAK ===== */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal-box { background: white; border-radius: 18px; padding: 28px; width: 440px; max-width: 90vw; transform: translateY(20px); transition: transform 0.2s; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
-    .modal-overlay.open .modal-box { transform: translateY(0); }
-    .modal-title { font-family: "DM Serif Display", serif; font-size: 20px; margin-bottom: 4px; letter-spacing: -0.3px; color: var(--black); }
-    .modal-sub { font-size: 13px; color: var(--gray-400); margin-bottom: 20px; }
-    .modal-form { display: flex; flex-direction: column; gap: 12px; }
-    .modal-group { display: flex; flex-direction: column; gap: 5px; }
-    .modal-label { font-size: 12px; font-weight: 600; color: var(--black); }
-    .modal-input, .modal-select { width: 100%; padding: 10px 14px; border: 1.5px solid var(--gray-200); border-radius: 9px; font-family: "DM Sans", sans-serif; font-size: 13px; color: var(--black); background: var(--gray-50); outline: none; transition: border-color 0.15s, background 0.15s; }
-    .modal-input:focus, .modal-select:focus { border-color: var(--primary); background: var(--white); }
-    .modal-input::placeholder { color: var(--gray-400); }
-    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--gray-100); }
-    .btn-modal-cancel { padding: 10px 20px; background: var(--gray-100); border: none; border-radius: 9px; font-family: "DM Sans", sans-serif; font-size: 13px; cursor: pointer; transition: background 0.15s; color: var(--black); }
-    .btn-modal-cancel:hover { background: var(--gray-200); }
-    .btn-modal-submit { padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: 9px; font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-    .btn-modal-submit:hover { background: var(--primary-hover); }
-    .btn-modal-submit:disabled { background: var(--gray-300); cursor: not-allowed; }
-    .modal-input.error, .modal-select.error { border-color: #dc2626; background: #fef2f2; }
-  </style>
-</head>
-<body>
-
-  <!-- Mobile Overlay -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
-  <!-- Mobile Topbar -->
-  <div class="mobile-topbar">
-    <a class="mobile-topbar-brand" href="dashboard.html">
-      <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="22" fill="#f97316"/>
-        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
-        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
-        <rect x="40" y="45" width="28" height="11" fill="white"/>
-        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
-      </svg>
-      EduMate
-    </a>
-    <div class="mobile-topbar-right">
-      <button class="btn-hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="22" fill="#f97316"/>
-        <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a"/>
-        <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white"/>
-        <rect x="40" y="45" width="28" height="11" fill="white"/>
-        <path d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z" fill="#f97316"/>
-      </svg>
-      <span class="brand-name">EduMate</span>
-    </div>
-    <nav class="nav-section">
-      <span class="nav-label">Menu</span>
-      <a href="dashboard.html" class="nav-item ">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
-        Dashboard
-      </a>
-      <a href="cari-teman.html" class="nav-item active">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-        Cari Teman Belajar
-      </a>
-      <a href="jadwal.html" class="nav-item ">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
-        Jadwal Saya
-      </a>
-      <a href="sesi.html" class="nav-item ">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
-        Sesi Belajar
-      </a>
-      <div class="nav-divider"></div>
-      <span class="nav-label">Lainnya</span>
-      <a href="notifikasi.html" class="nav-item ">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
-        Notifikasi<span class="nav-badge" id="navBadge">0</span>
-      </a>
-      <a href="rating.html" class="nav-item ">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
-        Rating & Review
-      </a>
-      <a href="profil.html" class="nav-item ">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-        Profil Saya
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <a href="profil.html" class="sidebar-user">
-        <div class="user-avatar">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9b9894" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-        <div class="user-info">
-          <div class="user-name">Nama User</div>
-          <div class="user-email"><span class="__cf_email__" data-cfemail="244149454d48644349454d480a474b49">[email&#160;protected]</span></div>
-        </div>
-      </a>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-    <a href="cari-teman.html" class="btn-back">← Kembali ke Cari Teman</a>
-
-    <!-- Loading -->
-    <div class="loading-state" id="loadingState">
-      <div class="spinner">⏳</div>
-      <p>Memuat profil...</p>
-    </div>
-
-    <!-- Konten profil (tersembunyi sampai data loaded) -->
-    <div id="profilContent" style="display:none;">
-      <div class="profil-layout">
-
-        <!-- KOLOM KIRI -->
-        <div>
-          <div class="card">
-            <div class="avatar-section">
-              <div class="avatar-lg" id="avatarLg">👤</div>
-              <div class="profil-nama" id="profilNama">-</div>
-              <div class="profil-jurusan" id="profilJurusan">-</div>
-              <div class="profil-univ" id="profilUniv">-</div>
-              <div id="profilOnlineStatus" style="margin-bottom:12px;"></div>
-              <div class="profil-tags" id="profilTags"></div>
-            </div>
-
-            <div class="profil-actions">
-              <button class="btn-ajak" id="btnAjak" onclick="bukaModal()">
-                📚 Ajak Belajar
-              </button>
-              <a class="btn-wa" id="btnWa" href="#" target="_blank" rel="noopener noreferrer" style="display:none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                </svg>
-                Hubungi via WhatsApp
-              </a>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">📊 Statistik</div>
-            <div class="stats-mini">
-              <div class="stat-row">
-                <div class="stat-row-label">📖 Sesi Selesai</div>
-                <div class="stat-row-value" id="statSesi">-</div>
-              </div>
-              <div class="stat-row">
-                <div class="stat-row-label">⭐ Rating Rata-rata</div>
-                <div class="stat-row-value" id="statRating">-</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- KOLOM KANAN -->
-        <div>
-          <!-- Info Diri -->
-          <div class="card">
-            <div class="card-title">📋 Tentang</div>
-            <div class="info-section">
-              <div class="info-row">
-                <div class="info-icon">📝</div>
-                <div>
-                  <div class="info-label">Bio</div>
-                  <div class="info-value" id="infoBio"><span class="empty">Belum ada bio.</span></div>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-icon">🎓</div>
-                <div>
-                  <div class="info-label">Jurusan & Universitas</div>
-                  <div class="info-value" id="infoJurusan">-</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Profil Belajar -->
-          <div class="card">
-            <div class="card-title">🎯 Profil Belajar</div>
-            <div class="info-section">
-              <div class="info-row">
-                <div class="info-icon">💡</div>
-                <div>
-                  <div class="info-label">Skill / Mata Kuliah</div>
-                  <div class="tags-row" id="infoSkill"><span class="info-value empty">-</span></div>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-icon">🔍</div>
-                <div>
-                  <div class="info-label">Topik yang Dipelajari</div>
-                  <div class="tags-row" id="infoTopik"><span class="info-value empty">-</span></div>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-icon">📚</div>
-                <div>
-                  <div class="info-label">Gaya Belajar</div>
-                  <div class="info-value" id="infoGaya">-</div>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-icon">📍</div>
-                <div>
-                  <div class="info-label">Lokasi Belajar</div>
-                  <div class="info-value" id="infoLokasi">-</div>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-icon">🏆</div>
-                <div>
-                  <div class="info-label">Tingkat Kemampuan</div>
-                  <div class="info-value" id="infoTingkat">-</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Jadwal Kosong -->
-          <div class="card">
-            <div class="card-title">📅 Jadwal Kosong</div>
-            <div id="infoJadwal">
-              <div class="empty-hint">Memuat jadwal...</div>
-            </div>
-          </div>
-
-          <!-- Rating -->
-          <div class="card">
-            <div class="card-title">⭐ Rating & Review</div>
-            <div id="infoRating">
-              <div class="empty-hint">Memuat rating...</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </main>
-
-  <!-- MODAL AJAK BELAJAR -->
-  <div class="modal-overlay" id="modalAjak">
-    <div class="modal-box">
-      <div class="modal-title">Ajak Belajar</div>
-      <div class="modal-sub" id="modalNamaBuddy">Bersama —</div>
-      <div class="modal-form">
-        <div class="modal-group">
-          <label class="modal-label">Mata Kuliah</label>
-          <input type="text" id="modalMataKuliah" class="modal-input" placeholder="Contoh: Algoritma & Pemrograman"/>
-        </div>
-        <div class="modal-group">
-          <label class="modal-label">Tanggal</label>
-          <input type="date" id="modalTanggal" class="modal-input"/>
-        </div>
-        <div class="modal-row">
-          <div class="modal-group">
-            <label class="modal-label">Jam Mulai</label>
-            <input type="time" id="modalJamMulai" class="modal-input"/>
-          </div>
-          <div class="modal-group">
-            <label class="modal-label">Jam Selesai</label>
-            <input type="time" id="modalJamSelesai" class="modal-input"/>
-          </div>
-        </div>
-        <div class="modal-group">
-          <label class="modal-label">Lokasi</label>
-          <select id="modalLokasi" class="modal-select" onchange="toggleLinkMeeting(this.value)">
-            <option value="Online">Online</option>
-            <option value="Perpustakaan">Perpustakaan</option>
-            <option value="Kafe">Kafe</option>
-            <option value="Kampus">Kampus</option>
-          </select>
-        </div>
-        <div class="modal-group" id="linkMeetingGroup">
-          <label class="modal-label">Link Meeting <span style="color:var(--gray-400);font-weight:400">(opsional)</span></label>
-          <input type="url" id="modalLinkMeeting" class="modal-input" placeholder="https://meet.google.com/... atau https://zoom.us/..."/>
-          <span style="font-size:11px;color:var(--gray-400);margin-top:3px;display:block;">Paste link Zoom, Google Meet, atau platform lainnya</span>
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-modal-cancel" onclick="tutupModal()">Batal</button>
-        <button class="btn-modal-submit" id="btnKirim" onclick="kirimAjakan()">Kirim Ajakan</button>
-      </div>
-    </div>
-  </div><script src="../js/auth-client.js"></script>
-  <script>
-    const API = window.location.hostname === 'localhost'
-      ? 'http://localhost:3000/api'
-: window.location.origin + '/api'
-
-    let targetUserId = null;
-    let targetUserName = '';
-
-    // ===== AMBIL USER ID DARI URL =====
-    function getUserIdFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('id');
-    }
-
-    // ===== FORMAT NOMOR WA =====
-    function formatWaNumber(hp) {
-      if (!hp) return null;
-      const clean = hp.replace(/[\s\-\(\)]/g, '');
-      if (clean.startsWith('08')) return '62' + clean.slice(1);
-      if (clean.startsWith('+62')) return clean.slice(1);
-      if (clean.startsWith('62')) return clean;
-      return clean;
-    }
-
-    // ===== RENDER TAGS =====
-    function renderTags(str, container, tagClass = '') {
-      if (!str) { container.innerHTML = '<span class="info-value empty" style="color:var(--gray-400);font-style:italic;">-</span>'; return; }
-      container.innerHTML = str.split(',').map(s => s.trim()).filter(Boolean)
-        .map(s => `<span class="tag ${tagClass}">${s}</span>`).join('');
-    }
-
-    // ===== LOAD PROFIL USER TARGET =====
-    async function loadProfilPublik(userId) {
-      const token = getToken();
-      try {
-        // Fetch data user dari endpoint publik
-        const res = await fetch(`${API}/auth/user/${userId}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!res.ok) {
-          document.getElementById('loadingState').innerHTML =
-            '<div style="text-align:center;padding:60px 20px;color:var(--gray-400);">😕<br><br>Profil tidak ditemukan.</div>';
-          return;
-        }
-
-        const data = await res.json();
-        if (!data.success || !data.user) {
-          document.getElementById('loadingState').innerHTML =
-            '<div style="text-align:center;padding:60px 20px;color:var(--gray-400);">😕<br><br>Profil tidak ditemukan.</div>';
-          return;
-        }
-
-        const u = data.user;
-        targetUserId = u.id;
-        targetUserName = u.nama || 'Pengguna';
-
-        // Update page title
-        document.title = `EduMate — ${u.nama || 'Profil'}`;
-
-        // Avatar
-        const avatarEl = document.getElementById('avatarLg');
-        if (u.foto) {
-          avatarEl.innerHTML = `<img src="${u.foto}" referrerpolicy="no-referrer" alt="${u.nama}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-        }
-
-        // Info dasar
-        document.getElementById('profilNama').textContent = u.nama || '-';
-        document.getElementById('profilJurusan').textContent = u.jurusan || '-';
-        document.getElementById('profilUniv').textContent = u.universitas || '-';
-
-        // Status online
-        const statusEl = document.getElementById('profilOnlineStatus');
-        if (statusEl && typeof renderOnlineStatus === 'function') {
-          statusEl.innerHTML = renderOnlineStatus(u.online, u.label);
-        }
-        document.getElementById('infoJurusan').textContent = [u.jurusan, u.universitas].filter(Boolean).join(' · ') || '-';
-        document.getElementById('infoBio').textContent = u.bio || '';
-        if (!u.bio) document.getElementById('infoBio').innerHTML = '<span style="color:var(--gray-400);font-style:italic;">Belum ada bio.</span>';
-
-        // Tags di kartu kiri
-        const tagsEl = document.getElementById('profilTags');
-        tagsEl.innerHTML = '';
-        if (u.gaya_belajar) tagsEl.innerHTML += `<span class="tag">${u.gaya_belajar}</span>`;
-        if (u.lokasi_belajar) tagsEl.innerHTML += `<span class="tag gray">${u.lokasi_belajar}</span>`;
-        if (u.tingkat_kemampuan) tagsEl.innerHTML += `<span class="tag gray">${u.tingkat_kemampuan}</span>`;
-
-        // Profil belajar
-        renderTags(u.skill, document.getElementById('infoSkill'));
-        renderTags(u.topik_belajar, document.getElementById('infoTopik'));
-        document.getElementById('infoGaya').textContent = u.gaya_belajar || '-';
-        document.getElementById('infoLokasi').textContent = u.lokasi_belajar || '-';
-        document.getElementById('infoTingkat').textContent = u.tingkat_kemampuan || '-';
-
-        // Tombol WA
-        if (u.no_hp) {
-          const waNum = formatWaNumber(u.no_hp);
-          const btnWa = document.getElementById('btnWa');
-          btnWa.href = `https://wa.me/${waNum}`;
-          btnWa.style.display = 'flex';
-        }
-
-        // Load jadwal & rating
-        await Promise.all([
-          loadJadwal(userId, token),
-          loadRating(userId, token)
-        ]);
-
-        // Sembunyikan loading, tampilkan konten
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('profilContent').style.display = 'block';
-
-      } catch (err) {
-        console.error('loadProfilPublik error:', err);
-        document.getElementById('loadingState').innerHTML =
-          '<div style="text-align:center;padding:60px 20px;color:var(--gray-400);">❌<br><br>Gagal memuat profil. Coba lagi.</div>';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+    <title>EduMate — Profil</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link rel="stylesheet" href="../css/sidebar.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-    }
+      :root {
+        --black: #0a0a0a;
+        --primary: #f97316;
+        --primary-hover: #ea6c0a;
+        --primary-light: #fff4ed;
+        --primary-mid: #fed7aa;
+        --white: #ffffff;
+        --gray-50: #fafafa;
+        --gray-100: #f4f4f4;
+        --gray-200: #e8e8e8;
+        --gray-400: #a0a0a0;
+        --gray-600: #555;
+        --sidebar-width: 252px;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--gray-50);
+        min-height: 100vh;
+        display: flex;
+        color: var(--black);
+      }
 
-    // ===== LOAD JADWAL =====
-    async function loadJadwal(userId, token) {
-      const jadwalEl = document.getElementById('infoJadwal');
-      try {
-        const res = await fetch(`${API}/jadwal/user/${userId}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (!data.success || !data.jadwal || data.jadwal.length === 0) {
-          jadwalEl.innerHTML = '<div class="empty-hint">Belum ada jadwal kosong.</div>';
+      /* ===== SIDEBAR ===== */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: var(--white);
+        border-right: 1px solid var(--gray-200);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 100;
+      }
+      .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 16px 20px;
+        background: rgba(249, 115, 22, 0.08);
+        border-bottom: 1.5px solid rgba(249, 115, 22, 0.15);
+        flex-shrink: 0;
+        width: 100%;
+      }
+      .brand-name {
+        font-family: "DM Serif Display", serif;
+        font-size: 19px;
+        color: var(--black);
+        letter-spacing: -0.4px;
+      }
+      .nav-section {
+        padding: 8px 10px;
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .nav-section::-webkit-scrollbar {
+        display: none;
+      }
+      .nav-label {
+        font-size: 9.5px;
+        font-weight: 700;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 1.1px;
+        padding: 0 12px;
+        margin: 4px 0 2px;
+        display: block;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 12px;
+        border-radius: 9px;
+        cursor: pointer;
+        transition: all 0.12s;
+        text-decoration: none;
+        color: var(--gray-400);
+        font-size: 14px;
+        font-weight: 400;
+        position: relative;
+        margin-bottom: 1px;
+      }
+      .nav-item:hover {
+        background: var(--gray-100);
+        color: var(--black);
+      }
+      .nav-item.active {
+        background: var(--gray-100);
+        color: var(--black);
+        font-weight: 500;
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 7px;
+        bottom: 7px;
+        width: 3px;
+        background: var(--primary);
+        border-radius: 0 3px 3px 0;
+      }
+      .nav-icon {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        opacity: 0.45;
+        transition: opacity 0.12s;
+      }
+      .nav-item:hover .nav-icon,
+      .nav-item.active .nav-icon {
+        opacity: 1;
+      }
+      .nav-icon svg {
+        width: 17px;
+        height: 17px;
+        stroke-width: 1.75;
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: var(--primary);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 99px;
+        min-width: 18px;
+        text-align: center;
+        display: none;
+      }
+      .nav-divider {
+        height: 1px;
+        background: var(--gray-100);
+        margin: 2px 12px;
+      }
+      .sidebar-footer {
+        flex-shrink: 0;
+        border-top: 1px solid var(--gray-100);
+        padding: 14px 10px;
+      }
+      .sidebar-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 9px;
+        cursor: pointer;
+        transition: background 0.12s;
+        text-decoration: none;
+      }
+      .sidebar-user:hover {
+        background: var(--gray-100);
+      }
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        border: 1.5px solid var(--primary-mid);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .user-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .user-name {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--black);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .user-email {
+        font-size: 11.5px;
+        color: var(--gray-400);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* ===== MAIN ===== */
+      .main {
+        margin-left: var(--sidebar-width);
+        flex: 1;
+        padding: 36px 40px;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ===== BACK BUTTON ===== */
+      .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 16px;
+        background: var(--white);
+        color: var(--gray-600);
+        border: 1px solid var(--gray-200);
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.15s;
+        margin-bottom: 24px;
+        opacity: 0;
+        animation: fadeUp 0.4s ease 0.05s forwards;
+      }
+      .btn-back:hover {
+        background: var(--gray-100);
+        color: var(--black);
+      }
+
+      /* ===== LAYOUT ===== */
+      .profil-layout {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 24px;
+        align-items: start;
+        opacity: 0;
+        animation: fadeUp 0.4s ease 0.1s forwards;
+      }
+      .profil-layout > div:first-child {
+        position: sticky;
+        top: 36px;
+        align-self: start;
+      }
+
+      /* ===== CARD ===== */
+      .card {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .card:last-child {
+        margin-bottom: 0;
+      }
+      .card-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 15px;
+        color: var(--black);
+        letter-spacing: -0.3px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      /* ===== KOLOM KIRI ===== */
+      .avatar-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .avatar-lg {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        border: 3px solid var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        margin-bottom: 14px;
+        overflow: hidden;
+      }
+      .avatar-lg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .profil-nama {
+        font-family: "DM Serif Display", serif;
+        font-size: 20px;
+        color: var(--black);
+        letter-spacing: -0.3px;
+        margin-bottom: 3px;
+      }
+      .profil-jurusan {
+        font-size: 13px;
+        color: var(--gray-600);
+        margin-bottom: 2px;
+      }
+      .profil-univ {
+        font-size: 12px;
+        color: var(--gray-400);
+        margin-bottom: 14px;
+      }
+
+      .profil-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+      .tag {
+        background: var(--primary-light);
+        border: 1px solid rgba(249, 115, 22, 0.2);
+        color: var(--primary);
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-weight: 500;
+      }
+      .tag.gray {
+        background: var(--gray-100);
+        border-color: var(--gray-200);
+        color: var(--gray-600);
+      }
+
+      /* ===== ACTION BUTTONS ===== */
+      .profil-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .btn-ajak {
+        width: 100%;
+        padding: 11px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-ajak:hover {
+        background: var(--primary-hover);
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+      }
+      .btn-wa {
+        width: 100%;
+        padding: 11px;
+        background: #f0fdf4;
+        color: #16a34a;
+        border: 1.5px solid #86efac;
+        border-radius: 10px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+      }
+      .btn-wa:hover {
+        background: #16a34a;
+        color: white;
+        border-color: #16a34a;
+      }
+
+      /* ===== STATS ===== */
+      .stats-mini {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .stat-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        background: var(--gray-50);
+        border-radius: 9px;
+      }
+      .stat-row-label {
+        font-size: 12px;
+        color: var(--gray-600);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .stat-row-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--black);
+      }
+
+      /* ===== KOLOM KANAN ===== */
+      .info-section {
+        margin-bottom: 6px;
+      }
+      .info-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .info-row:last-child {
+        border-bottom: none;
+      }
+      .info-icon {
+        font-size: 15px;
+        width: 22px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .info-label {
+        font-size: 11px;
+        color: var(--gray-400);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 3px;
+      }
+      .info-value {
+        font-size: 13.5px;
+        color: var(--black);
+        line-height: 1.5;
+      }
+      .info-value.empty {
+        color: var(--gray-400);
+        font-style: italic;
+      }
+
+      .tags-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 4px;
+      }
+
+      /* Rating */
+      .rating-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .rating-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .rating-item:first-child {
+        padding-top: 0;
+      }
+      .rating-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      .rating-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .rating-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 2px;
+      }
+      .rating-stars {
+        color: var(--primary);
+        font-size: 12px;
+        margin-bottom: 3px;
+      }
+      .rating-text {
+        font-size: 12px;
+        color: var(--gray-600);
+        line-height: 1.5;
+      }
+      .rating-date {
+        font-size: 11px;
+        color: var(--gray-400);
+        margin-top: 2px;
+      }
+      .empty-hint {
+        text-align: center;
+        color: var(--gray-400);
+        font-size: 13px;
+        padding: 20px 0;
+      }
+
+      /* ===== LOADING STATE ===== */
+      .loading-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--gray-400);
+      }
+      .loading-state .spinner {
+        font-size: 32px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-bottom: 12px;
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ===== MODAL AJAK ===== */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 300;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal-box {
+        background: white;
+        border-radius: 18px;
+        padding: 28px;
+        width: 440px;
+        max-width: 90vw;
+        transform: translateY(20px);
+        transition: transform 0.2s;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      }
+      .modal-overlay.open .modal-box {
+        transform: translateY(0);
+      }
+      .modal-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 20px;
+        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+        color: var(--black);
+      }
+      .modal-sub {
+        font-size: 13px;
+        color: var(--gray-400);
+        margin-bottom: 20px;
+      }
+      .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .modal-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .modal-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--black);
+      }
+      .modal-input,
+      .modal-select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        color: var(--black);
+        background: var(--gray-50);
+        outline: none;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .modal-input:focus,
+      .modal-select:focus {
+        border-color: var(--primary);
+        background: var(--white);
+      }
+      .modal-input::placeholder {
+        color: var(--gray-400);
+      }
+      .modal-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--gray-100);
+      }
+      .btn-modal-cancel {
+        padding: 10px 20px;
+        background: var(--gray-100);
+        border: none;
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.15s;
+        color: var(--black);
+      }
+      .btn-modal-cancel:hover {
+        background: var(--gray-200);
+      }
+      .btn-modal-submit {
+        padding: 10px 24px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 9px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-modal-submit:hover {
+        background: var(--primary-hover);
+      }
+      .btn-modal-submit:disabled {
+        background: var(--gray-300);
+        cursor: not-allowed;
+      }
+      .modal-input.error,
+      .modal-select.error {
+        border-color: #dc2626;
+        background: #fef2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Mobile Overlay -->
+    <div
+      class="sidebar-overlay"
+      id="sidebarOverlay"
+      onclick="toggleSidebar()"
+    ></div>
+
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar">
+      <a class="mobile-topbar-brand" href="dashboard.html">
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="100" height="100" rx="22" fill="#f97316" />
+          <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a" />
+          <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white" />
+          <rect x="40" y="45" width="28" height="11" fill="white" />
+          <path
+            d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z"
+            fill="#f97316"
+          />
+        </svg>
+        EduMate
+      </a>
+      <div class="mobile-topbar-right">
+        <button
+          class="btn-hamburger"
+          id="hamburgerBtn"
+          onclick="toggleSidebar()"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="100" height="100" rx="22" fill="#f97316" />
+          <polygon points="0,58 100,42 100,100 0,100" fill="#0a0a0a" />
+          <path d="M28 24 L72 24 L72 37 L40 37 L40 49 L28 49 Z" fill="white" />
+          <rect x="40" y="45" width="28" height="11" fill="white" />
+          <path
+            d="M28 60 L40 60 L40 68 L72 68 L72 80 L28 80 Z"
+            fill="#f97316"
+          />
+        </svg>
+        <span class="brand-name">EduMate</span>
+      </div>
+      <nav class="nav-section">
+        <span class="nav-label">Menu</span>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" /></svg
+          ></span>
+          Dashboard
+        </a>
+        <a href="cari-teman.html" class="nav-item active">
+          <span class="nav-icon"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" /></svg
+          ></span>
+          Cari Teman Belajar
+        </a>
+        <a href="jadwal.html" class="nav-item">
+          <span class="nav-icon"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4M8 2v4M3 10h18" /></svg
+          ></span>
+          Jadwal Saya
+        </a>
+        <a href="sesi.html" class="nav-item">
+          <span class="nav-icon"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+              /></svg
+          ></span>
+          Sesi Belajar
+        </a>
+        <div class="nav-divider"></div>
+        <span class="nav-label">Lainnya</span>
+        <a href="notifikasi.html" class="nav-item">
+          <span class="nav-icon"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg
+          ></span>
+          Notifikasi<span class="nav-badge" id="navBadge">0</span>
+        </a>
+        <a href="rating.html" class="nav-item">
+          <span class="nav-icon"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+              /></svg
+          ></span>
+          Rating & Review
+        </a>
+        <a href="profil.html" class="nav-item">
+          <span class="nav-icon"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" /></svg
+          ></span>
+          Profil Saya
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="profil.html" class="sidebar-user">
+          <div class="user-avatar">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#9b9894"
+              stroke-width="2"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <div class="user-info">
+            <div class="user-name">Nama User</div>
+            <div class="user-email">
+              <span
+                class="__cf_email__"
+                data-cfemail="244149454d48644349454d480a474b49"
+                >[email&#160;protected]</span
+              >
+            </div>
+          </div>
+        </a>
+        <button class="btn-logout" onclick="logout()">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </span>
+    Keluar
+  </button>
+</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <a href="cari-teman.html" class="btn-back">← Kembali ke Cari Teman</a>
+
+      <!-- Loading -->
+      <div class="loading-state" id="loadingState">
+        <div class="spinner">⏳</div>
+        <p>Memuat profil...</p>
+      </div>
+
+      <!-- Konten profil (tersembunyi sampai data loaded) -->
+      <div id="profilContent" style="display: none">
+        <div class="profil-layout">
+          <!-- KOLOM KIRI -->
+          <div>
+            <div class="card">
+              <div class="avatar-section">
+                <div class="avatar-lg" id="avatarLg">👤</div>
+                <div class="profil-nama" id="profilNama">-</div>
+                <div class="profil-jurusan" id="profilJurusan">-</div>
+                <div class="profil-univ" id="profilUniv">-</div>
+                <div id="profilOnlineStatus" style="margin-bottom: 12px"></div>
+                <div class="profil-tags" id="profilTags"></div>
+              </div>
+
+              <div class="profil-actions">
+                <button class="btn-ajak" id="btnAjak" onclick="bukaModal()">
+                  📚 Ajak Belajar
+                </button>
+                <a
+                  class="btn-wa"
+                  id="btnWa"
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="display: none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
+                    />
+                  </svg>
+                  Hubungi via WhatsApp
+                </a>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">📊 Statistik</div>
+              <div class="stats-mini">
+                <div class="stat-row">
+                  <div class="stat-row-label">📖 Sesi Selesai</div>
+                  <div class="stat-row-value" id="statSesi">-</div>
+                </div>
+                <div class="stat-row">
+                  <div class="stat-row-label">⭐ Rating Rata-rata</div>
+                  <div class="stat-row-value" id="statRating">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KOLOM KANAN -->
+          <div>
+            <!-- Info Diri -->
+            <div class="card">
+              <div class="card-title">📋 Tentang</div>
+              <div class="info-section">
+                <div class="info-row">
+                  <div class="info-icon">📝</div>
+                  <div>
+                    <div class="info-label">Bio</div>
+                    <div class="info-value" id="infoBio">
+                      <span class="empty">Belum ada bio.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-icon">🎓</div>
+                  <div>
+                    <div class="info-label">Jurusan & Universitas</div>
+                    <div class="info-value" id="infoJurusan">-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profil Belajar -->
+            <div class="card">
+              <div class="card-title">🎯 Profil Belajar</div>
+              <div class="info-section">
+                <div class="info-row">
+                  <div class="info-icon">💡</div>
+                  <div>
+                    <div class="info-label">Skill / Mata Kuliah</div>
+                    <div class="tags-row" id="infoSkill">
+                      <span class="info-value empty">-</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-icon">🔍</div>
+                  <div>
+                    <div class="info-label">Topik yang Dipelajari</div>
+                    <div class="tags-row" id="infoTopik">
+                      <span class="info-value empty">-</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-icon">📚</div>
+                  <div>
+                    <div class="info-label">Gaya Belajar</div>
+                    <div class="info-value" id="infoGaya">-</div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-icon">📍</div>
+                  <div>
+                    <div class="info-label">Lokasi Belajar</div>
+                    <div class="info-value" id="infoLokasi">-</div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-icon">🏆</div>
+                  <div>
+                    <div class="info-label">Tingkat Kemampuan</div>
+                    <div class="info-value" id="infoTingkat">-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Jadwal Kosong -->
+            <div class="card">
+              <div class="card-title">📅 Jadwal Kosong</div>
+              <div id="infoJadwal">
+                <div class="empty-hint">Memuat jadwal...</div>
+              </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="card">
+              <div class="card-title">⭐ Rating & Review</div>
+              <div id="infoRating">
+                <div class="empty-hint">Memuat rating...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODAL AJAK BELAJAR -->
+    <div class="modal-overlay" id="modalAjak">
+      <div class="modal-box">
+        <div class="modal-title">Ajak Belajar</div>
+        <div class="modal-sub" id="modalNamaBuddy">Bersama —</div>
+        <div class="modal-form">
+          <div class="modal-group">
+            <label class="modal-label">Mata Kuliah</label>
+            <input
+              type="text"
+              id="modalMataKuliah"
+              class="modal-input"
+              placeholder="Contoh: Algoritma & Pemrograman"
+            />
+          </div>
+          <div class="modal-group">
+            <label class="modal-label">Tanggal</label>
+            <input type="date" id="modalTanggal" class="modal-input" />
+          </div>
+          <div class="modal-row">
+            <div class="modal-group">
+              <label class="modal-label">Jam Mulai</label>
+              <input type="time" id="modalJamMulai" class="modal-input" />
+            </div>
+            <div class="modal-group">
+              <label class="modal-label">Jam Selesai</label>
+              <input type="time" id="modalJamSelesai" class="modal-input" />
+            </div>
+          </div>
+          <div class="modal-group">
+            <label class="modal-label">Lokasi</label>
+            <select
+              id="modalLokasi"
+              class="modal-select"
+              onchange="toggleLinkMeeting(this.value)"
+            >
+              <option value="Online">Online</option>
+              <option value="Perpustakaan">Perpustakaan</option>
+              <option value="Kafe">Kafe</option>
+              <option value="Kampus">Kampus</option>
+            </select>
+          </div>
+          <div class="modal-group" id="linkMeetingGroup">
+            <label class="modal-label"
+              >Link Meeting
+              <span style="color: var(--gray-400); font-weight: 400"
+                >(opsional)</span
+              ></label
+            >
+            <input
+              type="url"
+              id="modalLinkMeeting"
+              class="modal-input"
+              placeholder="https://meet.google.com/... atau https://zoom.us/..."
+            />
+            <span
+              style="
+                font-size: 11px;
+                color: var(--gray-400);
+                margin-top: 3px;
+                display: block;
+              "
+              >Paste link Zoom, Google Meet, atau platform lainnya</span
+            >
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="tutupModal()">Batal</button>
+          <button
+            class="btn-modal-submit"
+            id="btnKirim"
+            onclick="kirimAjakan()"
+          >
+            Kirim Ajakan
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="../js/auth-client.js"></script>
+    <script>
+      const API =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api"
+          : window.location.origin + "/api";
+
+      let targetUserId = null;
+      let targetUserName = "";
+
+      // ===== AMBIL USER ID DARI URL =====
+      function getUserIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("id");
+      }
+
+      // ===== FORMAT NOMOR WA =====
+      function formatWaNumber(hp) {
+        if (!hp) return null;
+        const clean = hp.replace(/[\s\-\(\)]/g, "");
+        if (clean.startsWith("08")) return "62" + clean.slice(1);
+        if (clean.startsWith("+62")) return clean.slice(1);
+        if (clean.startsWith("62")) return clean;
+        return clean;
+      }
+
+      // ===== RENDER TAGS =====
+      function renderTags(str, container, tagClass = "") {
+        if (!str) {
+          container.innerHTML =
+            '<span class="info-value empty" style="color:var(--gray-400);font-style:italic;">-</span>';
           return;
         }
+        container.innerHTML = str
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .map((s) => `<span class="tag ${tagClass}">${s}</span>`)
+          .join("");
+      }
 
-        const jamMap = { '06:00:00': 'Pagi', '06:00': 'Pagi', '11:00:00': 'Siang', '11:00': 'Siang', '14:00:00': 'Sore', '14:00': 'Sore', '18:00:00': 'Malam', '18:00': 'Malam' };
-        const grouped = {};
-        data.jadwal.forEach(j => {
-          const sesi = jamMap[j.jam_mulai] || j.jam_mulai;
-          if (!grouped[j.hari]) grouped[j.hari] = [];
-          grouped[j.hari].push(sesi);
-        });
+      // ===== LOAD PROFIL USER TARGET =====
+      async function loadProfilPublik(userId) {
+        const token = getToken();
+        try {
+          // Fetch data user dari endpoint publik
+          const res = await fetch(`${API}/auth/user/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-        const hariOrder = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
-        jadwalEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">' +
-          hariOrder.filter(h => grouped[h]).map(hari => `
+          if (!res.ok) {
+            document.getElementById("loadingState").innerHTML =
+              '<div style="text-align:center;padding:60px 20px;color:var(--gray-400);">😕<br><br>Profil tidak ditemukan.</div>';
+            return;
+          }
+
+          const data = await res.json();
+          if (!data.success || !data.user) {
+            document.getElementById("loadingState").innerHTML =
+              '<div style="text-align:center;padding:60px 20px;color:var(--gray-400);">😕<br><br>Profil tidak ditemukan.</div>';
+            return;
+          }
+
+          const u = data.user;
+          targetUserId = u.id;
+          targetUserName = u.nama || "Pengguna";
+
+          // Update page title
+          document.title = `EduMate — ${u.nama || "Profil"}`;
+
+          // Avatar
+          const avatarEl = document.getElementById("avatarLg");
+          if (u.foto) {
+            avatarEl.innerHTML = `<img src="${u.foto}" referrerpolicy="no-referrer" alt="${u.nama}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+          }
+
+          // Info dasar
+          document.getElementById("profilNama").textContent = u.nama || "-";
+          document.getElementById("profilJurusan").textContent =
+            u.jurusan || "-";
+          document.getElementById("profilUniv").textContent =
+            u.universitas || "-";
+
+          // Status online
+          const statusEl = document.getElementById("profilOnlineStatus");
+          if (statusEl && typeof renderOnlineStatus === "function") {
+            statusEl.innerHTML = renderOnlineStatus(u.online, u.label);
+          }
+          document.getElementById("infoJurusan").textContent =
+            [u.jurusan, u.universitas].filter(Boolean).join(" · ") || "-";
+          document.getElementById("infoBio").textContent = u.bio || "";
+          if (!u.bio)
+            document.getElementById("infoBio").innerHTML =
+              '<span style="color:var(--gray-400);font-style:italic;">Belum ada bio.</span>';
+
+          // Tags di kartu kiri
+          const tagsEl = document.getElementById("profilTags");
+          tagsEl.innerHTML = "";
+          if (u.gaya_belajar)
+            tagsEl.innerHTML += `<span class="tag">${u.gaya_belajar}</span>`;
+          if (u.lokasi_belajar)
+            tagsEl.innerHTML += `<span class="tag gray">${u.lokasi_belajar}</span>`;
+          if (u.tingkat_kemampuan)
+            tagsEl.innerHTML += `<span class="tag gray">${u.tingkat_kemampuan}</span>`;
+
+          // Profil belajar
+          renderTags(u.skill, document.getElementById("infoSkill"));
+          renderTags(u.topik_belajar, document.getElementById("infoTopik"));
+          document.getElementById("infoGaya").textContent =
+            u.gaya_belajar || "-";
+          document.getElementById("infoLokasi").textContent =
+            u.lokasi_belajar || "-";
+          document.getElementById("infoTingkat").textContent =
+            u.tingkat_kemampuan || "-";
+
+          // Tombol WA
+          if (u.no_hp) {
+            const waNum = formatWaNumber(u.no_hp);
+            const btnWa = document.getElementById("btnWa");
+            btnWa.href = `https://wa.me/${waNum}`;
+            btnWa.style.display = "flex";
+          }
+
+          // Load jadwal & rating
+          await Promise.all([
+            loadJadwal(userId, token),
+            loadRating(userId, token),
+          ]);
+
+          // Sembunyikan loading, tampilkan konten
+          document.getElementById("loadingState").style.display = "none";
+          document.getElementById("profilContent").style.display = "block";
+        } catch (err) {
+          console.error("loadProfilPublik error:", err);
+          document.getElementById("loadingState").innerHTML =
+            '<div style="text-align:center;padding:60px 20px;color:var(--gray-400);">❌<br><br>Gagal memuat profil. Coba lagi.</div>';
+        }
+      }
+
+      // ===== LOAD JADWAL =====
+      async function loadJadwal(userId, token) {
+        const jadwalEl = document.getElementById("infoJadwal");
+        try {
+          const res = await fetch(`${API}/jadwal/user/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (!data.success || !data.jadwal || data.jadwal.length === 0) {
+            jadwalEl.innerHTML =
+              '<div class="empty-hint">Belum ada jadwal kosong.</div>';
+            return;
+          }
+
+          const jamMap = {
+            "06:00:00": "Pagi",
+            "06:00": "Pagi",
+            "11:00:00": "Siang",
+            "11:00": "Siang",
+            "14:00:00": "Sore",
+            "14:00": "Sore",
+            "18:00:00": "Malam",
+            "18:00": "Malam",
+          };
+          const grouped = {};
+          data.jadwal.forEach((j) => {
+            const sesi = jamMap[j.jam_mulai] || j.jam_mulai;
+            if (!grouped[j.hari]) grouped[j.hari] = [];
+            grouped[j.hari].push(sesi);
+          });
+
+          const hariOrder = [
+            "Senin",
+            "Selasa",
+            "Rabu",
+            "Kamis",
+            "Jumat",
+            "Sabtu",
+            "Minggu",
+          ];
+          jadwalEl.innerHTML =
+            '<div style="display:flex;flex-direction:column;gap:8px;">' +
+            hariOrder
+              .filter((h) => grouped[h])
+              .map(
+                (hari) => `
             <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--gray-50);border-radius:8px;">
               <span style="font-size:12px;font-weight:600;color:var(--black);min-width:60px;">${hari}</span>
               <div style="display:flex;flex-wrap:wrap;gap:5px;">
-                ${grouped[hari].map(s => `<span class="tag gray" style="font-size:11px;">${s}</span>`).join('')}
+                ${grouped[hari].map((s) => `<span class="tag gray" style="font-size:11px;">${s}</span>`).join("")}
               </div>
             </div>
-          `).join('') + '</div>';
-      } catch (err) {
-        jadwalEl.innerHTML = '<div class="empty-hint">Gagal memuat jadwal.</div>';
-      }
-    }
-
-
-
-    // ===== LOAD RATING =====
-    async function loadRating(userId, token) {
-      const ratingEl = document.getElementById('infoRating');
-      const statRating = document.getElementById('statRating');
-      const statSesi = document.getElementById('statSesi');
-      try {
-        const res = await fetch(`${API}/rating/${parseInt(userId)}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-
-        if (data.rata_rata) statRating.textContent = parseFloat(data.rata_rata).toFixed(1) + ' ⭐';
-        else statRating.textContent = '-';
-
-        if (!data.success || !data.rating || data.rating.length === 0) {
-          ratingEl.innerHTML = '<div class="empty-hint">Belum ada rating.</div>';
-          return;
+          `,
+              )
+              .join("") +
+            "</div>";
+        } catch (err) {
+          jadwalEl.innerHTML =
+            '<div class="empty-hint">Gagal memuat jadwal.</div>';
         }
+      }
 
-        ratingEl.innerHTML = data.rating.slice(0, 5).map(r => {
-          const bintang = '★'.repeat(r.nilai) + '☆'.repeat(5 - r.nilai);
-          const tgl = new Date(r.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-          const avatar = r.pemberi_foto
-            ? `<img src="${r.pemberi_foto}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-            : '👤';
-          return `<div class="rating-item">
+      // ===== LOAD RATING =====
+      async function loadRating(userId, token) {
+        const ratingEl = document.getElementById("infoRating");
+        const statRating = document.getElementById("statRating");
+        const statSesi = document.getElementById("statSesi");
+        try {
+          const res = await fetch(`${API}/rating/${parseInt(userId)}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+
+          if (data.rata_rata)
+            statRating.textContent =
+              parseFloat(data.rata_rata).toFixed(1) + " ⭐";
+          else statRating.textContent = "-";
+
+          if (!data.success || !data.rating || data.rating.length === 0) {
+            ratingEl.innerHTML =
+              '<div class="empty-hint">Belum ada rating.</div>';
+            return;
+          }
+
+          ratingEl.innerHTML = data.rating
+            .slice(0, 5)
+            .map((r) => {
+              const bintang = "★".repeat(r.nilai) + "☆".repeat(5 - r.nilai);
+              const tgl = new Date(r.created_at).toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              });
+              const avatar = r.pemberi_foto
+                ? `<img src="${r.pemberi_foto}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+                : "👤";
+              return `<div class="rating-item">
             <div class="rating-avatar">${avatar}</div>
             <div>
-              <div class="rating-name">${r.pemberi_nama || 'Anonim'}</div>
+              <div class="rating-name">${r.pemberi_nama || "Anonim"}</div>
               <div class="rating-stars">${bintang}</div>
-              ${r.review ? `<div class="rating-text">${r.review}</div>` : ''}
+              ${r.review ? `<div class="rating-text">${r.review}</div>` : ""}
               <div class="rating-date">${tgl}</div>
             </div>
           </div>`;
-        }).join('');
+            })
+            .join("");
 
-        // Load sesi selesai — pakai endpoint sesi dengan filter
-        try {
-          const sesiRes = await fetch(`${API}/sesi`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          const sesiData = await sesiRes.json();
-          if (sesiData.success) {
-            const selesai = sesiData.sesi.filter(s =>
-              s.status === 'selesai' &&
-              (s.pengirim_id == userId || s.penerima_id == userId)
-            ).length;
-            statSesi.textContent = selesai;
-          }
-        } catch(e) {}
-
-      } catch (err) {
-        ratingEl.innerHTML = '<div class="empty-hint">Gagal memuat rating.</div>';
-      }
-    }
-
-    // ===== MODAL =====
-    function bukaModal() {
-      document.getElementById('modalNamaBuddy').textContent = 'Bersama ' + targetUserName;
-      ['modalMataKuliah','modalTanggal','modalJamMulai','modalJamSelesai'].forEach(id => {
-        const el = document.getElementById(id);
-        el.value = '';
-        el.classList.remove('error');
-      });
-      document.getElementById('modalLokasi').value = 'Online';
-      toggleLinkMeeting('Online');
-      document.getElementById('modalLinkMeeting').value = '';
-      document.getElementById('modalAjak').classList.add('open');
-    }
-
-    function tutupModal() {
-      document.getElementById('modalAjak').classList.remove('open');
-    }
-
-    function toggleLinkMeeting(lokasi) {
-      document.getElementById('linkMeetingGroup').style.display = lokasi === 'Online' ? 'flex' : 'none';
-      if (lokasi !== 'Online') document.getElementById('modalLinkMeeting').value = '';
-    }
-
-    document.getElementById('modalAjak').addEventListener('click', function(e) {
-      if (e.target === this) tutupModal();
-    });
-
-    async function kirimAjakan() {
-      const token = getToken();
-      const mata_kuliah = document.getElementById('modalMataKuliah').value.trim();
-      const tanggal = document.getElementById('modalTanggal').value;
-      const jam_mulai = document.getElementById('modalJamMulai').value;
-      const jam_selesai = document.getElementById('modalJamSelesai').value;
-      const lokasi = document.getElementById('modalLokasi').value;
-
-      const fields = [
-        { id: 'modalMataKuliah', val: mata_kuliah },
-        { id: 'modalTanggal', val: tanggal },
-        { id: 'modalJamMulai', val: jam_mulai },
-        { id: 'modalJamSelesai', val: jam_selesai },
-      ];
-      let valid = true;
-      fields.forEach(f => {
-        const el = document.getElementById(f.id);
-        if (!f.val) { el.classList.add('error'); valid = false; }
-        else el.classList.remove('error');
-      });
-      if (!valid) { showToast('Lengkapi semua field yang wajib diisi!', 'warning'); return; }
-      if (jam_mulai >= jam_selesai) { showToast('Jam selesai harus lebih dari jam mulai!', 'warning'); return; }
-
-      const btn = document.getElementById('btnKirim');
-      btn.textContent = 'Mengirim...';
-      btn.disabled = true;
-
-      try {
-        const res = await fetch(API + '/sesi', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-          body: JSON.stringify({
-            penerima_id: targetUserId,
-            mata_kuliah, tanggal, jam_mulai, jam_selesai, lokasi,
-            link_meeting: document.getElementById('modalLinkMeeting').value.trim() || null,
-          }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          tutupModal();
-          showToast('Ajakan berhasil dikirim! 🎉', 'success');
-        } else {
-          showToast(data.message || 'Gagal mengirim ajakan.', 'error');
+          // Load sesi selesai — pakai endpoint sesi dengan filter
+          try {
+            const sesiRes = await fetch(`${API}/sesi`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            const sesiData = await sesiRes.json();
+            if (sesiData.success) {
+              const selesai = sesiData.sesi.filter(
+                (s) =>
+                  s.status === "selesai" &&
+                  (s.pengirim_id == userId || s.penerima_id == userId),
+              ).length;
+              statSesi.textContent = selesai;
+            }
+          } catch (e) {}
+        } catch (err) {
+          ratingEl.innerHTML =
+            '<div class="empty-hint">Gagal memuat rating.</div>';
         }
-      } catch (err) {
-        showToast('Terjadi kesalahan, coba lagi.', 'error');
-      } finally {
-        btn.textContent = 'Kirim Ajakan';
-        btn.disabled = false;
       }
-    }
 
-    // ===== INIT =====
-    initPage().then(user => {
-      if (!user) return;
-      const userId = getUserIdFromURL();
-      if (!userId) {
-        document.getElementById('loadingState').innerHTML =
-          '<div style="text-align:center;padding:60px 20px;color:var(--gray-400);">❌<br><br>ID pengguna tidak ditemukan di URL.</div>';
-        return;
+      // ===== MODAL =====
+      function bukaModal() {
+        document.getElementById("modalNamaBuddy").textContent =
+          "Bersama " + targetUserName;
+        [
+          "modalMataKuliah",
+          "modalTanggal",
+          "modalJamMulai",
+          "modalJamSelesai",
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          el.value = "";
+          el.classList.remove("error");
+        });
+        document.getElementById("modalLokasi").value = "Online";
+        toggleLinkMeeting("Online");
+        document.getElementById("modalLinkMeeting").value = "";
+        document.getElementById("modalAjak").classList.add("open");
       }
-      loadProfilPublik(userId);
-    });
-  </script>
-</body>
+
+      function tutupModal() {
+        document.getElementById("modalAjak").classList.remove("open");
+      }
+
+      function toggleLinkMeeting(lokasi) {
+        document.getElementById("linkMeetingGroup").style.display =
+          lokasi === "Online" ? "flex" : "none";
+        if (lokasi !== "Online")
+          document.getElementById("modalLinkMeeting").value = "";
+      }
+
+      document
+        .getElementById("modalAjak")
+        .addEventListener("click", function (e) {
+          if (e.target === this) tutupModal();
+        });
+
+      async function kirimAjakan() {
+        const token = getToken();
+        const mata_kuliah = document
+          .getElementById("modalMataKuliah")
+          .value.trim();
+        const tanggal = document.getElementById("modalTanggal").value;
+        const jam_mulai = document.getElementById("modalJamMulai").value;
+        const jam_selesai = document.getElementById("modalJamSelesai").value;
+        const lokasi = document.getElementById("modalLokasi").value;
+
+        const fields = [
+          { id: "modalMataKuliah", val: mata_kuliah },
+          { id: "modalTanggal", val: tanggal },
+          { id: "modalJamMulai", val: jam_mulai },
+          { id: "modalJamSelesai", val: jam_selesai },
+        ];
+        let valid = true;
+        fields.forEach((f) => {
+          const el = document.getElementById(f.id);
+          if (!f.val) {
+            el.classList.add("error");
+            valid = false;
+          } else el.classList.remove("error");
+        });
+        if (!valid) {
+          showToast("Lengkapi semua field yang wajib diisi!", "warning");
+          return;
+        }
+        if (jam_mulai >= jam_selesai) {
+          showToast("Jam selesai harus lebih dari jam mulai!", "warning");
+          return;
+        }
+
+        const btn = document.getElementById("btnKirim");
+        btn.textContent = "Mengirim...";
+        btn.disabled = true;
+
+        try {
+          const res = await fetch(API + "/sesi", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+              penerima_id: targetUserId,
+              mata_kuliah,
+              tanggal,
+              jam_mulai,
+              jam_selesai,
+              lokasi,
+              link_meeting:
+                document.getElementById("modalLinkMeeting").value.trim() ||
+                null,
+            }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            tutupModal();
+            showToast("Ajakan berhasil dikirim! 🎉", "success");
+          } else {
+            showToast(data.message || "Gagal mengirim ajakan.", "error");
+          }
+        } catch (err) {
+          showToast("Terjadi kesalahan, coba lagi.", "error");
+        } finally {
+          btn.textContent = "Kirim Ajakan";
+          btn.disabled = false;
+        }
+      }
+
+      // ===== INIT =====
+      initPage().then((user) => {
+        if (!user) return;
+        const userId = getUserIdFromURL();
+        if (!userId) {
+          document.getElementById("loadingState").innerHTML =
+            '<div style="text-align:center;padding:60px 20px;color:var(--gray-400);">❌<br><br>ID pengguna tidak ditemukan di URL.</div>';
+          return;
+        }
+        loadProfilPublik(userId);
+      });
+    </script>
+  </body>
 </html>

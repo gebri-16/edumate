@@ -221,6 +221,17 @@
           <div class="user-email"><span class="__cf_email__" data-cfemail="b5d0d8d4dcd9f5d2d8d4dcd99bd6dad8">[email&#160;protected]</span></div>
         </div>
       </a>
+      <button class="btn-logout" onclick="logout()">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </span>
+    Keluar
+  </button>
+</div>
     </div>
   </aside>
 
@@ -323,6 +334,10 @@
                   <div class="notif-time">${formatWaktu(n.created_at)}</div>
                 </div>
                 <div class="notif-desc">${n.pesan}</div>
+${n.tipe === 'sesi' && n.pesan.toLowerCase().includes('diterima') ? `
+  <div style="margin-top:6px;font-size:12px;color:#16a34a;font-weight:500;">
+    💬 Segera hubungi teman belajarmu via WhatsApp melalui halaman <a href="sesi.html" style="color:#16a34a;">Sesi Belajar</a>.
+  </div>` : ''}
               </div>
               ${unreadDot}
               <button class="btn-dismiss" onclick="dismissNotif(${n.id}, this)" title="Hapus notifikasi">×</button>

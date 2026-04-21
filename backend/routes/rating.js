@@ -59,13 +59,12 @@ router.get('/diberikan', verifyToken, (req, res) => {
   const userId = req.user.id;
 
   const query = `
-    SELECT r.*, u.nama as pemberi_nama, u.foto as pemberi_foto
+    SELECT r.*, u.nama as penerima_nama, u.foto as penerima_foto
     FROM rating r
     JOIN users u ON r.penerima_id = u.id
     WHERE r.pemberi_id = ?
     ORDER BY r.created_at DESC
   `;
-
   db.query(query, [userId], (err, results) => {
     if (err) return res.status(500).json({ success: false, message: 'Gagal ambil rating' });
     res.json({ success: true, rating: results });
